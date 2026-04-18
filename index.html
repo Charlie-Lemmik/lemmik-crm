@@ -551,6 +551,189 @@
             font-size: 0.875rem;
         }
 
+        /* Dashboard */
+        .dashboard-view {
+            display: none;
+        }
+
+        .dashboard-view.active {
+            display: block;
+        }
+
+        .dashboard-hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--gray-50) 0%, #f8fafc 100%);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .dashboard-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin: 0 0 2rem 0;
+        }
+
+        .dashboard-quick-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            background: var(--construction-orange);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-action-btn:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 146, 60, 0.3);
+        }
+
+        .quick-action-btn.secondary {
+            background: var(--secondary-blue);
+        }
+
+        .quick-action-btn.secondary:hover {
+            background: #2563eb;
+        }
+
+        .dashboard-stats {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+
+        .dashboard-stats h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 2rem 0;
+        }
+
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            border: 1px solid var(--gray-200);
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .dashboard-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-stat-icon.candidates {
+            color: var(--construction-orange);
+        }
+
+        .dashboard-stat-icon.contact {
+            color: var(--success-green);
+        }
+
+        .dashboard-stat-icon.jobs {
+            color: var(--secondary-blue);
+        }
+
+        .dashboard-stat-icon.active {
+            color: #10b981;
+        }
+
+        .dashboard-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .dashboard-stat-label {
+            font-size: 1rem;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .dashboard-features {
+            background: var(--gray-50);
+            padding: 3rem 0;
+        }
+
+        .dashboard-features-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-features h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 2rem 0;
+        }
+
+        .dashboard-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .dashboard-feature {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+        }
+
+        .dashboard-feature h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0 0 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-feature p {
+            color: var(--gray-600);
+            margin: 0;
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .main-nav {
                 margin-left: 0;
@@ -564,6 +747,25 @@
 
             .job-details {
                 grid-template-columns: 1fr;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .dashboard-quick-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .quick-action-btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
             }
         }
 
@@ -954,7 +1156,8 @@
                     <span>Lemmik Recruiting CRM</span>
                 </div>
                 <nav class="main-nav">
-                    <a href="#" onclick="showCandidatesView()" id="candidatesNavLink" class="nav-link active">Candidates</a>
+                    <a href="#" onclick="showDashboard()" id="dashboardNavLink" class="nav-link active">Dashboard</a>
+                    <a href="#" onclick="showCandidatesView()" id="candidatesNavLink" class="nav-link">Candidates</a>
                     <a href="#" onclick="showJobOrdersView()" id="jobOrdersNavLink" class="nav-link">Job Orders</a>
                 </nav>
                 <div class="header-stats">
@@ -975,8 +1178,104 @@
         </div>
     </header>
 
+    <!-- Dashboard/Home Page -->
+    <div class="dashboard-view active" id="dashboardView">
+        <div class="dashboard-hero">
+            <div class="container">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-hard-hat"></i> Lemmik Recruiting CRM
+                </h1>
+                <p class="dashboard-subtitle">
+                    Construction Industry Executive Search & Recruiting Management System
+                </p>
+                <div class="dashboard-quick-actions">
+                    <button class="quick-action-btn" onclick="showCandidatesView()">
+                        <i class="fas fa-users"></i> View Candidates
+                    </button>
+                    <button class="quick-action-btn secondary" onclick="showJobOrdersView()">
+                        <i class="fas fa-briefcase"></i> View Job Orders
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-stats">
+            <h2>Overview & Statistics</h2>
+            <div class="dashboard-stats-grid">
+                <div class="dashboard-stat-card">
+                    <div class="dashboard-stat-icon candidates">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="dashboard-stat-number" id="dashboardTotalCandidates">-</div>
+                    <div class="dashboard-stat-label">Total Candidates</div>
+                </div>
+                
+                <div class="dashboard-stat-card">
+                    <div class="dashboard-stat-icon contact">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <div class="dashboard-stat-number" id="dashboardContactCandidates">-</div>
+                    <div class="dashboard-stat-label">Candidates with Contact</div>
+                </div>
+                
+                <div class="dashboard-stat-card">
+                    <div class="dashboard-stat-icon jobs">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="dashboard-stat-number" id="dashboardTotalJobs">-</div>
+                    <div class="dashboard-stat-label">Total Job Orders</div>
+                </div>
+                
+                <div class="dashboard-stat-card">
+                    <div class="dashboard-stat-icon active">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="dashboard-stat-number" id="dashboardActiveJobs">-</div>
+                    <div class="dashboard-stat-label">Active Job Orders</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-features">
+            <div class="dashboard-features-content">
+                <h2>CRM Features</h2>
+                <div class="dashboard-features-grid">
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-users"></i> Candidate Management</h3>
+                        <p>Track and manage construction industry candidates with comprehensive profiles, contact information, skills, and project history.</p>
+                    </div>
+                    
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-briefcase"></i> Job Order Tracking</h3>
+                        <p>Manage client job orders with detailed requirements, timelines, and status tracking from initial request to successful placement.</p>
+                    </div>
+                    
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-search"></i> Advanced Search & Filtering</h3>
+                        <p>Powerful search and filtering capabilities to quickly find the right candidates or job orders based on multiple criteria.</p>
+                    </div>
+                    
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-edit"></i> In-Place Editing</h3>
+                        <p>Update candidate and job order information directly in the CRM with real-time Airtable synchronization.</p>
+                    </div>
+                    
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-chart-bar"></i> Real-Time Statistics</h3>
+                        <p>Live dashboard showing key metrics and statistics to help you track your recruiting performance.</p>
+                    </div>
+                    
+                    <div class="dashboard-feature">
+                        <h3><i class="fas fa-mobile-alt"></i> Mobile Responsive</h3>
+                        <p>Access your CRM from any device with a fully responsive design optimized for desktop, tablet, and mobile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Candidates List Page -->
-    <div class="candidates-list" id="candidatesList">
+    <div class="candidates-list" id="candidatesList" style="display: none;">
         <main class="container">
         <div class="controls">
             <div class="controls-row">
@@ -1362,7 +1661,7 @@
         let filteredCandidates = [];
         let allJobOrders = [];
         let filteredJobOrders = [];
-        let currentView = 'candidates';
+        let currentView = 'dashboard';
         let currentJobOrder = null;
 
         // Initialize the app
@@ -1599,6 +1898,7 @@
                 filteredCandidates = [...allCandidates];
                 updateStats();
                 renderCandidates();
+                updateDashboardStats();
                 showLoading(false);
 
             } catch (error) {
@@ -1883,11 +2183,13 @@
                     console.log('Job not found, redirecting...');
                     showJobOrdersView();
                 }
+            } else if (hash === '#candidates') {
+                showCandidatesView();
             } else if (hash === '#job-orders') {
                 showJobOrdersView();
             } else {
-                // Show candidates list
-                showCandidatesList();
+                // Show dashboard (default)
+                showDashboard();
             }
         }
         
@@ -1895,6 +2197,25 @@
             document.getElementById('candidatesList').classList.remove('hidden');
             document.getElementById('candidateDetailPage').classList.remove('active');
             currentCandidate = null;
+        }
+
+        function showDashboard() {
+            currentView = 'dashboard';
+            
+            // Hide all other views
+            document.getElementById('dashboardView').classList.add('active');
+            document.getElementById('candidatesList').style.display = 'none';
+            document.getElementById('jobOrdersView').style.display = 'none';
+            document.getElementById('candidateDetailPage').classList.remove('active');
+            document.getElementById('jobOrderDetailPage').classList.remove('active');
+            
+            // Update nav
+            updateNavigation('dashboard');
+            
+            // Update dashboard stats
+            updateDashboardStats();
+            
+            window.location.hash = '';
         }
         
         function showCandidateDetailPage(candidate) {
@@ -2227,6 +2548,7 @@
                 filteredJobOrders = [...allJobOrders];
                 updateJobStats();
                 renderJobOrders();
+                updateDashboardStats();
                 showJobLoading(false);
 
             } catch (error) {
@@ -2329,30 +2651,44 @@
         }
 
         // Navigation Functions
+        function updateNavigation(activeView) {
+            // Reset all nav links
+            document.getElementById('dashboardNavLink').classList.remove('active');
+            document.getElementById('candidatesNavLink').classList.remove('active');
+            document.getElementById('jobOrdersNavLink').classList.remove('active');
+            
+            // Set active nav link
+            document.getElementById(`${activeView}NavLink`).classList.add('active');
+        }
+
         function showCandidatesView() {
             currentView = 'candidates';
+            
+            // Hide all other views
+            document.getElementById('dashboardView').classList.remove('active');
             document.getElementById('candidatesList').style.display = 'block';
             document.getElementById('jobOrdersView').style.display = 'none';
             document.getElementById('candidateDetailPage').classList.remove('active');
             document.getElementById('jobOrderDetailPage').classList.remove('active');
             
             // Update nav
-            document.getElementById('candidatesNavLink').classList.add('active');
-            document.getElementById('jobOrdersNavLink').classList.remove('active');
+            updateNavigation('candidates');
             
-            window.location.hash = '';
+            window.location.hash = '#candidates';
         }
 
         function showJobOrdersView() {
             currentView = 'job-orders';
+            
+            // Hide all other views
+            document.getElementById('dashboardView').classList.remove('active');
             document.getElementById('candidatesList').style.display = 'none';
             document.getElementById('jobOrdersView').style.display = 'block';
             document.getElementById('candidateDetailPage').classList.remove('active');
             document.getElementById('jobOrderDetailPage').classList.remove('active');
             
             // Update nav
-            document.getElementById('candidatesNavLink').classList.remove('active');
-            document.getElementById('jobOrdersNavLink').classList.add('active');
+            updateNavigation('jobOrders');
             
             window.location.hash = '#job-orders';
         }
@@ -2478,6 +2814,25 @@
                 </div>
             `;
             document.getElementById('jobAdditionalDetails').innerHTML = additionalHtml;
+        }
+
+        function updateDashboardStats() {
+            // Candidates stats
+            const totalCandidates = allCandidates.length;
+            const candidatesWithContact = allCandidates.filter(candidate => {
+                return candidate['Work Email'] || candidate['Work Phone'] || 
+                       candidate['Personal Email'] || candidate['Personal Phone'];
+            }).length;
+            
+            // Job orders stats
+            const totalJobs = allJobOrders.length;
+            const activeJobs = allJobOrders.filter(job => job.Status === 'Active').length;
+            
+            // Update dashboard display
+            document.getElementById('dashboardTotalCandidates').textContent = totalCandidates;
+            document.getElementById('dashboardContactCandidates').textContent = candidatesWithContact;
+            document.getElementById('dashboardTotalJobs').textContent = totalJobs;
+            document.getElementById('dashboardActiveJobs').textContent = activeJobs;
         }
 
         function editJobOrder() {
