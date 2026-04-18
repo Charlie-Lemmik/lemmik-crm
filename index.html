@@ -74,6 +74,32 @@
             font-size: 0.9rem;
         }
 
+        .main-nav {
+            display: flex;
+            gap: 2rem;
+            margin-left: 2rem;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--gray-900);
+            background: rgba(251, 146, 60, 0.1);
+        }
+
+        .nav-link.active {
+            color: var(--construction-orange);
+            background: rgba(251, 146, 60, 0.2);
+            font-weight: 600;
+        }
+
         .stat {
             text-align: center;
         }
@@ -378,6 +404,167 @@
             margin: 1rem 0;
             font-weight: 600;
             display: none;
+        }
+
+        /* Job Orders */
+        .job-orders-view {
+            display: none;
+        }
+
+        .job-orders-view.active {
+            display: block;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--gray-300);
+        }
+
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--construction-orange);
+        }
+
+        .job-card.status-new {
+            border-left-color: var(--secondary-blue);
+        }
+
+        .job-card.status-active {
+            border-left-color: var(--success-green);
+        }
+
+        .job-card.status-on-hold {
+            border-left-color: var(--warning-yellow);
+        }
+
+        .job-card.status-filled {
+            border-left-color: var(--gray-400);
+        }
+
+        .job-card.status-cancelled {
+            border-left-color: var(--danger-red);
+        }
+
+        .job-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .job-company {
+            color: var(--gray-700);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .job-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .job-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .job-status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .job-status-new {
+            background: var(--secondary-blue);
+            color: white;
+        }
+
+        .job-status-active {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .job-status-on-hold {
+            background: var(--warning-yellow);
+            color: var(--gray-900);
+        }
+
+        .job-status-filled {
+            background: var(--gray-400);
+            color: white;
+        }
+
+        .job-status-cancelled {
+            background: var(--danger-red);
+            color: white;
+        }
+
+        .job-priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .job-priority-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+            border-color: var(--danger-red);
+        }
+
+        .job-priority-medium {
+            background: rgba(251, 146, 60, 0.1);
+            color: var(--construction-orange);
+            border-color: var(--construction-orange);
+        }
+
+        .job-priority-low {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--gray-600);
+            border-color: var(--gray-400);
+        }
+
+        .job-client {
+            border-top: 1px solid var(--gray-200);
+            padding-top: 0.75rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-nav {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .job-details {
+                grid-template-columns: 1fr;
+            }
         }
 
         .detail-body {
@@ -766,6 +953,10 @@
                     <i class="fas fa-hard-hat"></i>
                     <span>Lemmik Recruiting CRM</span>
                 </div>
+                <nav class="main-nav">
+                    <a href="#" onclick="showCandidatesView()" id="candidatesNavLink" class="nav-link active">Candidates</a>
+                    <a href="#" onclick="showJobOrdersView()" id="jobOrdersNavLink" class="nav-link">Job Orders</a>
+                </nav>
                 <div class="header-stats">
                     <div class="stat">
                         <span class="stat-number" id="totalCandidates">-</span>
@@ -1048,6 +1239,117 @@
         </div>
     </div>
 
+    <!-- Job Orders View -->
+    <div class="job-orders-view" id="jobOrdersView">
+        <main class="container">
+            <div class="controls">
+                <div class="controls-row">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="jobSearchInput" placeholder="Search job orders by title, company, or client...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <select class="filter-select" id="jobStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="New">New</option>
+                            <option value="Active">Active</option>
+                            <option value="On Hold">On Hold</option>
+                            <option value="Filled">Filled</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        
+                        <select class="filter-select" id="jobPriorityFilter">
+                            <option value="">All Priorities</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats" id="jobStats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalJobsCount">-</div>
+                    <div class="stat-label">Total Job Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeJobsCount">-</div>
+                    <div class="stat-label">Active Jobs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="filteredJobsCount">-</div>
+                    <div class="stat-label">Showing</div>
+                </div>
+            </div>
+
+            <div class="loading" id="jobLoading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading job orders...</span>
+            </div>
+
+            <div class="error" id="jobError" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="jobErrorMessage">Error loading job orders</span>
+            </div>
+
+            <div id="jobOrdersContainer" class="candidates-grid" style="display: none;">
+                <!-- Job orders will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Job Order Detail Page -->
+    <div class="candidate-detail-page" id="jobOrderDetailPage">
+        <div class="detail-header">
+            <div class="detail-header-content">
+                <button class="back-button" onclick="goBackToJobOrders()">
+                    ← Back to Job Orders
+                </button>
+                <h1 class="detail-name" id="jobDetailTitle">Loading...</h1>
+                <p class="detail-subtitle" id="jobDetailSubtitle">Loading...</p>
+                <div class="detail-actions">
+                    <button class="btn-edit" onclick="editJobOrder()">✏️ Edit Job Order</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-columns">
+                <!-- Job Information -->
+                <div class="detail-section">
+                    <h2 class="detail-section-title">💼 Job Information</h2>
+                    <div id="jobInformation">Loading...</div>
+                </div>
+                
+                <!-- Client Information -->
+                <div class="detail-section">
+                    <h2 class="detail-section-title">🏢 Client Information</h2>
+                    <div id="clientInformation">Loading...</div>
+                </div>
+            </div>
+            
+            <!-- Job Description -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">📝 Job Description</h2>
+                <div id="jobDescription">Loading...</div>
+            </div>
+            
+            <!-- Requirements -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">✅ Requirements</h2>
+                <div id="jobRequirements">Loading...</div>
+            </div>
+            
+            <!-- Additional Details -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">📋 Additional Details</h2>
+                <div id="jobAdditionalDetails">Loading...</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Airtable configuration
         const AIRTABLE_CONFIG = {
@@ -1058,6 +1360,10 @@
 
         let allCandidates = [];
         let filteredCandidates = [];
+        let allJobOrders = [];
+        let filteredJobOrders = [];
+        let currentView = 'candidates';
+        let currentJobOrder = null;
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
@@ -1072,6 +1378,7 @@
             if (storedToken) {
                 AIRTABLE_CONFIG.apiToken = storedToken;
                 startApp();
+                loadJobOrders();
             } else {
                 showTokenModal();
             }
@@ -1079,6 +1386,7 @@
 
         function startApp() {
             setupEventListeners();
+            setupJobEventListeners();
             loadCandidates();
         }
 
@@ -1129,6 +1437,51 @@
             document.getElementById('statusFilter').addEventListener('change', filterCandidates);
             document.getElementById('listFilter').addEventListener('change', filterCandidates);
             document.getElementById('contactFilter').addEventListener('change', filterCandidates);
+        }
+
+        function setupJobEventListeners() {
+            // Job search
+            const jobSearchInput = document.getElementById('jobSearchInput');
+            if (jobSearchInput) {
+                jobSearchInput.addEventListener('input', debounce(applyJobFilters, 300));
+            }
+
+            // Job filters
+            const jobStatusFilter = document.getElementById('jobStatusFilter');
+            if (jobStatusFilter) {
+                jobStatusFilter.addEventListener('change', applyJobFilters);
+            }
+
+            const jobPriorityFilter = document.getElementById('jobPriorityFilter');
+            if (jobPriorityFilter) {
+                jobPriorityFilter.addEventListener('change', applyJobFilters);
+            }
+        }
+
+        function applyJobFilters() {
+            const searchTerm = document.getElementById('jobSearchInput')?.value.toLowerCase() || '';
+            const statusFilter = document.getElementById('jobStatusFilter')?.value || '';
+            const priorityFilter = document.getElementById('jobPriorityFilter')?.value || '';
+
+            filteredJobOrders = allJobOrders.filter(job => {
+                // Search filter
+                const searchMatch = !searchTerm || 
+                    (job['Job Title'] && job['Job Title'].toLowerCase().includes(searchTerm)) ||
+                    (job.Company && job.Company.toLowerCase().includes(searchTerm)) ||
+                    (job['Client Name'] && job['Client Name'].toLowerCase().includes(searchTerm)) ||
+                    (job.Location && job.Location.toLowerCase().includes(searchTerm));
+
+                // Status filter
+                const statusMatch = !statusFilter || job.Status === statusFilter;
+
+                // Priority filter
+                const priorityMatch = !priorityFilter || job.Priority === priorityFilter;
+
+                return searchMatch && statusMatch && priorityMatch;
+            });
+
+            updateJobStats();
+            renderJobOrders();
         }
 
         async function loadCandidates() {
@@ -1501,6 +1854,37 @@
                         window.location.reload();
                     }
                 }
+            } else if (hash.startsWith('#job-order/')) {
+                const jobId = hash.replace('#job-order/', '');
+                
+                // First try to find job in current data
+                let job = allJobOrders.find(j => j.id === jobId);
+                
+                // If not found (new tab scenario), try sessionStorage
+                if (!job) {
+                    const storedJob = sessionStorage.getItem('selectedJobOrder');
+                    if (storedJob) {
+                        try {
+                            const parsedJob = JSON.parse(storedJob);
+                            // Verify this is the correct job
+                            if (parsedJob.id === jobId) {
+                                job = parsedJob;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing stored job data:', e);
+                        }
+                    }
+                }
+                
+                if (job) {
+                    showJobOrderDetailPage(job);
+                } else {
+                    // Job not found, redirect to job orders
+                    console.log('Job not found, redirecting...');
+                    showJobOrdersView();
+                }
+            } else if (hash === '#job-orders') {
+                showJobOrdersView();
             } else {
                 // Show candidates list
                 showCandidatesList();
@@ -1773,6 +2157,331 @@
             // Clear stored candidate data when going back
             sessionStorage.removeItem('selectedCandidate');
             window.location.hash = '';
+        }
+        
+        function goBackToJobOrders() {
+            sessionStorage.removeItem('selectedJobOrder');
+            window.location.hash = '#job-orders';
+        }
+
+        // Job Orders Functions
+        async function loadJobOrders() {
+            try {
+                showJobLoading(true);
+                
+                let allRecords = [];
+                let offset = null;
+                let pageCount = 0;
+
+                do {
+                    pageCount++;
+                    console.log(`Loading job orders page ${pageCount}...`);
+
+                    let url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/JOB_ORDERS`;
+                    
+                    const params = new URLSearchParams();
+                    
+                    if (offset) {
+                        params.append('offset', offset);
+                    }
+                    
+                    const fieldsToFetch = [
+                        'Job Title', 'Company', 'Location', 'Salary Range', 'Status', 
+                        'Priority', 'Timeline', 'Client Name', 'Client Email',
+                        'Job Description', 'Requirements', 'Notes'
+                    ];
+                    
+                    fieldsToFetch.forEach(field => {
+                        params.append('fields[]', field);
+                    });
+                    
+                    if (params.toString()) {
+                        url += '?' + params.toString();
+                    }
+
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.apiToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    const batch = data.records.map(record => ({
+                        id: record.id,
+                        ...record.fields
+                    }));
+
+                    allRecords.push(...batch);
+                    offset = data.offset;
+                    
+                } while (offset);
+
+                console.log(`✅ Loaded ${allRecords.length} job orders from ${pageCount} pages`);
+                
+                allJobOrders = allRecords;
+                filteredJobOrders = [...allJobOrders];
+                updateJobStats();
+                renderJobOrders();
+                showJobLoading(false);
+
+            } catch (error) {
+                console.error('Error loading job orders:', error);
+                showJobError(`Failed to load job orders: ${error.message}`);
+                showJobLoading(false);
+            }
+        }
+
+        function renderJobOrders() {
+            const container = document.getElementById('jobOrdersContainer');
+            
+            if (filteredJobOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="no-candidates">
+                        <i class="fas fa-briefcase"></i>
+                        <p>No job orders found matching your criteria</p>
+                    </div>
+                `;
+                container.style.display = 'block';
+                return;
+            }
+
+            const jobCards = filteredJobOrders.map(job => createJobOrderCard(job)).join('');
+            container.innerHTML = jobCards;
+            container.style.display = 'block';
+        }
+
+        function createJobOrderCard(job) {
+            const statusClass = getJobStatusClass(job.Status);
+            const priorityClass = getJobPriorityClass(job.Priority);
+            
+            return `
+                <div class="job-card ${statusClass}" onclick="openJobOrderProfile('${job.id}')">
+                    <h3 class="job-title">${job['Job Title'] || 'Untitled Position'}</h3>
+                    <div class="job-company">${job.Company || 'Company Not Specified'}</div>
+                    
+                    <div class="job-details">
+                        <div class="job-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${job.Location || 'Location TBD'}</span>
+                        </div>
+                        <div class="job-detail">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>${job['Salary Range'] || 'Salary TBD'}</span>
+                        </div>
+                        <div class="job-detail">
+                            <i class="fas fa-clock"></i>
+                            <span>${job.Timeline || 'Timeline TBD'}</span>
+                        </div>
+                        <div class="job-detail">
+                            <i class="fas fa-building"></i>
+                            <span>${job['Client Name'] || 'Client TBD'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-badges">
+                        <span class="job-status-badge job-status-${(job.Status || 'new').toLowerCase().replace(' ', '-')}">${job.Status || 'New'}</span>
+                        <span class="job-priority-badge job-priority-${(job.Priority || 'medium').toLowerCase()}">${job.Priority || 'Medium'}</span>
+                    </div>
+                    
+                    <div class="job-client">
+                        <i class="fas fa-envelope"></i>
+                        <span>${job['Client Email'] || 'No email provided'}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getJobStatusClass(status) {
+            if (!status) return 'status-new';
+            
+            const statusLower = status.toLowerCase().replace(' ', '-');
+            return `status-${statusLower}`;
+        }
+
+        function getJobPriorityClass(priority) {
+            if (!priority) return 'priority-medium';
+            
+            return `priority-${priority.toLowerCase()}`;
+        }
+
+        function updateJobStats() {
+            const totalJobs = allJobOrders.length;
+            const activeJobs = allJobOrders.filter(job => job.Status === 'Active').length;
+            const filteredCount = filteredJobOrders.length;
+
+            document.getElementById('totalJobsCount').textContent = totalJobs;
+            document.getElementById('activeJobsCount').textContent = activeJobs;
+            document.getElementById('filteredJobsCount').textContent = filteredCount;
+        }
+
+        function showJobLoading(show) {
+            document.getElementById('jobLoading').style.display = show ? 'flex' : 'none';
+        }
+
+        function showJobError(message) {
+            document.getElementById('jobErrorMessage').textContent = message;
+            document.getElementById('jobError').style.display = 'block';
+        }
+
+        // Navigation Functions
+        function showCandidatesView() {
+            currentView = 'candidates';
+            document.getElementById('candidatesList').style.display = 'block';
+            document.getElementById('jobOrdersView').style.display = 'none';
+            document.getElementById('candidateDetailPage').classList.remove('active');
+            document.getElementById('jobOrderDetailPage').classList.remove('active');
+            
+            // Update nav
+            document.getElementById('candidatesNavLink').classList.add('active');
+            document.getElementById('jobOrdersNavLink').classList.remove('active');
+            
+            window.location.hash = '';
+        }
+
+        function showJobOrdersView() {
+            currentView = 'job-orders';
+            document.getElementById('candidatesList').style.display = 'none';
+            document.getElementById('jobOrdersView').style.display = 'block';
+            document.getElementById('candidateDetailPage').classList.remove('active');
+            document.getElementById('jobOrderDetailPage').classList.remove('active');
+            
+            // Update nav
+            document.getElementById('candidatesNavLink').classList.remove('active');
+            document.getElementById('jobOrdersNavLink').classList.add('active');
+            
+            window.location.hash = '#job-orders';
+        }
+
+        function openJobOrderProfile(jobId) {
+            const job = allJobOrders.find(j => j.id === jobId);
+            if (job) {
+                sessionStorage.setItem('selectedJobOrder', JSON.stringify(job));
+                const jobUrl = `${window.location.origin}${window.location.pathname}#job-order/${jobId}`;
+                window.open(jobUrl, '_blank');
+            }
+        }
+
+        function showJobOrderDetailPage(job) {
+            currentJobOrder = job;
+            
+            // Hide other views
+            document.getElementById('candidatesList').style.display = 'none';
+            document.getElementById('jobOrdersView').style.display = 'none';
+            document.getElementById('candidateDetailPage').classList.remove('active');
+            
+            // Show job detail page
+            document.getElementById('jobOrderDetailPage').classList.add('active');
+            
+            // Populate job detail page
+            populateJobDetailPage(job);
+        }
+
+        function populateJobDetailPage(job) {
+            // Update header
+            document.getElementById('jobDetailTitle').textContent = job['Job Title'] || 'Untitled Position';
+            document.getElementById('jobDetailSubtitle').textContent = 
+                `${job.Company || 'Company TBD'} • ${job.Location || 'Location TBD'}`;
+            
+            // Populate sections
+            populateJobInformation(job);
+            populateClientInformation(job);
+            populateJobDescription(job);
+            populateJobRequirements(job);
+            populateJobAdditionalDetails(job);
+        }
+
+        function populateJobInformation(job) {
+            const statusClass = getJobStatusClass(job.Status);
+            const priorityClass = getJobPriorityClass(job.Priority);
+            
+            const jobHtml = `
+                <div class="detail-field">
+                    <span class="detail-field-label">Job Title:</span>
+                    <div class="detail-field-value">${job['Job Title'] || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Company:</span>
+                    <div class="detail-field-value">${job.Company || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Location:</span>
+                    <div class="detail-field-value">${job.Location || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Salary Range:</span>
+                    <div class="detail-field-value">${job['Salary Range'] || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Status:</span>
+                    <div class="detail-field-value">
+                        <span class="status-badge ${statusClass.replace('status-', 'job-status-')}">${job.Status || 'New'}</span>
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Priority:</span>
+                    <div class="detail-field-value">
+                        <span class="job-priority-badge job-priority-${(job.Priority || 'medium').toLowerCase()}">${job.Priority || 'Medium'}</span>
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Timeline:</span>
+                    <div class="detail-field-value">${job.Timeline || 'Not specified'}</div>
+                </div>
+            `;
+            document.getElementById('jobInformation').innerHTML = jobHtml;
+        }
+
+        function populateClientInformation(job) {
+            const clientHtml = `
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Client Name:</span>
+                    <div class="detail-field-value">${job['Client Name'] || 'Not specified'}</div>
+                </div>
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Client Email:</span>
+                    <div class="detail-field-value">
+                        ${job['Client Email'] ? 
+                            `<a href="mailto:${job['Client Email']}">${job['Client Email']}</a>` : 
+                            '<span class="empty">Not provided</span>'}
+                    </div>
+                </div>
+            `;
+            document.getElementById('clientInformation').innerHTML = clientHtml;
+        }
+
+        function populateJobDescription(job) {
+            const descriptionHtml = job['Job Description'] ? 
+                `<div class="detail-field-value multiline-text">${job['Job Description']}</div>` :
+                '<div class="detail-field-value empty">No job description provided</div>';
+            document.getElementById('jobDescription').innerHTML = descriptionHtml;
+        }
+
+        function populateJobRequirements(job) {
+            const requirementsHtml = job.Requirements ? 
+                `<div class="detail-field-value multiline-text">${job.Requirements}</div>` :
+                '<div class="detail-field-value empty">No requirements specified</div>';
+            document.getElementById('jobRequirements').innerHTML = requirementsHtml;
+        }
+
+        function populateJobAdditionalDetails(job) {
+            const additionalHtml = `
+                <div class="detail-field">
+                    <span class="detail-field-label">Notes:</span>
+                    <div class="detail-field-value multiline-text ${!job.Notes ? 'empty' : ''}">${
+                        job.Notes || 'No additional notes'
+                    }</div>
+                </div>
+            `;
+            document.getElementById('jobAdditionalDetails').innerHTML = additionalHtml;
+        }
+
+        function editJobOrder() {
+            alert('Job Order edit functionality will be implemented next!');
         }
         
         function getStatusClass(status) {
