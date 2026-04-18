@@ -1359,8 +1359,18 @@
         let currentCandidate = null;
         
         function initializeRouting() {
-            // Handle initial route
-            handleRoute();
+            // Handle initial route - delay if we're on a candidate page and data isn't loaded yet
+            if (window.location.hash.startsWith('#candidate/') && allCandidates.length === 0) {
+                // Wait for candidate data to load before routing
+                const checkDataInterval = setInterval(() => {
+                    if (allCandidates.length > 0) {
+                        clearInterval(checkDataInterval);
+                        handleRoute();
+                    }
+                }, 100);
+            } else {
+                handleRoute();
+            }
             
             // Handle browser back/forward
             window.addEventListener('popstate', handleRoute);
@@ -1371,13 +1381,36 @@
             
             if (hash.startsWith('#candidate/')) {
                 const candidateId = hash.replace('#candidate/', '');
-                const candidate = allCandidates.find(c => c.id === candidateId);
+                
+                // First try to find candidate in current data
+                let candidate = allCandidates.find(c => c.id === candidateId);
+                
+                // If not found (new tab scenario), try sessionStorage
+                if (!candidate) {
+                    const storedCandidate = sessionStorage.getItem('selectedCandidate');
+                    if (storedCandidate) {
+                        try {
+                            const parsedCandidate = JSON.parse(storedCandidate);
+                            // Verify this is the correct candidate
+                            if (parsedCandidate.id === candidateId) {
+                                candidate = parsedCandidate;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing stored candidate data:', e);
+                        }
+                    }
+                }
                 
                 if (candidate) {
                     showCandidateDetailPage(candidate);
                 } else {
-                    // Candidate not found, go back to list
-                    goBackToCandidates();
+                    // Candidate not found, redirect to main page to load data
+                    console.log('Candidate not found, redirecting to load data...');
+                    window.location.hash = '';
+                    // Force reload to get candidate data
+                    if (allCandidates.length === 0) {
+                        window.location.reload();
+                    }
                 }
             } else {
                 // Show candidates list
@@ -1405,9 +1438,15 @@
         }
         
         function openCandidateProfile(candidateId) {
-            // Open candidate page in new tab
-            const candidateUrl = `${window.location.origin}${window.location.pathname}#candidate/${candidateId}`;
-            window.open(candidateUrl, '_blank');
+            // Find and store candidate data in sessionStorage
+            const candidate = allCandidates.find(c => c.id === candidateId);
+            if (candidate) {
+                sessionStorage.setItem('selectedCandidate', JSON.stringify(candidate));
+                
+                // Open candidate page in new tab
+                const candidateUrl = `${window.location.origin}${window.location.pathname}#candidate/${candidateId}`;
+                window.open(candidateUrl, '_blank');
+            }
         }
         
         function populateDetailPage(candidate) {
@@ -1570,6 +1609,8 @@
         }
         
         function goBackToCandidates() {
+            // Clear stored candidate data when going back
+            sessionStorage.removeItem('selectedCandidate');
             window.location.hash = '';
         }
         
