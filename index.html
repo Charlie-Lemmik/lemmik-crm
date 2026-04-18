@@ -699,9 +699,29 @@
                     
                     let url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
                     
+                    // Build query parameters
+                    const params = new URLSearchParams();
+                    
                     // Add offset parameter if we have one
                     if (offset) {
-                        url += `?offset=${encodeURIComponent(offset)}`;
+                        params.append('offset', offset);
+                    }
+                    
+                    // Explicitly request the List field (and other key fields)
+                    const fieldsToFetch = [
+                        'Name', 'Title', 'Current Company', 'Work Email', 'Work Phone', 
+                        'Personal Email', 'Personal Phone', 'LinkedIn', 'Location', 
+                        'Projects', 'Notes', 'Status', 'Source', 'List', 'FirstName', 
+                        'LastName', 'Salary', 'Motivation', 'Skills', 'Quality Score', 'Tags'
+                    ];
+                    
+                    fieldsToFetch.forEach(field => {
+                        params.append('fields[]', field);
+                    });
+                    
+                    // Add parameters to URL
+                    if (params.toString()) {
+                        url += '?' + params.toString();
                     }
                     
                     const response = await fetch(url, {
