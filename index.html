@@ -1405,8 +1405,9 @@
         }
         
         function openCandidateProfile(candidateId) {
-            // Navigate to candidate page
-            window.location.hash = `#candidate/${candidateId}`;
+            // Open candidate page in new tab
+            const candidateUrl = `${window.location.origin}${window.location.pathname}#candidate/${candidateId}`;
+            window.open(candidateUrl, '_blank');
         }
         
         function populateDetailPage(candidate) {
