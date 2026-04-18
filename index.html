@@ -1156,9 +1156,9 @@
                     <span>Lemmik Recruiting CRM</span>
                 </div>
                 <nav class="main-nav">
-                    <a href="#" onclick="showDashboard()" id="dashboardNavLink" class="nav-link active">Dashboard</a>
-                    <a href="#" onclick="showCandidatesView()" id="candidatesNavLink" class="nav-link">Candidates</a>
-                    <a href="#" onclick="showJobOrdersView()" id="jobOrdersNavLink" class="nav-link">Job Orders</a>
+                    <a href="#" onclick="showDashboard(); return false;" id="dashboardNavLink" class="nav-link active">Dashboard</a>
+                    <a href="#" onclick="showCandidatesView(); return false;" id="candidatesNavLink" class="nav-link">Candidates</a>
+                    <a href="#" onclick="showJobOrdersView(); return false;" id="jobOrdersNavLink" class="nav-link">Job Orders</a>
                 </nav>
                 <div class="header-stats">
                     <div class="stat">
@@ -1668,6 +1668,20 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             initializeRouting();
+            
+            // Update dashboard stats periodically until data loads
+            const statsInterval = setInterval(() => {
+                if (allCandidates.length > 0 || allJobOrders.length > 0) {
+                    updateDashboardStats();
+                    
+                    // Stop interval when both datasets are loaded or after 30 seconds
+                    if ((allCandidates.length > 0 && allJobOrders.length > 0) || Date.now() > window.loadStartTime + 30000) {
+                        clearInterval(statsInterval);
+                    }
+                }
+            }, 1000);
+            
+            window.loadStartTime = Date.now();
         });
 
         function initializeApp() {
@@ -1677,7 +1691,6 @@
             if (storedToken) {
                 AIRTABLE_CONFIG.apiToken = storedToken;
                 startApp();
-                loadJobOrders();
             } else {
                 showTokenModal();
             }
@@ -1687,6 +1700,7 @@
             setupEventListeners();
             setupJobEventListeners();
             loadCandidates();
+            loadJobOrders();
         }
 
         function showTokenModal() {
@@ -2658,7 +2672,13 @@
             document.getElementById('jobOrdersNavLink').classList.remove('active');
             
             // Set active nav link
-            document.getElementById(`${activeView}NavLink`).classList.add('active');
+            if (activeView === 'dashboard') {
+                document.getElementById('dashboardNavLink').classList.add('active');
+            } else if (activeView === 'candidates') {
+                document.getElementById('candidatesNavLink').classList.add('active');
+            } else if (activeView === 'jobOrders') {
+                document.getElementById('jobOrdersNavLink').classList.add('active');
+            }
         }
 
         function showCandidatesView() {
