@@ -212,6 +212,10 @@
             margin-bottom: 0.25rem;
         }
 
+        .candidate-name.zoominfod {
+            color: #ec4899 !important;
+        }
+
         .candidate-title {
             color: var(--gray-600);
             font-weight: 500;
@@ -878,6 +882,10 @@
             const isDannyList = candidate.List === 'Danny List';
             const dannyListClass = isDannyList ? 'danny-list' : '';
             
+            // Check for ZoomInfoD source highlighting
+            const isZoomInfoD = candidate.Source === 'ZoomInfoD';
+            const zoomInfoDClass = isZoomInfoD ? 'zoominfod' : '';
+            
             // Debug logging for Danny List check (only for first few candidates to avoid spam)
             if (candidate.List && candidate.List.toLowerCase().includes('danny')) {
                 console.log(`DANNY LIST DEBUG: Name: "${candidate.Name}", List: "${candidate.List}", isDannyList: ${isDannyList}`);
@@ -910,7 +918,7 @@
                 <div class="candidate-card ${contactClass} ${dannyListClass}" onclick="openCandidateProfile('${candidate.id}')">
                     <div class="candidate-header">
                         <div class="candidate-info">
-                            <div class="candidate-name">
+                            <div class="candidate-name ${zoomInfoDClass}">
                                 ${listIndicator}${candidate.Name || 'Unknown Name'}
                             </div>
                             <div class="candidate-title">${candidate.Title || 'No title specified'}</div>
