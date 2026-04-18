@@ -309,6 +309,16 @@
             border-left: 4px solid var(--gray-300);
         }
 
+        .danny-list {
+            border-left: 4px solid var(--danger-red) !important;
+            background: rgba(239, 68, 68, 0.05) !important;
+            border-color: rgba(239, 68, 68, 0.2) !important;
+        }
+
+        .danny-list:hover {
+            background: rgba(239, 68, 68, 0.08) !important;
+        }
+
         .loading {
             text-align: center;
             padding: 3rem;
@@ -811,6 +821,10 @@
             const hasContact = hasContactInfo(candidate);
             const contactClass = hasContact ? 'has-contact' : 'no-contact';
             
+            // Check for Danny List highlighting
+            const isDannyList = candidate.List === 'Danny List';
+            const dannyListClass = isDannyList ? 'danny-list' : '';
+            
             // Get list indicator
             const listClass = candidate.List ? `list-${candidate.List.toLowerCase()}` : 'list-default';
             const listIndicator = `<span class="list-indicator ${listClass}"></span>`;
@@ -835,7 +849,7 @@
             }
 
             return `
-                <div class="candidate-card ${contactClass}" onclick="openCandidateProfile('${candidate.id}')">
+                <div class="candidate-card ${contactClass} ${dannyListClass}" onclick="openCandidateProfile('${candidate.id}')">
                     <div class="candidate-header">
                         <div class="candidate-info">
                             <div class="candidate-name">
