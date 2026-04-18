@@ -678,23 +678,55 @@
             hideError();
             
             try {
-                const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiToken}`
+                allCandidates = [];
+                let offset = null;
+                let pageCount = 0;
+                
+                // Fetch all pages
+                do {
+                    pageCount++;
+                    console.log(`Loading page ${pageCount}...`);
+                    
+                    let url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+                    
+                    // Add offset parameter if we have one
+                    if (offset) {
+                        url += `?offset=${encodeURIComponent(offset)}`;
                     }
-                });
+                    
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${AIRTABLE_CONFIG.apiToken}`
+                        }
+                    });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
-                const data = await response.json();
-                allCandidates = data.records.map(record => ({
-                    id: record.id,
-                    ...record.fields
-                }));
-
+                    const data = await response.json();
+                    
+                    // Add this page's records to our collection
+                    const pageRecords = data.records.map(record => ({
+                        id: record.id,
+                        ...record.fields
+                    }));
+                    
+                    allCandidates = allCandidates.concat(pageRecords);
+                    
+                    // Update loading message with progress
+                    document.querySelector('#loadingState p').textContent = 
+                        `Loading candidates... (${allCandidates.length} loaded)`;
+                    
+                    // Check if there are more pages
+                    offset = data.offset;
+                    
+                    console.log(`Page ${pageCount}: ${pageRecords.length} records, total: ${allCandidates.length}, offset: ${offset ? 'yes' : 'none'}`);
+                    
+                } while (offset);
+                
+                console.log(`✅ Loaded ${allCandidates.length} candidates from ${pageCount} pages`);
+                
                 filteredCandidates = [...allCandidates];
                 updateStats();
                 renderCandidates();
