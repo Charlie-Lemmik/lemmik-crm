@@ -737,6 +737,39 @@
                 
                 console.log(`✅ Loaded ${allCandidates.length} candidates from ${pageCount} pages`);
                 
+                // Debug: Log the first 10 candidates' List field values
+                console.log('=== DEBUGGING LIST FIELD VALUES ===');
+                
+                // First, show all field names for the first candidate
+                if (allCandidates.length > 0) {
+                    console.log('All field names for first candidate:');
+                    console.log(Object.keys(allCandidates[0]));
+                }
+                
+                console.log('First 10 candidates List field values:');
+                allCandidates.slice(0, 10).forEach((candidate, index) => {
+                    console.log(`${index + 1}. Name: "${candidate.Name}" | List field: "${candidate.List}" | Type: ${typeof candidate.List}`);
+                });
+                
+                // Also log all unique List values found
+                const listValues = [...new Set(allCandidates.map(c => c.List).filter(Boolean))];
+                console.log('All unique List field values found:');
+                listValues.forEach((value, index) => {
+                    console.log(`  ${index + 1}. "${value}" (${typeof value})`);
+                });
+                
+                // Count candidates by List value
+                const listCounts = {};
+                allCandidates.forEach(candidate => {
+                    const listValue = candidate.List || 'null/undefined';
+                    listCounts[listValue] = (listCounts[listValue] || 0) + 1;
+                });
+                console.log('List field distribution:');
+                Object.entries(listCounts).forEach(([list, count]) => {
+                    console.log(`  "${list}": ${count} candidates`);
+                });
+                console.log('=== END DEBUGGING ===');
+                
                 filteredCandidates = [...allCandidates];
                 updateStats();
                 renderCandidates();
@@ -824,6 +857,11 @@
             // Check for Danny List highlighting
             const isDannyList = candidate.List === 'Danny List';
             const dannyListClass = isDannyList ? 'danny-list' : '';
+            
+            // Debug logging for Danny List check (only for first few candidates to avoid spam)
+            if (candidate.List && candidate.List.toLowerCase().includes('danny')) {
+                console.log(`DANNY LIST DEBUG: Name: "${candidate.Name}", List: "${candidate.List}", isDannyList: ${isDannyList}`);
+            }
             
             // Get list indicator
             const listClass = candidate.List ? `list-${candidate.List.toLowerCase()}` : 'list-default';
