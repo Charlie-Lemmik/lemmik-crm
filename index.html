@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lemmik Recruiting CRM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-orange: #f97316;
+            --success-green: #10b981;
+            --warning-yellow: #f59e0b;
+            --danger-red: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--accent-orange);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .controls {
+            background: white;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--gray-200);
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-500);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            background: white;
+            font-size: 0.9rem;
+            min-width: 120px;
+            transition: border-color 0.2s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--secondary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+
+        .candidates-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--gray-200);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .candidate-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: var(--secondary-blue);
+        }
+
+        .candidate-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .candidate-info {
+            flex: 1;
+        }
+
+        .candidate-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .candidate-title {
+            color: var(--gray-600);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .candidate-company {
+            color: var(--secondary-blue);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .status-new {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .status-todo {
+            background: var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        .status-in-progress {
+            background: var(--warning-yellow);
+            color: var(--gray-800);
+        }
+
+        .status-done {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .candidate-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .detail-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            letter-spacing: 0.05em;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray-700);
+        }
+
+        .contact-item i {
+            width: 16px;
+            color: var(--gray-500);
+        }
+
+        .contact-item a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        .has-contact {
+            border-left: 4px solid var(--success-green);
+        }
+
+        .no-contact {
+            border-left: 4px solid var(--gray-300);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-500);
+        }
+
+        .error {
+            background: var(--danger-red);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .list-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        /* List color coding */
+        .list-a { background-color: #ef4444; }
+        .list-b { background-color: #f97316; }
+        .list-c { background-color: #eab308; }
+        .list-d { background-color: #22c55e; }
+        .list-e { background-color: #3b82f6; }
+        .list-f { background-color: #8b5cf6; }
+        .list-default { background-color: var(--gray-400); }
+
+        @media (max-width: 768px) {
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: auto;
+            }
+
+            .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .candidate-details {
+                grid-template-columns: 1fr;
+            }
+
+            .header-stats {
+                gap: 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-hard-hat"></i>
+                    <span>Lemmik Recruiting CRM</span>
+                </div>
+                <div class="header-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="totalCandidates">-</span>
+                        <span>Total Candidates</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="withContact">-</span>
+                        <span>With Contact</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="activeToday">-</span>
+                        <span>Active Today</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="controls">
+            <div class="controls-row">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search candidates by name, company, or title...">
+                </div>
+                
+                <div class="filter-group">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="New">New</option>
+                        <option value="Todo">Todo</option>
+                        <option value="In progress">In Progress</option>
+                        <option value="Done">Done</option>
+                    </select>
+                    
+                    <select class="filter-select" id="listFilter">
+                        <option value="">All Lists</option>
+                        <option value="A">List A</option>
+                        <option value="B">List B</option>
+                        <option value="C">List C</option>
+                        <option value="D">List D</option>
+                        <option value="E">List E</option>
+                        <option value="F">List F</option>
+                    </select>
+                    
+                    <select class="filter-select" id="contactFilter">
+                        <option value="">All Candidates</option>
+                        <option value="has-contact">Has Contact Info</option>
+                        <option value="no-contact">No Contact Info</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <i class="fas fa-refresh"></i>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Loading candidates...</p>
+        </div>
+
+        <div id="errorState" class="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorMessage">Error loading candidates</span>
+        </div>
+
+        <div id="candidatesContainer" class="candidates-grid" style="display: none;">
+            <!-- Candidates will be loaded here -->
+        </div>
+    </main>
+
+    <!-- API Token Setup Modal -->
+    <div id="tokenModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-key"></i> Airtable API Setup</h2>
+                <p>Please enter your Airtable API token to access the CRM</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="apiTokenInput">Airtable API Token:</label>
+                    <input type="password" id="apiTokenInput" class="token-input" placeholder="pat...">
+                    <small class="help-text">
+                        Find your API token at: 
+                        <a href="https://airtable.com/create/tokens" target="_blank">https://airtable.com/create/tokens</a>
+                    </small>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="saveApiToken()">
+                        <i class="fas fa-save"></i> Save & Continue
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearStoredToken()">
+                        <i class="fas fa-trash"></i> Clear Stored Token
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-header h2 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .modal-header p {
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .token-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: monospace;
+            transition: border-color 0.2s ease;
+        }
+
+        .token-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+
+        .help-text a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        @media (max-width: 768px) {
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <script>
+        // Airtable configuration
+        const AIRTABLE_CONFIG = {
+            baseId: 'appRZz7jIzcyBCPj6',
+            tableName: 'CANDIDATES',
+            apiToken: null // Will be loaded from localStorage
+        };
+
+        let allCandidates = [];
+        let filteredCandidates = [];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            // Check for stored API token
+            const storedToken = localStorage.getItem('lemmikCrmApiToken');
+            
+            if (storedToken) {
+                AIRTABLE_CONFIG.apiToken = storedToken;
+                startApp();
+            } else {
+                showTokenModal();
+            }
+        }
+
+        function startApp() {
+            setupEventListeners();
+            loadCandidates();
+        }
+
+        function showTokenModal() {
+            document.getElementById('tokenModal').style.display = 'flex';
+        }
+
+        function hideTokenModal() {
+            document.getElementById('tokenModal').style.display = 'none';
+        }
+
+        function saveApiToken() {
+            const tokenInput = document.getElementById('apiTokenInput');
+            const token = tokenInput.value.trim();
+
+            if (!token) {
+                alert('Please enter a valid API token');
+                return;
+            }
+
+            if (!token.startsWith('pat') || token.length < 20) {
+                alert('API token should start with "pat" and be longer. Please check your token.');
+                return;
+            }
+
+            // Store token in localStorage
+            localStorage.setItem('lemmikCrmApiToken', token);
+            AIRTABLE_CONFIG.apiToken = token;
+            
+            // Clear input for security
+            tokenInput.value = '';
+            
+            hideTokenModal();
+            startApp();
+        }
+
+        function clearStoredToken() {
+            if (confirm('Are you sure you want to clear the stored API token? You will need to enter it again.')) {
+                localStorage.removeItem('lemmikCrmApiToken');
+                AIRTABLE_CONFIG.apiToken = null;
+                document.getElementById('apiTokenInput').value = '';
+                alert('API token cleared. Please enter a new token.');
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', debounce(filterCandidates, 300));
+            document.getElementById('statusFilter').addEventListener('change', filterCandidates);
+            document.getElementById('listFilter').addEventListener('change', filterCandidates);
+            document.getElementById('contactFilter').addEventListener('change', filterCandidates);
+        }
+
+        async function loadCandidates() {
+            if (!AIRTABLE_CONFIG.apiToken) {
+                showError('API token not configured. Please refresh the page and enter your token.');
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+            
+            try {
+                const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.apiToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                allCandidates = data.records.map(record => ({
+                    id: record.id,
+                    ...record.fields
+                }));
+
+                filteredCandidates = [...allCandidates];
+                updateStats();
+                renderCandidates();
+                showLoading(false);
+
+            } catch (error) {
+                console.error('Error loading candidates:', error);
+                
+                if (error.message.includes('401') || error.message.includes('403')) {
+                    showError('Invalid API token. Please check your token and try again.');
+                    localStorage.removeItem('lemmikCrmApiToken');
+                    setTimeout(() => {
+                        showTokenModal();
+                    }, 2000);
+                } else {
+                    showError('Failed to load candidates. Please check your connection and try again.');
+                }
+                showLoading(false);
+            }
+        }
+
+        function filterCandidates() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const listFilter = document.getElementById('listFilter').value;
+            const contactFilter = document.getElementById('contactFilter').value;
+
+            filteredCandidates = allCandidates.filter(candidate => {
+                // Search filter
+                const searchMatch = !searchTerm || 
+                    (candidate.Name && candidate.Name.toLowerCase().includes(searchTerm)) ||
+                    (candidate['Current Company'] && candidate['Current Company'].toLowerCase().includes(searchTerm)) ||
+                    (candidate.Title && candidate.Title.toLowerCase().includes(searchTerm)) ||
+                    (candidate.Location && candidate.Location.toLowerCase().includes(searchTerm));
+
+                // Status filter
+                const statusMatch = !statusFilter || candidate.Status === statusFilter;
+
+                // List filter
+                const listMatch = !listFilter || candidate.List === listFilter;
+
+                // Contact filter
+                let contactMatch = true;
+                if (contactFilter === 'has-contact') {
+                    contactMatch = hasContactInfo(candidate);
+                } else if (contactFilter === 'no-contact') {
+                    contactMatch = !hasContactInfo(candidate);
+                }
+
+                return searchMatch && statusMatch && listMatch && contactMatch;
+            });
+
+            renderCandidates();
+        }
+
+        function hasContactInfo(candidate) {
+            return !!(candidate['Work Email'] || candidate['Work Phone'] || 
+                     candidate['Personal Email'] || candidate['Personal Phone']);
+        }
+
+        function renderCandidates() {
+            const container = document.getElementById('candidatesContainer');
+            
+            if (filteredCandidates.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--gray-500);">
+                        <i class="fas fa-search fa-3x" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3>No candidates found</h3>
+                        <p>Try adjusting your search criteria</p>
+                    </div>
+                `;
+                container.style.display = 'block';
+                return;
+            }
+
+            const candidateCards = filteredCandidates.map(candidate => createCandidateCard(candidate)).join('');
+            container.innerHTML = candidateCards;
+            container.style.display = 'block';
+        }
+
+        function createCandidateCard(candidate) {
+            const hasContact = hasContactInfo(candidate);
+            const contactClass = hasContact ? 'has-contact' : 'no-contact';
+            
+            // Get list indicator
+            const listClass = candidate.List ? `list-${candidate.List.toLowerCase()}` : 'list-default';
+            const listIndicator = `<span class="list-indicator ${listClass}"></span>`;
+            
+            // Format status
+            const status = candidate.Status || 'Unknown';
+            const statusClass = `status-${status.toLowerCase().replace(' ', '-')}`;
+            
+            // Format contact information
+            const contacts = [];
+            if (candidate['Work Email']) {
+                contacts.push(`<div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:${candidate['Work Email']}">${candidate['Work Email']}</a> <span style="color: var(--gray-500);">(Work)</span></div>`);
+            }
+            if (candidate['Personal Email']) {
+                contacts.push(`<div class="contact-item"><i class="fas fa-envelope"></i><a href="mailto:${candidate['Personal Email']}">${candidate['Personal Email']}</a> <span style="color: var(--gray-500);">(Personal)</span></div>`);
+            }
+            if (candidate['Work Phone']) {
+                contacts.push(`<div class="contact-item"><i class="fas fa-phone"></i><a href="tel:${candidate['Work Phone']}">${candidate['Work Phone']}</a> <span style="color: var(--gray-500);">(Work)</span></div>`);
+            }
+            if (candidate['Personal Phone']) {
+                contacts.push(`<div class="contact-item"><i class="fas fa-mobile-alt"></i><a href="tel:${candidate['Personal Phone']}">${candidate['Personal Phone']}</a> <span style="color: var(--gray-500);">(Personal)</span></div>`);
+            }
+
+            return `
+                <div class="candidate-card ${contactClass}" onclick="openCandidateProfile('${candidate.id}')">
+                    <div class="candidate-header">
+                        <div class="candidate-info">
+                            <div class="candidate-name">
+                                ${listIndicator}${candidate.Name || 'Unknown Name'}
+                            </div>
+                            <div class="candidate-title">${candidate.Title || 'No title specified'}</div>
+                            <div class="candidate-company">${candidate['Current Company'] || 'Company not specified'}</div>
+                        </div>
+                        <div class="status-badge ${statusClass}">${status}</div>
+                    </div>
+                    
+                    <div class="candidate-details">
+                        <div class="detail-group">
+                            <div class="detail-label">Contact Information</div>
+                            <div class="contact-info">
+                                ${contacts.length > 0 ? contacts.join('') : '<div class="contact-item" style="color: var(--gray-500);"><i class="fas fa-exclamation-triangle"></i>No contact information</div>'}
+                            </div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <div class="detail-label">Location & Source</div>
+                            <div class="contact-info">
+                                ${candidate.Location ? `<div class="contact-item"><i class="fas fa-map-marker-alt"></i>${candidate.Location}</div>` : ''}
+                                ${candidate.Source ? `<div class="contact-item"><i class="fas fa-source"></i>${candidate.Source}</div>` : ''}
+                                ${candidate.LinkedIn ? `<div class="contact-item"><i class="fab fa-linkedin"></i><a href="${candidate.LinkedIn}" target="_blank">LinkedIn Profile</a></div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('totalCandidates').textContent = allCandidates.length;
+            
+            const withContact = allCandidates.filter(hasContactInfo).length;
+            document.getElementById('withContact').textContent = withContact;
+            
+            // For now, set active today as candidates with "In progress" status
+            const activeToday = allCandidates.filter(c => c.Status === 'In progress').length;
+            document.getElementById('activeToday').textContent = activeToday;
+        }
+
+        function openCandidateProfile(candidateId) {
+            // TODO: Implement candidate profile view
+            console.log('Opening profile for candidate:', candidateId);
+            alert(`Candidate profile view coming soon! (ID: ${candidateId})`);
+        }
+
+        function refreshData() {
+            loadCandidates();
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingState').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorState').style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>
