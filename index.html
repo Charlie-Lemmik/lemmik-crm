@@ -1289,36 +1289,36 @@
         }
 
         function createJobOrderCard(job) {
-            const statusClass = `status-${(job.Status || 'new').toLowerCase().replace(' ', '-')}`;
-            const priorityClass = `priority-${(job.Priority || 'medium').toLowerCase()}`;
+            const statusClass = `status-${(job.status || 'new').toLowerCase().replace(' ', '-')}`;
+            const priorityClass = `priority-${(job.priority || 'medium').toLowerCase()}`;
             
             return `
                 <div class="job-card ${statusClass}" onclick="openJobOrderInNewTab('${job.id}')">
-                    <div class="job-title">${job['Job Title'] || 'Untitled Position'}</div>
+                    <div class="job-title">${job['Position Title'] || 'Untitled Position'}</div>
                     <div class="job-company">${job.Company || 'Company TBD'}</div>
                     
                     <div class="job-details">
                         <div class="job-detail">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>${job.Location || 'Location TBD'}</span>
+                            <span>${job.location || 'Location TBD'}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-dollar-sign"></i>
-                            <span>${job['Salary Range'] || 'Salary TBD'}</span>
+                            <span>${job.salary_range || 'Salary TBD'}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-clock"></i>
-                            <span>${job.Timeline || 'Timeline TBD'}</span>
+                            <span>${job.timeline || 'Timeline TBD'}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-building"></i>
-                            <span>${job['Client Name'] || 'Client TBD'}</span>
+                            <span>${job.client_name || 'Client TBD'}</span>
                         </div>
                     </div>
                     
                     <div class="job-badges">
-                        <span class="status-badge job-status-${(job.Status || 'new').toLowerCase().replace(' ', '-')}">${job.Status || 'New'}</span>
-                        <span class="priority-badge ${priorityClass}">${job.Priority || 'Medium'}</span>
+                        <span class="status-badge job-status-${(job.status || 'new').toLowerCase().replace(' ', '-')}">${job.status || 'New'}</span>
+                        <span class="priority-badge ${priorityClass}">${job.priority || 'Medium'}</span>
                     </div>
                 </div>
             `;
@@ -1357,12 +1357,12 @@
 
             filteredJobOrders = allJobOrders.filter(job => {
                 const searchMatch = !search || 
-                    (job['Job Title'] && job['Job Title'].toLowerCase().includes(search)) ||
+                    (job['Position Title'] && job['Position Title'].toLowerCase().includes(search)) ||
                     (job.Company && job.Company.toLowerCase().includes(search)) ||
-                    (job['Client Name'] && job['Client Name'].toLowerCase().includes(search));
+                    (job.client_name && job.client_name.toLowerCase().includes(search));
 
-                const statusMatch = !status || job.Status === status;
-                const priorityMatch = !priority || job.Priority === priority;
+                const statusMatch = !status || job.status === status;
+                const priorityMatch = !priority || job.priority === priority;
 
                 return searchMatch && statusMatch && priorityMatch;
             });
@@ -1574,15 +1574,15 @@
         }
 
         function populateJobOrderDetail(job) {
-            document.getElementById('jobDetailTitle').textContent = job['Job Title'] || 'Untitled Position';
+            document.getElementById('jobDetailTitle').textContent = job['Position Title'] || 'Untitled Position';
             document.getElementById('jobDetailSubtitle').textContent = 
-                `${job.Company || 'Company TBD'} • ${job.Location || 'Location TBD'}`;
+                `${job.Company || 'Company TBD'} • ${job.location || 'Location TBD'}`;
 
             // Job Information
             const jobInfoHtml = `
                 <div class="detail-field">
-                    <div class="detail-label">Title:</div>
-                    <div class="detail-value">${job['Job Title'] || 'Not specified'}</div>
+                    <div class="detail-label">Position Title:</div>
+                    <div class="detail-value">${job['Position Title'] || 'Not specified'}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company:</div>
@@ -1590,27 +1590,27 @@
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Location:</div>
-                    <div class="detail-value">${job.Location || 'Not specified'}</div>
+                    <div class="detail-value">${job.location || 'Not specified'}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Salary Range:</div>
-                    <div class="detail-value">${job['Salary Range'] || 'Not specified'}</div>
+                    <div class="detail-value">${job.salary_range || 'Not specified'}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Status:</div>
                     <div class="detail-value">
-                        <span class="status-badge job-status-${(job.Status || 'new').toLowerCase().replace(' ', '-')}">${job.Status || 'New'}</span>
+                        <span class="status-badge job-status-${(job.status || 'new').toLowerCase().replace(' ', '-')}">${job.status || 'New'}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Priority:</div>
                     <div class="detail-value">
-                        <span class="priority-badge priority-${(job.Priority || 'medium').toLowerCase()}">${job.Priority || 'Medium'}</span>
+                        <span class="priority-badge priority-${(job.priority || 'medium').toLowerCase()}">${job.priority || 'Medium'}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Timeline:</div>
-                    <div class="detail-value">${job.Timeline || 'Not specified'}</div>
+                    <div class="detail-value">${job.timeline || 'Not specified'}</div>
                 </div>
             `;
             document.getElementById('jobInfo').innerHTML = jobInfoHtml;
@@ -1619,13 +1619,13 @@
             const clientHtml = `
                 <div class="detail-field">
                     <div class="detail-label">Client Name:</div>
-                    <div class="detail-value">${job['Client Name'] || 'Not specified'}</div>
+                    <div class="detail-value">${job.client_name || 'Not specified'}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Client Email:</div>
                     <div class="detail-value">
-                        ${job['Client Email'] ? 
-                            `<a href="mailto:${job['Client Email']}">${job['Client Email']}</a>` : 
+                        ${job.client_email ? 
+                            `<a href="mailto:${job.client_email}">${job.client_email}</a>` : 
                             'Not provided'}
                     </div>
                 </div>
@@ -1634,11 +1634,11 @@
 
             // Job Description
             document.getElementById('jobDescription').innerHTML = 
-                `<div class="detail-value ${!job['Job Description'] ? 'empty' : ''}" style="white-space: pre-wrap;">${job['Job Description'] || 'No description provided'}</div>`;
+                `<div class="detail-value ${!job.job_description ? 'empty' : ''}" style="white-space: pre-wrap;">${job.job_description || 'No description provided'}</div>`;
 
             // Requirements
             document.getElementById('jobRequirements').innerHTML = 
-                `<div class="detail-value ${!job.Requirements ? 'empty' : ''}" style="white-space: pre-wrap;">${job.Requirements || 'No requirements specified'}</div>`;
+                `<div class="detail-value ${!job.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${job.notes || 'No requirements specified'}</div>`;
         }
 
         // Dashboard Stats
@@ -1648,7 +1648,7 @@
                 c['Work Email'] || c['Work Phone'] || c['Personal Email'] || c['Personal Phone']
             ).length;
             const totalJobs = allJobOrders.length;
-            const activeJobs = allJobOrders.filter(j => j.Status === 'Active').length;
+            const activeJobs = allJobOrders.filter(j => j.status === 'Active').length;
 
             document.getElementById('totalCandidates').textContent = totalCandidates;
             document.getElementById('contactCandidates').textContent = contactCandidates;
