@@ -216,112 +216,127 @@
             color: #ec4899 !important;
         }
 
-        /* Candidate Detail Panel */
-        .detail-panel-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+        /* Candidate Detail Page */
+        .candidates-list {
+            display: block;
         }
 
-        .detail-panel-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .candidates-list.hidden {
+            display: none;
         }
 
-        .detail-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 500px;
-            height: 100vh;
-            background: white;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            overflow-y: auto;
-            z-index: 1001;
+        .candidate-detail-page {
+            display: none;
         }
 
-        .detail-panel.active {
-            transform: translateX(0);
+        .candidate-detail-page.active {
+            display: block;
         }
 
-        .detail-panel-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
+        .detail-header {
             background: var(--gray-50);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 2rem 0;
         }
 
-        .detail-panel-title {
-            font-size: 1.5rem;
+        .detail-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .back-button {
+            background: var(--gray-600);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button:hover {
+            background: var(--gray-700);
+        }
+
+        .detail-name {
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--gray-900);
             margin: 0 0 0.5rem 0;
         }
 
-        .detail-panel-subtitle {
+        .detail-name.zoominfod {
+            color: #ec4899 !important;
+        }
+
+        .detail-subtitle {
+            font-size: 1.25rem;
             color: var(--gray-600);
-            margin: 0;
+            margin: 0 0 1.5rem 0;
         }
 
-        .detail-panel-actions {
+        .detail-actions {
             display: flex;
-            gap: 0.75rem;
-            margin-top: 1rem;
+            gap: 1rem;
         }
 
-        .detail-panel-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
+        .btn-edit {
+            background: var(--construction-orange);
+            color: white;
             border: none;
-            font-size: 1.5rem;
-            color: var(--gray-500);
-            cursor: pointer;
-            padding: 0.5rem;
+            padding: 1rem 2rem;
             border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.2s;
+            font-size: 1rem;
         }
 
-        .detail-panel-close:hover {
-            background: var(--gray-200);
-            color: var(--gray-700);
+        .btn-edit:hover {
+            background: #d97706;
         }
 
-        .detail-panel-content {
-            padding: 1.5rem;
+        .detail-body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .detail-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
         }
 
         .detail-section {
-            margin-bottom: 2rem;
-        }
-
-        .detail-section:last-child {
-            margin-bottom: 0;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
         }
 
         .detail-section-title {
-            font-size: 1.125rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             color: var(--gray-900);
-            margin: 0 0 0.75rem 0;
+            margin: 0 0 1rem 0;
             border-bottom: 2px solid var(--construction-orange);
-            padding-bottom: 0.25rem;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .detail-field {
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         .detail-field:last-child {
@@ -333,10 +348,14 @@
             color: var(--gray-700);
             margin-bottom: 0.25rem;
             display: block;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .detail-field-value {
             color: var(--gray-900);
+            font-size: 1rem;
             word-break: break-word;
         }
 
@@ -348,18 +367,19 @@
         .contact-links a {
             color: var(--construction-orange);
             text-decoration: none;
+            font-weight: 500;
         }
 
         .contact-links a:hover {
             text-decoration: underline;
         }
 
-        .status-badge-detail {
+        .status-badge {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.375rem 1rem;
             border-radius: 1rem;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .status-active {
@@ -392,12 +412,66 @@
             color: var(--gray-600);
         }
 
+        .full-width-section {
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
         .tags-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
+        .tag-item {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.375rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            border: 1px solid var(--gray-300);
+            font-weight: 500;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-item {
+            background: var(--construction-orange);
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .multiline-text {
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .detail-columns {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .detail-name {
+                font-size: 2rem;
+            }
+
+            .detail-subtitle {
+                font-size: 1.125rem;
+            }
+        }
         .tag-item {
             background: var(--gray-100);
             color: var(--gray-700);
@@ -633,7 +707,9 @@
         </div>
     </header>
 
-    <main class="container">
+    <!-- Candidates List Page -->
+    <div class="candidates-list" id="candidatesList">
+        <main class="container">
         <div class="controls">
             <div class="controls-row">
                 <div class="search-box">
@@ -688,6 +764,7 @@
             <!-- Candidates will be loaded here -->
         </div>
     </main>
+    </div>
 
     <!-- API Token Setup Modal -->
     <div id="tokenModal" class="modal" style="display: none;">
@@ -828,6 +905,62 @@
         }
     </style>
 
+    <!-- Candidate Detail Page -->
+    <div class="candidate-detail-page" id="candidateDetailPage">
+        <div class="detail-header">
+            <div class="detail-header-content">
+                <button class="back-button" onclick="goBackToCandidates()">
+                    ← Back to Candidates
+                </button>
+                <h1 class="detail-name" id="detailPageName">Loading...</h1>
+                <p class="detail-subtitle" id="detailPageSubtitle">Loading...</p>
+                <div class="detail-actions">
+                    <button class="btn-edit" onclick="editCandidate()">✏️ Edit Candidate</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-body">
+            <div class="detail-columns">
+                <!-- Contact Information -->
+                <div class="detail-section">
+                    <h2 class="detail-section-title">📞 Contact Information</h2>
+                    <div id="contactInformation">Loading...</div>
+                </div>
+                
+                <!-- Basic Information -->
+                <div class="detail-section">
+                    <h2 class="detail-section-title">📋 Basic Information</h2>
+                    <div id="basicInformation">Loading...</div>
+                </div>
+            </div>
+            
+            <!-- Professional Details -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">💼 Professional Details</h2>
+                <div id="professionalDetails">Loading...</div>
+            </div>
+            
+            <!-- Skills -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">🔧 Skills</h2>
+                <div id="skillsSection">Loading...</div>
+            </div>
+            
+            <!-- Projects -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">🏗️ Projects</h2>
+                <div id="projectsSection">Loading...</div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="full-width-section">
+                <h2 class="detail-section-title">📝 Additional Information</h2>
+                <div id="additionalInformation">Loading...</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Airtable configuration
         const AIRTABLE_CONFIG = {
@@ -842,6 +975,7 @@
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            initializeRouting();
         });
 
         function initializeApp() {
@@ -1221,165 +1355,221 @@
                 timeout = setTimeout(later, wait);
             };
         }
-        // Candidate Detail Panel Functions
-        function openCandidateProfile(candidateId) {
-            const candidate = allCandidates.find(c => c.id === candidateId);
-            if (!candidate) return;
+        // URL Routing and Full-Page Detail Functions
+        let currentCandidate = null;
+        
+        function initializeRouting() {
+            // Handle initial route
+            handleRoute();
             
-            showCandidateDetail(candidate);
+            // Handle browser back/forward
+            window.addEventListener('popstate', handleRoute);
         }
         
-        function showCandidateDetail(candidate) {
-            // Update header
-            document.getElementById('detailName').textContent = candidate.Name || 'Unknown Name';
-            document.getElementById('detailTitle').textContent = 
+        function handleRoute() {
+            const hash = window.location.hash;
+            
+            if (hash.startsWith('#candidate/')) {
+                const candidateId = hash.replace('#candidate/', '');
+                const candidate = allCandidates.find(c => c.id === candidateId);
+                
+                if (candidate) {
+                    showCandidateDetailPage(candidate);
+                } else {
+                    // Candidate not found, go back to list
+                    goBackToCandidates();
+                }
+            } else {
+                // Show candidates list
+                showCandidatesList();
+            }
+        }
+        
+        function showCandidatesList() {
+            document.getElementById('candidatesList').classList.remove('hidden');
+            document.getElementById('candidateDetailPage').classList.remove('active');
+            currentCandidate = null;
+        }
+        
+        function showCandidateDetailPage(candidate) {
+            currentCandidate = candidate;
+            
+            // Hide candidates list
+            document.getElementById('candidatesList').classList.add('hidden');
+            
+            // Show detail page
+            document.getElementById('candidateDetailPage').classList.add('active');
+            
+            // Populate detail page
+            populateDetailPage(candidate);
+        }
+        
+        function openCandidateProfile(candidateId) {
+            // Navigate to candidate page
+            window.location.hash = `#candidate/${candidateId}`;
+        }
+        
+        function populateDetailPage(candidate) {
+            // Update header with ZoomInfoD styling
+            const nameElement = document.getElementById('detailPageName');
+            nameElement.textContent = candidate.Name || 'Unknown Name';
+            
+            // Apply ZoomInfoD styling if applicable
+            if (candidate.Source === 'ZoomInfoD') {
+                nameElement.classList.add('zoominfod');
+            } else {
+                nameElement.classList.remove('zoominfod');
+            }
+            
+            document.getElementById('detailPageSubtitle').textContent = 
                 `${candidate.Title || 'No title'} at ${candidate['Current Company'] || 'No company'}`;
             
-            // Build detail content
-            const content = buildDetailContent(candidate);
-            document.getElementById('detailContent').innerHTML = content;
-            
-            // Show panel
-            document.getElementById('detailPanelOverlay').classList.add('active');
-            document.getElementById('detailPanel').classList.add('active');
+            // Populate sections
+            populateContactInformation(candidate);
+            populateBasicInformation(candidate);
+            populateProfessionalDetails(candidate);
+            populateSkillsSection(candidate);
+            populateProjectsSection(candidate);
+            populateAdditionalInformation(candidate);
         }
         
-        function buildDetailContent(candidate) {
-            const statusClass = getStatusClass(candidate.Status);
-            
-            return `
-                <!-- Basic Information -->
-                <div class="detail-section">
-                    <h3 class="detail-section-title">📋 Basic Information</h3>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Full Name:</span>
-                        <div class="detail-field-value">${candidate.Name || 'Not specified'}</div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Location:</span>
-                        <div class="detail-field-value ${!candidate.Location ? 'empty' : ''}">${candidate.Location || 'Not specified'}</div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Status:</span>
-                        <div class="detail-field-value">
-                            <span class="status-badge-detail ${statusClass}">${candidate.Status || 'Unknown'}</span>
-                        </div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Source:</span>
-                        <div class="detail-field-value">${candidate.Source || 'Not specified'}</div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">List:</span>
-                        <div class="detail-field-value ${!candidate.List ? 'empty' : ''}">${candidate.List || 'Not assigned'}</div>
+        function populateContactInformation(candidate) {
+            const contactHtml = `
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Work Email:</span>
+                    <div class="detail-field-value">
+                        ${candidate['Work Email'] ? 
+                            `<a href="mailto:${candidate['Work Email']}">${candidate['Work Email']}</a>` : 
+                            '<span class="empty">Not provided</span>'}
                     </div>
                 </div>
-
-                <!-- Contact Information -->
-                <div class="detail-section">
-                    <h3 class="detail-section-title">📞 Contact Information</h3>
-                    <div class="contact-links">
-                        <div class="detail-field">
-                            <span class="detail-field-label">Work Email:</span>
-                            <div class="detail-field-value">
-                                ${candidate['Work Email'] ? 
-                                    `<a href="mailto:${candidate['Work Email']}">${candidate['Work Email']}</a>` : 
-                                    '<span class="empty">Not provided</span>'}
-                            </div>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-field-label">Work Phone:</span>
-                            <div class="detail-field-value">
-                                ${candidate['Work Phone'] ? 
-                                    `<a href="tel:${candidate['Work Phone']}">${candidate['Work Phone']}</a>` : 
-                                    '<span class="empty">Not provided</span>'}
-                            </div>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-field-label">Personal Email:</span>
-                            <div class="detail-field-value">
-                                ${candidate['Personal Email'] ? 
-                                    `<a href="mailto:${candidate['Personal Email']}">${candidate['Personal Email']}</a>` : 
-                                    '<span class="empty">Not provided</span>'}
-                            </div>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-field-label">Personal Phone:</span>
-                            <div class="detail-field-value">
-                                ${candidate['Personal Phone'] ? 
-                                    `<a href="tel:${candidate['Personal Phone']}">${candidate['Personal Phone']}</a>` : 
-                                    '<span class="empty">Not provided</span>'}
-                            </div>
-                        </div>
-                        <div class="detail-field">
-                            <span class="detail-field-label">LinkedIn:</span>
-                            <div class="detail-field-value">
-                                ${candidate.LinkedIn ? 
-                                    `<a href="${candidate.LinkedIn}" target="_blank">${candidate.LinkedIn}</a>` : 
-                                    '<span class="empty">Not provided</span>'}
-                            </div>
-                        </div>
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Work Phone:</span>
+                    <div class="detail-field-value">
+                        ${candidate['Work Phone'] ? 
+                            `<a href="tel:${candidate['Work Phone']}">${candidate['Work Phone']}</a>` : 
+                            '<span class="empty">Not provided</span>'}
                     </div>
                 </div>
-
-                <!-- Professional Details -->
-                <div class="detail-section">
-                    <h3 class="detail-section-title">💼 Professional Details</h3>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Projects:</span>
-                        <div class="detail-field-value ${!candidate.Projects ? 'empty' : ''}">${
-                            candidate.Projects ? 
-                                candidate.Projects.replace(/\\n/g, '<br>') : 
-                                'Not specified'
-                        }</div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Skills:</span>
-                        <div class="detail-field-value">
-                            ${candidate.Skills && candidate.Skills.length > 0 ? 
-                                `<div class="tags-container">
-                                    ${candidate.Skills.map(skill => `<span class="tag-item">${skill}</span>`).join('')}
-                                </div>` : 
-                                '<span class="empty">Not specified</span>'}
-                        </div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Salary:</span>
-                        <div class="detail-field-value ${!candidate.Salary ? 'empty' : ''}">${
-                            candidate.Salary ? 
-                                `$${candidate.Salary.toLocaleString()}` : 
-                                'Not specified'
-                        }</div>
-                    </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Quality Score:</span>
-                        <div class="detail-field-value ${!candidate['Quality Score'] ? 'empty' : ''}">${candidate['Quality Score'] || 'Not rated'}</div>
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Personal Email:</span>
+                    <div class="detail-field-value">
+                        ${candidate['Personal Email'] ? 
+                            `<a href="mailto:${candidate['Personal Email']}">${candidate['Personal Email']}</a>` : 
+                            '<span class="empty">Not provided</span>'}
                     </div>
                 </div>
-
-                <!-- Additional Information -->
-                <div class="detail-section">
-                    <h3 class="detail-section-title">📝 Additional Information</h3>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Motivation:</span>
-                        <div class="detail-field-value ${!candidate.Motivation ? 'empty' : ''}">${
-                            candidate.Motivation ? 
-                                candidate.Motivation.replace(/\\n/g, '<br>') : 
-                                'Not specified'
-                        }</div>
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">Personal Phone:</span>
+                    <div class="detail-field-value">
+                        ${candidate['Personal Phone'] ? 
+                            `<a href="tel:${candidate['Personal Phone']}">${candidate['Personal Phone']}</a>` : 
+                            '<span class="empty">Not provided</span>'}
                     </div>
-                    <div class="detail-field">
-                        <span class="detail-field-label">Tags:</span>
-                        <div class="detail-field-value">
-                            ${candidate.Tags && candidate.Tags.length > 0 ? 
-                                `<div class="tags-container">
-                                    ${candidate.Tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
-                                </div>` : 
-                                '<span class="empty">No tags assigned</span>'}
-                        </div>
+                </div>
+                <div class="detail-field contact-links">
+                    <span class="detail-field-label">LinkedIn:</span>
+                    <div class="detail-field-value">
+                        ${candidate.LinkedIn ? 
+                            `<a href="${candidate.LinkedIn}" target="_blank">${candidate.LinkedIn}</a>` : 
+                            '<span class="empty">Not provided</span>'}
                     </div>
                 </div>
             `;
+            document.getElementById('contactInformation').innerHTML = contactHtml;
+        }
+        
+        function populateBasicInformation(candidate) {
+            const statusClass = getStatusClass(candidate.Status);
+            const basicHtml = `
+                <div class="detail-field">
+                    <span class="detail-field-label">Location:</span>
+                    <div class="detail-field-value ${!candidate.Location ? 'empty' : ''}">${candidate.Location || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Status:</span>
+                    <div class="detail-field-value">
+                        <span class="status-badge ${statusClass}">${candidate.Status || 'Unknown'}</span>
+                    </div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Source:</span>
+                    <div class="detail-field-value">${candidate.Source || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">List:</span>
+                    <div class="detail-field-value ${!candidate.List ? 'empty' : ''}">${candidate.List || 'Not assigned'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Salary:</span>
+                    <div class="detail-field-value ${!candidate.Salary ? 'empty' : ''}">${
+                        candidate.Salary ? 
+                            `$${candidate.Salary.toLocaleString()}` : 
+                            'Not specified'
+                    }</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Quality Score:</span>
+                    <div class="detail-field-value ${!candidate['Quality Score'] ? 'empty' : ''}">${candidate['Quality Score'] || 'Not rated'}</div>
+                </div>
+            `;
+            document.getElementById('basicInformation').innerHTML = basicHtml;
+        }
+        
+        function populateProfessionalDetails(candidate) {
+            const professionalHtml = `
+                <div class="detail-field">
+                    <span class="detail-field-label">Company:</span>
+                    <div class="detail-field-value ${!candidate['Current Company'] ? 'empty' : ''}">${candidate['Current Company'] || 'Not specified'}</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Title:</span>
+                    <div class="detail-field-value ${!candidate.Title ? 'empty' : ''}">${candidate.Title || 'Not specified'}</div>
+                </div>
+            `;
+            document.getElementById('professionalDetails').innerHTML = professionalHtml;
+        }
+        
+        function populateSkillsSection(candidate) {
+            const skillsHtml = candidate.Skills && candidate.Skills.length > 0 ? 
+                `<div class="skills-container">
+                    ${candidate.Skills.map(skill => `<span class="skill-item">${skill}</span>`).join('')}
+                </div>` : 
+                '<div class="detail-field-value empty">No skills specified</div>';
+            document.getElementById('skillsSection').innerHTML = skillsHtml;
+        }
+        
+        function populateProjectsSection(candidate) {
+            const projectsHtml = candidate.Projects ? 
+                `<div class="detail-field-value multiline-text">${candidate.Projects}</div>` :
+                '<div class="detail-field-value empty">No projects specified</div>';
+            document.getElementById('projectsSection').innerHTML = projectsHtml;
+        }
+        
+        function populateAdditionalInformation(candidate) {
+            const additionalHtml = `
+                <div class="detail-field">
+                    <span class="detail-field-label">Motivation:</span>
+                    <div class="detail-field-value ${!candidate.Motivation ? 'empty' : ''} multiline-text">${
+                        candidate.Motivation || 'Not specified'
+                    }</div>
+                </div>
+                <div class="detail-field">
+                    <span class="detail-field-label">Tags:</span>
+                    <div class="detail-field-value">
+                        ${candidate.Tags && candidate.Tags.length > 0 ? 
+                            `<div class="tags-container">
+                                ${candidate.Tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
+                            </div>` : 
+                            '<span class="empty">No tags assigned</span>'}
+                    </div>
+                </div>
+            `;
+            document.getElementById('additionalInformation').innerHTML = additionalHtml;
+        }
+        
+        function goBackToCandidates() {
+            window.location.hash = '';
         }
         
         function getStatusClass(status) {
@@ -1398,41 +1588,20 @@
             return 'status-default';
         }
         
-        function closeCandidateDetail() {
-            document.getElementById('detailPanelOverlay').classList.remove('active');
-            document.getElementById('detailPanel').classList.remove('active');
-        }
-        
         function editCandidate() {
             alert('Edit functionality will be implemented next!');
         }
         
-        // Close panel on Escape key
+        // Close detail page on Escape key
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCandidateDetail();
+            if (e.key === 'Escape' && currentCandidate) {
+                goBackToCandidates();
             }
         });
 
     </script>
 
-    <!-- Candidate Detail Panel -->
-    <div class="detail-panel-overlay" id="detailPanelOverlay" onclick="closeCandidateDetail()">
-        <div class="detail-panel" id="detailPanel" onclick="event.stopPropagation()">
-            <div class="detail-panel-header">
-                <button class="detail-panel-close" onclick="closeCandidateDetail()">×</button>
-                <div class="detail-panel-title" id="detailName">Loading...</div>
-                <div class="detail-panel-subtitle" id="detailTitle">Loading...</div>
-                <div class="detail-panel-actions">
-                    <button class="btn-edit" onclick="editCandidate()">✏️ Edit</button>
-                    <button class="btn-secondary" onclick="closeCandidateDetail()">Close</button>
-                </div>
-            </div>
-            <div class="detail-panel-content" id="detailContent">
-                Loading candidate details...
-            </div>
-        </div>
-    </div>
+
 
 </body>
 </html>
