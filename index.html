@@ -586,6 +586,119 @@
             background: var(--gray-700);
         }
 
+        /* Employee Directory */
+        .employees-section {
+            margin-top: 2rem;
+        }
+
+        .employees-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .employee-count {
+            background: var(--primary-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--secondary-blue);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .employee-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .employee-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: var(--gray-900);
+        }
+
+        .employee-name.zoominfo {
+            color: #ec4899;
+        }
+
+        .employee-title {
+            color: var(--gray-600);
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+
+        .employee-contacts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .employee-contact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .employee-contact a {
+            color: var(--primary-orange);
+            text-decoration: none;
+        }
+
+        .employee-contact a:hover {
+            text-decoration: underline;
+        }
+
+        .employee-linkedin {
+            margin-top: 0.5rem;
+        }
+
+        .employee-linkedin a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #0077b5;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .employee-linkedin a:hover {
+            text-decoration: underline;
+        }
+
+        .employees-loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+        }
+
+        .employees-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+            font-style: italic;
+        }
+
         /* Detail Page */
         .detail-page {
             max-width: 1200px;
@@ -1172,6 +1285,24 @@
                     <h3>👤 Contact Information</h3>
                     <div id="companyContact"></div>
                 </div>
+                
+                <div class="detail-section employees-section">
+                    <div class="employees-header">
+                        <h3>👥 Employees</h3>
+                        <div class="employee-count" id="employeeCount">0 employees</div>
+                    </div>
+                    
+                    <div class="employees-loading" id="employeesLoading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading employees...</span>
+                    </div>
+                    
+                    <div class="employees-empty" id="employeesEmpty" style="display: none;">
+                        No employees found for this company
+                    </div>
+                    
+                    <div class="employees-grid" id="employeesGrid"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1260,6 +1391,7 @@
         let currentCandidate = null;
         let currentJobOrder = null;
         let currentCompany = null;
+        let currentCompanyEmployees = [];
         let isEditingCandidate = false;
         let isEditingCompany = false;
         let originalCandidateData = null;
@@ -2078,6 +2210,7 @@
 
             populateCompanyInfo(company);
             populateCompanyContact(company);
+            loadCompanyEmployees(company);
         }
 
         function populateCompanyInfo(company) {
@@ -2299,6 +2432,134 @@
         function hideCreateCompanyMessages() {
             document.getElementById('createCompanySuccess').style.display = 'none';
             document.getElementById('createCompanyError').style.display = 'none';
+        }
+
+        // Company Employees
+        async function loadCompanyEmployees(company) {
+            const companyName = company.company || 'Unknown Company';
+            
+            document.getElementById('employeesLoading').style.display = 'block';
+            document.getElementById('employeesEmpty').style.display = 'none';
+            document.getElementById('employeesGrid').innerHTML = '';
+            document.getElementById('employeeCount').textContent = '0 employees';
+            
+            try {
+                // Use filterByFormula to find employees at this company
+                const formula = `{Current Company} = "${companyName.replace(/"/g, '""')}"`;
+                
+                let allEmployees = [];
+                let offset = null;
+
+                do {
+                    let url = `https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES?filterByFormula=${encodeURIComponent(formula)}`;
+                    if (offset) {
+                        url += `&offset=${offset}`;
+                    }
+
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${CONFIG.apiToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    allEmployees.push(...data.records.map(record => ({
+                        id: record.id,
+                        ...record.fields
+                    })));
+
+                    offset = data.offset;
+                } while (offset);
+
+                currentCompanyEmployees = allEmployees;
+                renderCompanyEmployees(allEmployees);
+                document.getElementById('employeesLoading').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error loading company employees:', error);
+                document.getElementById('employeesLoading').style.display = 'none';
+                document.getElementById('employeesEmpty').style.display = 'block';
+                document.getElementById('employeeCount').textContent = '0 employees';
+            }
+        }
+
+        function renderCompanyEmployees(employees) {
+            const grid = document.getElementById('employeesGrid');
+            const countElement = document.getElementById('employeeCount');
+            
+            countElement.textContent = `${employees.length} employee${employees.length !== 1 ? 's' : ''}`;
+            
+            if (employees.length === 0) {
+                document.getElementById('employeesEmpty').style.display = 'block';
+                grid.innerHTML = '';
+                return;
+            }
+
+            document.getElementById('employeesEmpty').style.display = 'none';
+            
+            const cards = employees.map(employee => createEmployeeCard(employee)).join('');
+            grid.innerHTML = cards;
+        }
+
+        function createEmployeeCard(employee) {
+            const isZoomInfo = employee.Source === 'ZoomInfoD' || employee.ZoomInfoD === 'Yes';
+            const nameClass = isZoomInfo ? 'employee-name zoominfo' : 'employee-name';
+            
+            return `
+                <div class="employee-card" onclick="openCandidateInNewTab('${employee.id}')">
+                    <div class="${nameClass}">${employee.Name || 'Unknown Name'}</div>
+                    <div class="employee-title">${employee['Current Title'] || 'No title specified'}</div>
+                    
+                    <div class="employee-contacts">
+                        <div class="employee-contact">
+                            <i class="fas fa-briefcase"></i>
+                            ${employee['Work Email'] ? 
+                                `<a href="mailto:${employee['Work Email']}">${employee['Work Email']}</a>` : 
+                                '<span>No work email</span>'}
+                        </div>
+                        <div class="employee-contact">
+                            <i class="fas fa-phone"></i>
+                            ${employee['Work Phone'] ? 
+                                `<a href="tel:${employee['Work Phone']}">${employee['Work Phone']}</a>` : 
+                                '<span>No work phone</span>'}
+                        </div>
+                        <div class="employee-contact">
+                            <i class="fas fa-envelope"></i>
+                            ${employee['Personal Email'] ? 
+                                `<a href="mailto:${employee['Personal Email']}">${employee['Personal Email']}</a>` : 
+                                '<span>No personal email</span>'}
+                        </div>
+                        <div class="employee-contact">
+                            <i class="fas fa-mobile-alt"></i>
+                            ${employee['Personal Phone'] ? 
+                                `<a href="tel:${employee['Personal Phone']}">${employee['Personal Phone']}</a>` : 
+                                '<span>No personal phone</span>'}
+                        </div>
+                    </div>
+                    
+                    ${employee.LinkedIn ? 
+                        `<div class="employee-linkedin">
+                            <a href="${employee.LinkedIn}" target="_blank">
+                                <i class="fab fa-linkedin"></i>
+                                View LinkedIn Profile
+                            </a>
+                        </div>` : ''}
+                </div>
+            `;
+        }
+
+        function openCandidateInNewTab(id) {
+            const candidate = allCandidates.find(c => c.id === id) || 
+                             currentCompanyEmployees.find(c => c.id === id);
+            if (candidate) {
+                sessionStorage.setItem('selectedCandidate', JSON.stringify(candidate));
+                window.open(`${window.location.origin}${window.location.pathname}#candidate/${id}`, '_blank');
+            }
         }
 
         // Candidate Editing
