@@ -1198,6 +1198,126 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Activity Log */
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .activity-header h3 { margin: 0; }
+        .activity-header .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        .activity-form {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+        .activity-form .form-row-full { grid-column: 1 / -1; }
+        .activity-form label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+        .activity-form input,
+        .activity-form select,
+        .activity-form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .activity-form textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .activity-form .form-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .activity-form .form-actions .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        .activity-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-left: 3px solid var(--gray-300);
+            border-radius: 0.5rem;
+            padding: 0.875rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .activity-card .activity-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+        }
+        .activity-type-badge {
+            padding: 0.125rem 0.625rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        .activity-logger {
+            margin-left: auto;
+            color: var(--gray-500);
+        }
+        .activity-subject {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+        .activity-body {
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            max-height: 4.5em;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .activity-body.expanded {
+            max-height: none;
+        }
+        .activity-body:not(.expanded)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1.5em;
+            background: linear-gradient(transparent, white);
+            pointer-events: none;
+        }
+        .activity-empty {
+            color: var(--gray-500);
+            text-align: center;
+            padding: 1.5rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -1469,6 +1589,17 @@
             <div class="full-width-section">
                 <h3>📝 Additional Information</h3>
                 <div id="candidateAdditional"></div>
+            </div>
+
+            <div class="full-width-section">
+                <div class="activity-header">
+                    <h3>📒 Activity Log</h3>
+                    <button class="btn" id="logActivityBtn" onclick="showLogActivityForm()">+ Log Activity</button>
+                </div>
+                <div id="activityLogForm" class="activity-form" style="display: none;"></div>
+                <div id="activityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
+                <div id="activityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="activityLogTimeline"></div>
             </div>
         </div>
     </div>
@@ -2618,6 +2749,7 @@
             populateCandidateProfessional(candidate);
             populateCandidateSkills(candidate);
             populateCandidateAdditional(candidate);
+            loadCandidateActivities(candidate.id);
         }
 
         function populateCandidateContact(candidate) {
@@ -4303,6 +4435,224 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        // =================== Activity Log ===================
+        const ACTIVITY_TYPE_META = {
+            Call:              { icon: '📞', color: '#3b82f6' },
+            Email:             { icon: '✉️', color: '#8b5cf6' },
+            SMS:               { icon: '💬', color: '#06b6d4' },
+            Meeting:           { icon: '🤝', color: '#f59e0b' },
+            Note:              { icon: '📝', color: '#6b7280' },
+            LinkedIn:          { icon: '🔗', color: '#0a66c2' },
+            Submission:        { icon: '📤', color: '#10b981' },
+            Interview:         { icon: '🎤', color: '#ef4444' },
+            Offer:             { icon: '🎯', color: '#fb923c' },
+            'Reference Check': { icon: '🔍', color: '#a855f7' },
+            Placement:         { icon: '🏆', color: '#059669' }
+        };
+        const ACTIVITY_TYPES_NO_DIRECTION = ['Note', 'Meeting'];
+        const ACTIVITY_TYPES = Object.keys(ACTIVITY_TYPE_META);
+        const ACTIVITY_DIRECTIONS = ['Outbound', 'Inbound', 'N/A'];
+
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function loadCandidateActivities(candidateId) {
+            const timeline = document.getElementById('activityLogTimeline');
+            const loading = document.getElementById('activityLogLoading');
+            const empty = document.getElementById('activityLogEmpty');
+
+            timeline.innerHTML = '';
+            empty.style.display = 'none';
+            loading.style.display = 'block';
+            hideLogActivityForm();
+
+            try {
+                const candResp = await fetch(
+                    `https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES/${candidateId}`,
+                    { headers: { 'Authorization': `Bearer ${CONFIG.apiToken}` } }
+                );
+                if (!candResp.ok) throw new Error(`HTTP ${candResp.status}`);
+                const candData = await candResp.json();
+                const commIds = candData.fields.COMMUNICATIONS || [];
+
+                if (commIds.length === 0) {
+                    loading.style.display = 'none';
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                const formula = `OR(${commIds.map(id => `RECORD_ID()='${id}'`).join(',')})`;
+                const url = `https://api.airtable.com/v0/${CONFIG.baseId}/COMMUNICATIONS`
+                    + `?filterByFormula=${encodeURIComponent(formula)}`
+                    + `&sort[0][field]=Date&sort[0][direction]=desc`;
+                const commResp = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${CONFIG.apiToken}` }
+                });
+                if (!commResp.ok) throw new Error(`HTTP ${commResp.status}`);
+                const commData = await commResp.json();
+
+                loading.style.display = 'none';
+                const activities = commData.records.map(r => ({ id: r.id, ...r.fields }));
+                if (activities.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    renderActivityTimeline(activities);
+                }
+            } catch (err) {
+                console.error('Error loading activities:', err);
+                loading.style.display = 'none';
+                timeline.innerHTML = `<div class="error" style="display:block;">Error loading activity: ${escapeHtml(err.message)}</div>`;
+            }
+        }
+
+        function renderActivityTimeline(activities) {
+            const timeline = document.getElementById('activityLogTimeline');
+            timeline.innerHTML = activities.map(a => {
+                const meta = ACTIVITY_TYPE_META[a.Type] || { icon: '•', color: '#6b7280' };
+                const dateStr = a.Date ? new Date(a.Date).toLocaleString() : 'No date';
+                const showDirection = a.Direction && a.Direction !== 'N/A'
+                    && !ACTIVITY_TYPES_NO_DIRECTION.includes(a.Type);
+                const directionStr = showDirection ? ` · ${escapeHtml(a.Direction)}` : '';
+                return `
+                    <div class="activity-card" style="border-left-color:${meta.color};">
+                        <div class="activity-meta">
+                            <span class="activity-type-badge" style="background:${meta.color}1a;color:${meta.color};border:1px solid ${meta.color}55;">${meta.icon} ${escapeHtml(a.Type || 'Unknown')}</span>
+                            <span>${escapeHtml(dateStr)}${directionStr}</span>
+                            <span class="activity-logger">${escapeHtml(a['Logged By'] || '')}</span>
+                        </div>
+                        ${a.Subject ? `<div class="activity-subject">${escapeHtml(a.Subject)}</div>` : ''}
+                        ${a.Body ? `<div class="activity-body" onclick="this.classList.toggle('expanded')">${escapeHtml(a.Body)}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showLogActivityForm() {
+            const form = document.getElementById('activityLogForm');
+            const btn = document.getElementById('logActivityBtn');
+            const lastLoggedBy = localStorage.getItem('lemmikLastLoggedBy') || '';
+            const now = new Date();
+            const tzOffset = now.getTimezoneOffset() * 60000;
+            const nowLocal = new Date(now - tzOffset).toISOString().slice(0, 16);
+
+            form.innerHTML = `
+                <div>
+                    <label for="activityTypeInput">Type *</label>
+                    <select id="activityTypeInput" onchange="updateActivityDirectionVisibility()">
+                        ${ACTIVITY_TYPES.map(t => `<option value="${t}">${ACTIVITY_TYPE_META[t].icon} ${t}</option>`).join('')}
+                    </select>
+                </div>
+                <div id="activityDirectionWrapper">
+                    <label for="activityDirectionInput">Direction</label>
+                    <select id="activityDirectionInput">
+                        ${ACTIVITY_DIRECTIONS.map(d => `<option value="${d}"${d === 'Outbound' ? ' selected' : ''}>${d}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label for="activityDateInput">Date</label>
+                    <input id="activityDateInput" type="datetime-local" value="${nowLocal}">
+                </div>
+                <div>
+                    <label for="activityLoggedByInput">Logged By *</label>
+                    <input id="activityLoggedByInput" type="text" placeholder="Your name" value="${escapeHtml(lastLoggedBy)}">
+                </div>
+                <div class="form-row-full">
+                    <label for="activitySubjectInput">Subject</label>
+                    <input id="activitySubjectInput" type="text" placeholder="Optional one-line summary">
+                </div>
+                <div class="form-row-full">
+                    <label for="activityBodyInput">Body *</label>
+                    <textarea id="activityBodyInput" placeholder="What happened? Notes, outcome, next steps…"></textarea>
+                </div>
+                <div class="form-row-full form-actions">
+                    <button class="btn btn-secondary" onclick="hideLogActivityForm()">Cancel</button>
+                    <button class="btn" id="activitySubmitBtn" onclick="submitActivity()">💾 Save</button>
+                </div>
+            `;
+            form.style.display = 'grid';
+            btn.style.display = 'none';
+            updateActivityDirectionVisibility();
+            document.getElementById('activityBodyInput').focus();
+        }
+
+        function hideLogActivityForm() {
+            const form = document.getElementById('activityLogForm');
+            const btn = document.getElementById('logActivityBtn');
+            form.innerHTML = '';
+            form.style.display = 'none';
+            btn.style.display = '';
+        }
+
+        function updateActivityDirectionVisibility() {
+            const type = document.getElementById('activityTypeInput').value;
+            const wrapper = document.getElementById('activityDirectionWrapper');
+            wrapper.style.display = ACTIVITY_TYPES_NO_DIRECTION.includes(type) ? 'none' : '';
+        }
+
+        async function submitActivity() {
+            const type = document.getElementById('activityTypeInput').value;
+            const directionEl = document.getElementById('activityDirectionInput');
+            const direction = directionEl ? directionEl.value : null;
+            const subject = document.getElementById('activitySubjectInput').value.trim();
+            const body = document.getElementById('activityBodyInput').value.trim();
+            const dateLocal = document.getElementById('activityDateInput').value;
+            const loggedBy = document.getElementById('activityLoggedByInput').value.trim();
+            const submitBtn = document.getElementById('activitySubmitBtn');
+
+            if (!type || !body || !loggedBy) {
+                alert('Type, Body, and Logged By are required.');
+                return;
+            }
+            if (!currentCandidate) {
+                alert('No candidate selected.');
+                return;
+            }
+
+            const fields = {
+                Type: type,
+                Body: body,
+                Date: dateLocal ? new Date(dateLocal).toISOString() : new Date().toISOString(),
+                'Logged By': loggedBy,
+                Candidate: [currentCandidate.id]
+            };
+            if (subject) fields.Subject = subject;
+            if (!ACTIVITY_TYPES_NO_DIRECTION.includes(type)) fields.Direction = direction;
+
+            localStorage.setItem('lemmikLastLoggedBy', loggedBy);
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving…';
+
+            try {
+                const resp = await fetch(`https://api.airtable.com/v0/${CONFIG.baseId}/COMMUNICATIONS`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${CONFIG.apiToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fields })
+                });
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({}));
+                    throw new Error(err.error?.message || `HTTP ${resp.status}`);
+                }
+                hideLogActivityForm();
+                await loadCandidateActivities(currentCandidate.id);
+            } catch (e) {
+                console.error('Error saving activity:', e);
+                alert('Failed to save activity: ' + e.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Save';
+            }
         }
     </script>
 </body>
