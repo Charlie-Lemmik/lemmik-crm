@@ -1484,9 +1484,17 @@
                     <h1 class="detail-name" id="jobDetailTitle">Loading...</h1>
                     <p class="detail-subtitle" id="jobDetailSubtitle">Loading...</p>
                     <div class="detail-actions">
-                        <button class="btn">✏️ Edit</button>
+                        <button class="btn" id="editJobBtn" onclick="toggleEditJobOrder()">✏️ Edit</button>
+                        <button class="btn btn-create" id="saveJobBtn" onclick="saveJobOrder()" style="display: none;">💾 Save</button>
+                        <button class="btn btn-cancel" id="cancelJobBtn" onclick="cancelEditJobOrder()" style="display: none;">❌ Cancel</button>
                     </div>
                 </div>
+            </div>
+            
+            <div class="success" id="jobSaveMessage" style="display: none;">✅ Job order updated successfully!</div>
+            <div class="error" id="jobSaveError" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="jobSaveErrorMessage"></span>
             </div>
             
             <div class="detail-content">
@@ -1862,9 +1870,11 @@
         let currentCompanyEmployees = [];
         let isEditingCandidate = false;
         let isEditingCompany = false;
+        let isEditingJobOrder = false;
         let isEditingPipeline = false;
         let originalCandidateData = null;
         let originalCompanyData = null;
+        let originalJobOrderData = null;
         let originalPipelineData = null;
 
         // App Initialization
@@ -3851,6 +3861,180 @@
         function hideCreateJobOrderMessages() {
             document.getElementById('createJobOrderSuccess').style.display = 'none';
             document.getElementById('createJobOrderError').style.display = 'none';
+        }
+
+        // Job Order Editing Functions  
+        function toggleEditJobOrder() {
+            if (!isEditingJobOrder) {
+                startEditJobOrder();
+            }
+        }
+
+        function startEditJobOrder() {
+            originalJobOrderData = JSON.parse(JSON.stringify(currentJobOrder));
+            isEditingJobOrder = true;
+            
+            document.getElementById('editJobBtn').style.display = 'none';
+            document.getElementById('saveJobBtn').style.display = 'inline-block';
+            document.getElementById('cancelJobBtn').style.display = 'inline-block';
+            
+            hideJobOrderMessages();
+            populateEditableJobOrder();
+        }
+
+        function populateEditableJobOrder() {
+            // Job Information section
+            const jobInfoHtml = `
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Position Title:</div>
+                    <input type="text" id="editPositionTitle" value="${currentJobOrder['Position Title'] || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Company:</div>
+                    <input type="text" id="editJobCompany" value="${currentJobOrder.Company || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Job Title:</div>
+                    <input type="text" id="editJobTitle" value="${currentJobOrder.job_title || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Location:</div>
+                    <input type="text" id="editJobLocation" value="${currentJobOrder.location || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Salary Range:</div>
+                    <input type="text" id="editSalaryRange" value="${currentJobOrder.salary_range || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Timeline:</div>
+                    <input type="text" id="editTimeline" value="${currentJobOrder.timeline || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Status:</div>
+                    <select id="editJobStatus">
+                        <option value="New" ${currentJobOrder.status === 'New' ? 'selected' : ''}>New</option>
+                        <option value="Active" ${currentJobOrder.status === 'Active' ? 'selected' : ''}>Active</option>
+                        <option value="On Hold" ${currentJobOrder.status === 'On Hold' ? 'selected' : ''}>On Hold</option>
+                        <option value="Filled" ${currentJobOrder.status === 'Filled' ? 'selected' : ''}>Filled</option>
+                        <option value="Cancelled" ${currentJobOrder.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Priority:</div>
+                    <select id="editJobPriority">
+                        <option value="High" ${currentJobOrder.priority === 'High' ? 'selected' : ''}>High</option>
+                        <option value="Medium" ${currentJobOrder.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                        <option value="Low" ${currentJobOrder.priority === 'Low' ? 'selected' : ''}>Low</option>
+                    </select>
+                </div>
+            `;
+            document.getElementById('jobInfo').innerHTML = jobInfoHtml;
+
+            // Client Information section
+            const clientHtml = `
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Client Name:</div>
+                    <input type="text" id="editClientName" value="${currentJobOrder.client_name || ''}">
+                </div>
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Client Email:</div>
+                    <input type="email" id="editClientEmail" value="${currentJobOrder.client_email || ''}">
+                </div>
+            `;
+            document.getElementById('jobClient').innerHTML = clientHtml;
+
+            // Job Description section
+            const descriptionHtml = `
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Job Description:</div>
+                    <textarea id="editJobDescription" rows="6">${currentJobOrder.job_description || ''}</textarea>
+                </div>
+            `;
+            document.getElementById('jobDescription').innerHTML = descriptionHtml;
+
+            // Notes section
+            const notesHtml = `
+                <div class="detail-field edit-field">
+                    <div class="detail-label">Notes:</div>
+                    <textarea id="editJobNotes" rows="4">${currentJobOrder.notes || ''}</textarea>
+                </div>
+            `;
+            document.getElementById('jobRequirements').innerHTML = notesHtml;
+        }
+
+        function cancelEditJobOrder() {
+            isEditingJobOrder = false;
+            currentJobOrder = originalJobOrderData;
+            
+            document.getElementById('editJobBtn').style.display = 'inline-block';
+            document.getElementById('saveJobBtn').style.display = 'none';
+            document.getElementById('cancelJobBtn').style.display = 'none';
+            
+            hideJobOrderMessages();
+            populateJobOrderDetail(currentJobOrder);
+        }
+
+        async function saveJobOrder() {
+            hideJobOrderMessages();
+
+            const updatedData = {
+                'Position Title': document.getElementById('editPositionTitle')?.value || '',
+                'Company': document.getElementById('editJobCompany')?.value || '',
+                'job_title': document.getElementById('editJobTitle')?.value || '',
+                'location': document.getElementById('editJobLocation')?.value || '',
+                'salary_range': document.getElementById('editSalaryRange')?.value || '',
+                'timeline': document.getElementById('editTimeline')?.value || '',
+                'status': document.getElementById('editJobStatus')?.value || '',
+                'priority': document.getElementById('editJobPriority')?.value || '',
+                'client_name': document.getElementById('editClientName')?.value || '',
+                'client_email': document.getElementById('editClientEmail')?.value || '',
+                'job_description': document.getElementById('editJobDescription')?.value || '',
+                'notes': document.getElementById('editJobNotes')?.value || ''
+            };
+
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${CONFIG.baseId}/JOB_ORDERS/${currentJobOrder.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${CONFIG.apiToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fields: updatedData })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                currentJobOrder = { id: currentJobOrder.id, ...responseData.fields };
+                
+                // Update in allJobOrders array
+                const index = allJobOrders.findIndex(j => j.id === currentJobOrder.id);
+                if (index !== -1) {
+                    allJobOrders[index] = currentJobOrder;
+                }
+                
+                sessionStorage.setItem('selectedJobOrder', JSON.stringify(currentJobOrder));
+
+                isEditingJobOrder = false;
+                document.getElementById('editJobBtn').style.display = 'inline-block';
+                document.getElementById('saveJobBtn').style.display = 'none';
+                document.getElementById('cancelJobBtn').style.display = 'none';
+
+                populateJobOrderDetail(currentJobOrder);
+                showSuccess('jobSaveMessage');
+
+            } catch (error) {
+                console.error('Error saving job order:', error);
+                showError('jobSaveError', `Error updating job order: ${error.message}`);
+            }
+        }
+
+        function hideJobOrderMessages() {
+            document.getElementById('jobSaveMessage').style.display = 'none';
+            document.getElementById('jobSaveError').style.display = 'none';
         }
 
         // Candidate Editing
