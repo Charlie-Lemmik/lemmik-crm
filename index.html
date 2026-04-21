@@ -1689,12 +1689,12 @@
             <div class="full-width-section">
                 <div class="activity-header">
                     <h3>📒 Activity Log</h3>
-                    <button class="btn" id="logActivityBtn" onclick="showLogActivityForm()">+ Log Activity</button>
+                    <button class="btn" id="candidateLogActivityBtn" onclick="showLogActivityForm('candidate')">+ Log Activity</button>
                 </div>
-                <div id="activityLogForm" class="activity-form" style="display: none;"></div>
-                <div id="activityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
-                <div id="activityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
-                <div id="activityLogTimeline"></div>
+                <div id="candidateActivityLogForm" class="activity-form" style="display: none;"></div>
+                <div id="candidateActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
+                <div id="candidateActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="candidateActivityLogTimeline"></div>
             </div>
         </div>
     </div>
@@ -1743,6 +1743,17 @@
             <div class="full-width-section">
                 <h3>✅ Requirements</h3>
                 <div id="jobRequirements"></div>
+            </div>
+
+            <div class="full-width-section">
+                <div class="activity-header">
+                    <h3>📒 Activity Log</h3>
+                    <button class="btn" id="jobOrderLogActivityBtn" onclick="showLogActivityForm('job-order')">+ Log Activity</button>
+                </div>
+                <div id="jobOrderActivityLogForm" class="activity-form" style="display: none;"></div>
+                <div id="jobOrderActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
+                <div id="jobOrderActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="jobOrderActivityLogTimeline"></div>
             </div>
         </div>
     </div>
@@ -1799,6 +1810,17 @@
                     
                     <div class="employees-grid" id="employeesGrid"></div>
                 </div>
+            </div>
+
+            <div class="full-width-section">
+                <div class="activity-header">
+                    <h3>📒 Activity Log</h3>
+                    <button class="btn" id="companyLogActivityBtn" onclick="showLogActivityForm('company')">+ Log Activity</button>
+                </div>
+                <div id="companyActivityLogForm" class="activity-form" style="display: none;"></div>
+                <div id="companyActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
+                <div id="companyActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="companyActivityLogTimeline"></div>
             </div>
         </div>
     </div>
@@ -2844,7 +2866,7 @@
             populateCandidateProfessional(candidate);
             populateCandidateSkills(candidate);
             populateCandidateAdditional(candidate);
-            loadCandidateActivities(candidate.id);
+            loadActivities('candidate', candidate.id);
         }
 
         function populateCandidateContact(candidate) {
@@ -3059,6 +3081,8 @@
             // Requirements
             document.getElementById('jobRequirements').innerHTML =
                 `<div class="detail-value ${!job.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(job.notes || 'Not provided')}</div>`;
+
+            loadActivities('job-order', job.id);
         }
 
         // Company Detail Functions
@@ -3087,6 +3111,7 @@
             populateCompanyInfo(company);
             populateCompanyContact(company);
             loadCompanyEmployees(company);
+            loadActivities('company', company.id);
         }
 
         function populateCompanyInfo(company) {
@@ -4529,24 +4554,77 @@
             return /^https?:\/\//i.test(s) ? s : null;
         }
 
-        async function loadCandidateActivities(candidateId) {
-            const timeline = document.getElementById('activityLogTimeline');
-            const loading = document.getElementById('activityLogLoading');
-            const empty = document.getElementById('activityLogEmpty');
+        // Per-entity config for the Activity Log. The COMMUNICATIONS table's
+        // forward-link field names (linkField) and each entity table's reverse-
+        // link field (reverseLinkField) are assumed from the existing candidate
+        // setup: CANDIDATES uses a reverse link named COMMUNICATIONS pointing
+        // to the COMMUNICATIONS table's Candidate field. Same convention is
+        // assumed on JOB_ORDERS and COMPANIES. If Airtable has different names
+        // on either side, change them here in one place.
+        const ACTIVITY_ENTITIES = {
+            candidate: {
+                displayName: 'Candidate',
+                table: 'CANDIDATES',
+                linkField: 'Candidate',
+                reverseLinkField: 'COMMUNICATIONS',
+                currentRecord: () => currentCandidate,
+                ids: {
+                    btn: 'candidateLogActivityBtn',
+                    form: 'candidateActivityLogForm',
+                    loading: 'candidateActivityLogLoading',
+                    empty: 'candidateActivityLogEmpty',
+                    timeline: 'candidateActivityLogTimeline'
+                }
+            },
+            'job-order': {
+                displayName: 'Job Order',
+                table: 'JOB_ORDERS',
+                linkField: 'Job Order',
+                reverseLinkField: 'COMMUNICATIONS',
+                currentRecord: () => currentJobOrder,
+                ids: {
+                    btn: 'jobOrderLogActivityBtn',
+                    form: 'jobOrderActivityLogForm',
+                    loading: 'jobOrderActivityLogLoading',
+                    empty: 'jobOrderActivityLogEmpty',
+                    timeline: 'jobOrderActivityLogTimeline'
+                }
+            },
+            company: {
+                displayName: 'Company',
+                table: 'COMPANIES',
+                linkField: 'Company',
+                reverseLinkField: 'COMMUNICATIONS',
+                currentRecord: () => currentCompany,
+                ids: {
+                    btn: 'companyLogActivityBtn',
+                    form: 'companyActivityLogForm',
+                    loading: 'companyActivityLogLoading',
+                    empty: 'companyActivityLogEmpty',
+                    timeline: 'companyActivityLogTimeline'
+                }
+            }
+        };
+
+        async function loadActivities(entityKey, entityId) {
+            const cfg = ACTIVITY_ENTITIES[entityKey];
+            const timeline = document.getElementById(cfg.ids.timeline);
+            const loading = document.getElementById(cfg.ids.loading);
+            const empty = document.getElementById(cfg.ids.empty);
 
             timeline.innerHTML = '';
             empty.style.display = 'none';
             loading.style.display = 'block';
-            hideLogActivityForm();
+            hideLogActivityForm(entityKey);
 
             try {
-                const candResp = await fetch(
-                    `https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES/${candidateId}`,
+                const entityResp = await fetch(
+                    `https://api.airtable.com/v0/${CONFIG.baseId}/${cfg.table}/${entityId}`,
                     { headers: { 'Authorization': `Bearer ${CONFIG.apiToken}` } }
                 );
-                if (!candResp.ok) throw new Error(`HTTP ${candResp.status}`);
-                const candData = await candResp.json();
-                const commIds = candData.fields.COMMUNICATIONS || [];
+                if (!entityResp.ok) throw new Error(`HTTP ${entityResp.status}`);
+                const entityData = await entityResp.json();
+                const commIds = entityData.fields[cfg.reverseLinkField] || [];
 
                 if (commIds.length === 0) {
                     loading.style.display = 'none';
@@ -4569,7 +4647,7 @@
                 if (activities.length === 0) {
                     empty.style.display = 'block';
                 } else {
-                    renderActivityTimeline(activities);
+                    renderActivityTimeline(entityKey, activities);
                 }
             } catch (err) {
                 console.error('Error loading activities:', err);
@@ -4578,8 +4656,9 @@
             }
         }
 
-        function renderActivityTimeline(activities) {
-            const timeline = document.getElementById('activityLogTimeline');
+        function renderActivityTimeline(entityKey, activities) {
+            const cfg = ACTIVITY_ENTITIES[entityKey];
+            const timeline = document.getElementById(cfg.ids.timeline);
             timeline.innerHTML = activities.map(a => {
                 const meta = ACTIVITY_TYPE_META[a.Type] || { icon: '•', color: '#6b7280' };
                 const dateStr = a.Date ? new Date(a.Date).toLocaleString() : 'No date';
@@ -4600,9 +4679,10 @@
             }).join('');
         }
 
-        function showLogActivityForm() {
-            const form = document.getElementById('activityLogForm');
-            const btn = document.getElementById('logActivityBtn');
+        function showLogActivityForm(entityKey) {
+            const cfg = ACTIVITY_ENTITIES[entityKey];
+            const form = document.getElementById(cfg.ids.form);
+            const btn = document.getElementById(cfg.ids.btn);
             const lastLoggedBy = localStorage.getItem('lemmikLastLoggedBy') || '';
             const now = new Date();
             const tzOffset = now.getTimezoneOffset() * 60000;
@@ -4611,7 +4691,7 @@
             form.innerHTML = `
                 <div>
                     <label for="activityTypeInput">Type *</label>
-                    <select id="activityTypeInput" onchange="updateActivityDirectionVisibility()">
+                    <select id="activityTypeInput" onchange="updateActivityDirectionVisibility(this)">
                         ${ACTIVITY_TYPES.map(t => `<option value="${t}">${ACTIVITY_TYPE_META[t].icon} ${t}</option>`).join('')}
                     </select>
                 </div>
@@ -4638,46 +4718,54 @@
                     <textarea id="activityBodyInput" placeholder="What happened? Notes, outcome, next steps…"></textarea>
                 </div>
                 <div class="form-row-full form-actions">
-                    <button class="btn btn-secondary" onclick="hideLogActivityForm()">Cancel</button>
-                    <button class="btn" id="activitySubmitBtn" onclick="submitActivity()">💾 Save</button>
+                    <button class="btn btn-secondary" onclick="hideLogActivityForm('${entityKey}')">Cancel</button>
+                    <button class="btn" id="activitySubmitBtn" onclick="submitActivity('${entityKey}')">💾 Save</button>
                 </div>
             `;
             form.style.display = 'grid';
             btn.style.display = 'none';
-            updateActivityDirectionVisibility();
-            document.getElementById('activityBodyInput').focus();
+            updateActivityDirectionVisibility(form.querySelector('#activityTypeInput'));
+            form.querySelector('#activityBodyInput').focus();
         }
 
-        function hideLogActivityForm() {
-            const form = document.getElementById('activityLogForm');
-            const btn = document.getElementById('logActivityBtn');
+        function hideLogActivityForm(entityKey) {
+            const cfg = ACTIVITY_ENTITIES[entityKey];
+            const form = document.getElementById(cfg.ids.form);
+            const btn = document.getElementById(cfg.ids.btn);
             form.innerHTML = '';
             form.style.display = 'none';
             btn.style.display = '';
         }
 
-        function updateActivityDirectionVisibility() {
-            const type = document.getElementById('activityTypeInput').value;
-            const wrapper = document.getElementById('activityDirectionWrapper');
-            wrapper.style.display = ACTIVITY_TYPES_NO_DIRECTION.includes(type) ? 'none' : '';
+        // Called from the Type <select>'s onchange with `this` — scoped through
+        // the enclosing .activity-form so it works whichever entity's form the
+        // select lives in.
+        function updateActivityDirectionVisibility(selectEl) {
+            const form = selectEl.closest('.activity-form');
+            const wrapper = form.querySelector('#activityDirectionWrapper');
+            wrapper.style.display = ACTIVITY_TYPES_NO_DIRECTION.includes(selectEl.value) ? 'none' : '';
         }
 
-        async function submitActivity() {
-            const type = document.getElementById('activityTypeInput').value;
-            const directionEl = document.getElementById('activityDirectionInput');
+        async function submitActivity(entityKey) {
+            const cfg = ACTIVITY_ENTITIES[entityKey];
+            const record = cfg.currentRecord();
+            const form = document.getElementById(cfg.ids.form);
+
+            const type = form.querySelector('#activityTypeInput').value;
+            const directionEl = form.querySelector('#activityDirectionInput');
             const direction = directionEl ? directionEl.value : null;
-            const subject = document.getElementById('activitySubjectInput').value.trim();
-            const body = document.getElementById('activityBodyInput').value.trim();
-            const dateLocal = document.getElementById('activityDateInput').value;
-            const loggedBy = document.getElementById('activityLoggedByInput').value.trim();
-            const submitBtn = document.getElementById('activitySubmitBtn');
+            const subject = form.querySelector('#activitySubjectInput').value.trim();
+            const body = form.querySelector('#activityBodyInput').value.trim();
+            const dateLocal = form.querySelector('#activityDateInput').value;
+            const loggedBy = form.querySelector('#activityLoggedByInput').value.trim();
+            const submitBtn = form.querySelector('#activitySubmitBtn');
 
             if (!type || !body || !loggedBy) {
                 alert('Type, Body, and Logged By are required.');
                 return;
             }
-            if (!currentCandidate) {
-                alert('No candidate selected.');
+            if (!record) {
+                alert(`No ${cfg.displayName.toLowerCase()} selected.`);
                 return;
             }
 
@@ -4686,7 +4774,7 @@
                 Body: body,
                 Date: dateLocal ? new Date(dateLocal).toISOString() : new Date().toISOString(),
                 'Logged By': loggedBy,
-                Candidate: [currentCandidate.id]
+                [cfg.linkField]: [record.id]
             };
             if (subject) fields.Subject = subject;
             if (!ACTIVITY_TYPES_NO_DIRECTION.includes(type)) fields.Direction = direction;
@@ -4709,8 +4797,8 @@
                     const err = await resp.json().catch(() => ({}));
                     throw new Error(err.error?.message || `HTTP ${resp.status}`);
                 }
-                hideLogActivityForm();
-                await loadCandidateActivities(currentCandidate.id);
+                hideLogActivityForm(entityKey);
+                await loadActivities(entityKey, record.id);
             } catch (e) {
                 console.error('Error saving activity:', e);
                 alert('Failed to save activity: ' + e.message);
