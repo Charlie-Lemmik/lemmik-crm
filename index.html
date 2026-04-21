@@ -1318,6 +1318,77 @@
             padding: 1.5rem;
             font-style: italic;
         }
+
+        /* Today's Focus */
+        .todays-focus { margin-bottom: 3rem; }
+        .todays-focus > h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1.5rem;
+        }
+        .focus-group { margin-bottom: 2rem; }
+        .focus-group > h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.75rem;
+        }
+        .focus-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 0.75rem;
+        }
+        .focus-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-left: 4px solid var(--gray-300);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .focus-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .focus-card.overdue { border-left-color: var(--danger-red); }
+        .focus-card.today   { border-left-color: var(--primary-orange); }
+        .focus-card.week    { border-left-color: var(--secondary-blue); }
+        .focus-card-title {
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+        .focus-card-subtitle {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        .focus-card-action {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            margin-bottom: 0.25rem;
+        }
+        .focus-card-meta {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+        .focus-card-stage {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 0.125rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+        }
+        .focus-empty {
+            color: var(--gray-500);
+            font-style: italic;
+            padding: 0.75rem 0;
+        }
     </style>
 </head>
 <body>
@@ -1400,6 +1471,22 @@
                 </div>
                 <div class="stat-number" id="totalCompanies">-</div>
                 <div class="stat-label">Total Companies</div>
+            </div>
+        </div>
+
+        <div class="todays-focus">
+            <h2>📅 Today's Focus</h2>
+            <div class="focus-group">
+                <h3>Overdue</h3>
+                <div id="focusOverdue" class="focus-cards"></div>
+            </div>
+            <div class="focus-group">
+                <h3>Due Today</h3>
+                <div id="focusToday" class="focus-cards"></div>
+            </div>
+            <div class="focus-group">
+                <h3>Due This Week</h3>
+                <div id="focusWeek" class="focus-cards"></div>
             </div>
         </div>
     </div>
@@ -1782,7 +1869,6 @@
                     <div id="jobOrderResults" class="pipeline-search-results" style="display: none;"></div>
                     <input type="hidden" id="selectedJobOrderId">
                     <input type="hidden" id="selectedJobTitle">
-                    <input type="hidden" id="selectedCompany">
                 </div>
                 
                 <div class="create-form-group">
@@ -2524,6 +2610,14 @@
             board.style.display = 'flex';
         }
 
+        // Company on a pipeline deal lives on the linked JOB_ORDERS record,
+        // not on PIPELINE itself (see Session 2 Task 1 schema audit).
+        function companyForDeal(deal) {
+            if (!deal) return 'Unknown Company';
+            const job = allJobOrders.find(j => j.id === deal.job_order_id);
+            return (job && job.Company) ? job.Company : 'Unknown Company';
+        }
+
         function createPipelineCard(deal) {
             const nextActionDate = deal.next_action_date ? 
                 new Date(deal.next_action_date).toLocaleDateString() : '';
@@ -2532,7 +2626,7 @@
                 <div class="pipeline-card" onclick="openPipelineInNewTab('${deal.id}')">
                     <div class="pipeline-card-candidate">${escapeHtml(deal.candidate_name || 'Unknown Candidate')}</div>
                     <div class="pipeline-card-job">${escapeHtml(deal.job_title || 'Unknown Position')}</div>
-                    <div class="pipeline-card-company">${escapeHtml(deal.company || deal.Company || 'Unknown Company')}</div>
+                    <div class="pipeline-card-company">${escapeHtml(companyForDeal(deal))}</div>
 
                     ${deal.next_action || nextActionDate ? `
                         <div class="pipeline-card-next">
@@ -3301,6 +3395,73 @@
             
             const activePipelineEl = document.getElementById('activePipeline');
             if (activePipelineEl) activePipelineEl.textContent = activePipeline;
+
+            renderTodaysFocus();
+        }
+
+        // YYYY-MM-DD in local time — safe for lexicographic comparison.
+        function toYmd(date) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        }
+
+        function renderTodaysFocus() {
+            const overdueEl = document.getElementById('focusOverdue');
+            const todayEl = document.getElementById('focusToday');
+            const weekEl = document.getElementById('focusWeek');
+            if (!overdueEl || !todayEl || !weekEl) return;
+
+            const now = new Date();
+            const todayStr = toYmd(now);
+            const weekEnd = new Date(now);
+            weekEnd.setDate(now.getDate() + 7);
+            const weekEndStr = toYmd(weekEnd);
+
+            const isActive = (d) => d.stage && !['Placed', 'Lost'].includes(d.stage);
+            const dateOf = (d) => d.next_action_date ? String(d.next_action_date).slice(0, 10) : null;
+
+            const overdue = [];
+            const today = [];
+            const week = [];
+
+            allPipelineDeals.forEach(d => {
+                const na = dateOf(d);
+                if (!na || !isActive(d)) return;
+                if (na < todayStr) overdue.push(d);
+                else if (na === todayStr) today.push(d);
+                else if (na <= weekEndStr) week.push(d);
+            });
+
+            const byDateAsc = (a, b) => dateOf(a).localeCompare(dateOf(b));
+            overdue.sort(byDateAsc);
+            today.sort(byDateAsc);
+            week.sort(byDateAsc);
+
+            overdueEl.innerHTML = renderFocusCards(overdue, 'overdue', 'Nothing overdue');
+            todayEl.innerHTML = renderFocusCards(today, 'today', 'Nothing due today');
+            weekEl.innerHTML = renderFocusCards(week, 'week', 'Nothing due this week');
+        }
+
+        function renderFocusCards(deals, cls, emptyMessage) {
+            if (deals.length === 0) {
+                return `<div class="focus-empty">${escapeHtml(emptyMessage)}</div>`;
+            }
+            return deals.map(d => {
+                const dateStr = d.next_action_date
+                    ? new Date(d.next_action_date).toLocaleDateString()
+                    : '';
+                return `
+                    <div class="focus-card ${cls}" onclick="navigateTo('pipeline', '${escapeHtml(d.id)}')">
+                        <div class="focus-card-title">${escapeHtml(d.candidate_name || 'Unknown Candidate')}</div>
+                        <div class="focus-card-subtitle">${escapeHtml(d.job_title || 'Unknown Position')} · ${escapeHtml(companyForDeal(d))}</div>
+                        ${d.next_action ? `<div class="focus-card-action">→ ${escapeHtml(d.next_action)}</div>` : ''}
+                        <div class="focus-card-meta">
+                            <span>${escapeHtml(dateStr)}</span>
+                            <span class="focus-card-stage">${escapeHtml(d.stage || 'Unknown')}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // Pipeline Detail Functions
@@ -3330,8 +3491,8 @@
         function populatePipelineDetail(deal) {
             document.getElementById('pipelineDetailName').textContent = 
                 `${deal.candidate_name || 'Unknown Candidate'} → ${deal.job_title || 'Unknown Position'}`;
-            document.getElementById('pipelineDetailSubtitle').textContent = 
-                `${deal.company || deal.Company || 'Unknown Company'} • Stage: ${deal.stage || 'Unknown'}`;
+            document.getElementById('pipelineDetailSubtitle').textContent =
+                `${companyForDeal(deal)} • Stage: ${deal.stage || 'Unknown'}`;
 
             populatePipelineCandidateJob(deal);
             populatePipelineStatus(deal);
@@ -3359,7 +3520,7 @@
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company:</div>
-                    <div class="detail-value">${escapeHtml(deal.company || deal.Company || 'Not specified')}</div>
+                    <div class="detail-value">${escapeHtml(companyForDeal(deal))}</div>
                 </div>
             `;
             document.getElementById('pipelineCandidateJob').innerHTML = html;
@@ -3682,7 +3843,6 @@
         function selectJobOrder(id, title, company) {
             document.getElementById('selectedJobOrderId').value = id;
             document.getElementById('selectedJobTitle').value = title;
-            document.getElementById('selectedCompany').value = company;
             document.getElementById('jobOrderSearch').value = `${title} at ${company}`;
             document.getElementById('jobOrderResults').style.display = 'none';
         }
