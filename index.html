@@ -2356,26 +2356,27 @@
             const contactClass = hasContact ? 'has-contact' : '';
             const nameClass = candidate.Source === 'ZoomInfoD' ? 'zoominfo-d' : '';
             
+            const status = candidate.Status || 'New';
             return `
                 <div class="candidate-card ${contactClass}" onclick="openCandidateInNewTab('${candidate.id}')">
-                    <div class="candidate-name ${nameClass}">${candidate.Name || 'Unknown Name'}</div>
-                    <div class="candidate-title">${candidate.Title || 'No title'}</div>
-                    <div class="candidate-company">${candidate['Current Company'] || 'No company'}</div>
-                    
+                    <div class="candidate-name ${nameClass}">${escapeHtml(candidate.Name || 'Unknown Name')}</div>
+                    <div class="candidate-title">${escapeHtml(candidate.Title || 'No title')}</div>
+                    <div class="candidate-company">${escapeHtml(candidate['Current Company'] || 'No company')}</div>
+
                     <div class="candidate-details">
                         <div class="candidate-detail">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>${candidate.Location || 'Location unknown'}</span>
+                            <span>${escapeHtml(candidate.Location || 'Location unknown')}</span>
                         </div>
                         <div class="candidate-detail">
                             <i class="fas fa-tag"></i>
-                            <span class="status-badge status-${(candidate.Status || 'new').toLowerCase()}">${candidate.Status || 'New'}</span>
+                            <span class="status-badge status-${escapeHtml(status.toLowerCase())}">${escapeHtml(status)}</span>
                         </div>
-                        ${hasContact ? 
+                        ${hasContact ?
                             `<div class="candidate-detail">
                                 <i class="fas fa-envelope"></i>
-                                <span>${candidate['Work Email'] || candidate['Personal Email'] || 'Email available'}</span>
-                            </div>` : 
+                                <span>${escapeHtml(candidate['Work Email'] || candidate['Personal Email'] || 'Email available')}</span>
+                            </div>` :
                             `<div class="candidate-detail">
                                 <i class="fas fa-exclamation-triangle" style="color: var(--warning-yellow);"></i>
                                 <span>No contact info</span>
@@ -2383,7 +2384,7 @@
                         }
                         <div class="candidate-detail">
                             <i class="fas fa-building"></i>
-                            <span>${candidate.Source || 'Unknown source'}</span>
+                            <span>${escapeHtml(candidate.Source || 'Unknown source')}</span>
                         </div>
                     </div>
                 </div>
@@ -2408,33 +2409,35 @@
             const statusClass = `status-${(job.status || 'new').toLowerCase().replace(' ', '-')}`;
             const priorityClass = `priority-${(job.priority || 'medium').toLowerCase()}`;
             
+            const jobStatus = job.status || 'New';
+            const jobPriority = job.priority || 'Medium';
             return `
                 <div class="job-card ${statusClass}" onclick="openJobOrderInNewTab('${job.id}')">
-                    <div class="job-title">${job['Position Title'] || 'Untitled Position'}</div>
-                    <div class="job-company">${job.Company || 'Company TBD'}</div>
-                    
+                    <div class="job-title">${escapeHtml(job['Position Title'] || 'Untitled Position')}</div>
+                    <div class="job-company">${escapeHtml(job.Company || 'Company TBD')}</div>
+
                     <div class="job-details">
                         <div class="job-detail">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>${job.location || 'Location TBD'}</span>
+                            <span>${escapeHtml(job.location || 'Location TBD')}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-dollar-sign"></i>
-                            <span>${job.salary_range || 'Salary TBD'}</span>
+                            <span>${escapeHtml(job.salary_range || 'Salary TBD')}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-clock"></i>
-                            <span>${job.timeline || 'Timeline TBD'}</span>
+                            <span>${escapeHtml(job.timeline || 'Timeline TBD')}</span>
                         </div>
                         <div class="job-detail">
                             <i class="fas fa-building"></i>
-                            <span>${job.client_name || 'Client TBD'}</span>
+                            <span>${escapeHtml(job.client_name || 'Client TBD')}</span>
                         </div>
                     </div>
-                    
+
                     <div class="job-badges">
-                        <span class="status-badge job-status-${(job.status || 'new').toLowerCase().replace(' ', '-')}">${job.status || 'New'}</span>
-                        <span class="priority-badge ${priorityClass}">${job.priority || 'Medium'}</span>
+                        <span class="status-badge job-status-${escapeHtml(jobStatus.toLowerCase().replace(' ', '-'))}">${escapeHtml(jobStatus)}</span>
+                        <span class="priority-badge ${priorityClass}">${escapeHtml(jobPriority)}</span>
                     </div>
                 </div>
             `;
@@ -2457,25 +2460,25 @@
         function createCompanyCard(company) {
             return `
                 <div class="company-card" onclick="openCompanyInNewTab('${company.id}')">
-                    <div class="company-name">${company.company || 'Unknown Company'}</div>
-                    <div class="company-contact">${company.Name || 'No contact name'}</div>
-                    
+                    <div class="company-name">${escapeHtml(company.company || 'Unknown Company')}</div>
+                    <div class="company-contact">${escapeHtml(company.Name || 'No contact name')}</div>
+
                     <div class="company-details">
                         <div class="company-detail">
                             <i class="fas fa-envelope"></i>
-                            ${company.Email ? 
-                                `<a href="mailto:${company.Email}">${company.Email}</a>` : 
+                            ${company.Email ?
+                                `<a href="mailto:${escapeHtml(company.Email)}">${escapeHtml(company.Email)}</a>` :
                                 '<span>No email</span>'}
                         </div>
                         <div class="company-detail">
                             <i class="fas fa-phone"></i>
-                            ${company.phone ? 
-                                `<a href="tel:${company.phone}">${company.phone}</a>` : 
+                            ${company.phone ?
+                                `<a href="tel:${escapeHtml(company.phone)}">${escapeHtml(company.phone)}</a>` :
                                 '<span>No phone</span>'}
                         </div>
                         <div class="company-detail">
                             <i class="fas fa-users"></i>
-                            <span>${company.company_size || 'Size unknown'}</span>
+                            <span>${escapeHtml(company.company_size || 'Size unknown')}</span>
                         </div>
                     </div>
                 </div>
@@ -2520,14 +2523,14 @@
             
             return `
                 <div class="pipeline-card" onclick="openPipelineInNewTab('${deal.id}')">
-                    <div class="pipeline-card-candidate">${deal.candidate_name || 'Unknown Candidate'}</div>
-                    <div class="pipeline-card-job">${deal.job_title || 'Unknown Position'}</div>
-                    <div class="pipeline-card-company">${deal.company || deal.Company || 'Unknown Company'}</div>
-                    
+                    <div class="pipeline-card-candidate">${escapeHtml(deal.candidate_name || 'Unknown Candidate')}</div>
+                    <div class="pipeline-card-job">${escapeHtml(deal.job_title || 'Unknown Position')}</div>
+                    <div class="pipeline-card-company">${escapeHtml(deal.company || deal.Company || 'Unknown Company')}</div>
+
                     ${deal.next_action || nextActionDate ? `
                         <div class="pipeline-card-next">
-                            ${deal.next_action ? `<div class="pipeline-card-action">${deal.next_action}</div>` : ''}
-                            ${nextActionDate ? `<div class="pipeline-card-date">Due: ${nextActionDate}</div>` : ''}
+                            ${deal.next_action ? `<div class="pipeline-card-action">${escapeHtml(deal.next_action)}</div>` : ''}
+                            ${nextActionDate ? `<div class="pipeline-card-date">Due: ${escapeHtml(nextActionDate)}</div>` : ''}
                         </div>
                     ` : ''}
                 </div>
@@ -2637,45 +2640,46 @@
         }
 
         function populateCandidateContact(candidate) {
+            const linkedInSafe = safeUrl(candidate.LinkedIn);
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Work Email:</div>
                     <div class="detail-value ${!candidate['Work Email'] ? 'empty' : ''}">
-                        ${candidate['Work Email'] ? 
-                            `<a href="mailto:${candidate['Work Email']}">${candidate['Work Email']}</a>` : 
+                        ${candidate['Work Email'] ?
+                            `<a href="mailto:${escapeHtml(candidate['Work Email'])}">${escapeHtml(candidate['Work Email'])}</a>` :
                             'Not provided'}
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Work Phone:</div>
                     <div class="detail-value ${!candidate['Work Phone'] ? 'empty' : ''}">
-                        ${candidate['Work Phone'] ? 
-                            `<a href="tel:${candidate['Work Phone']}">${candidate['Work Phone']}</a>` : 
+                        ${candidate['Work Phone'] ?
+                            `<a href="tel:${escapeHtml(candidate['Work Phone'])}">${escapeHtml(candidate['Work Phone'])}</a>` :
                             'Not provided'}
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Personal Email:</div>
                     <div class="detail-value ${!candidate['Personal Email'] ? 'empty' : ''}">
-                        ${candidate['Personal Email'] ? 
-                            `<a href="mailto:${candidate['Personal Email']}">${candidate['Personal Email']}</a>` : 
+                        ${candidate['Personal Email'] ?
+                            `<a href="mailto:${escapeHtml(candidate['Personal Email'])}">${escapeHtml(candidate['Personal Email'])}</a>` :
                             'Not provided'}
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Personal Phone:</div>
                     <div class="detail-value ${!candidate['Personal Phone'] ? 'empty' : ''}">
-                        ${candidate['Personal Phone'] ? 
-                            `<a href="tel:${candidate['Personal Phone']}">${candidate['Personal Phone']}</a>` : 
+                        ${candidate['Personal Phone'] ?
+                            `<a href="tel:${escapeHtml(candidate['Personal Phone'])}">${escapeHtml(candidate['Personal Phone'])}</a>` :
                             'Not provided'}
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">LinkedIn:</div>
                     <div class="detail-value ${!candidate.LinkedIn ? 'empty' : ''}">
-                        ${candidate.LinkedIn ? 
-                            `<a href="${candidate.LinkedIn}" target="_blank">${candidate.LinkedIn}</a>` : 
-                            'Not provided'}
+                        ${linkedInSafe ?
+                            `<a href="${escapeHtml(linkedInSafe)}" target="_blank" rel="noopener noreferrer">${escapeHtml(linkedInSafe)}</a>` :
+                            (candidate.LinkedIn ? escapeHtml(candidate.LinkedIn) : 'Not provided')}
                     </div>
                 </div>
             `;
@@ -2683,30 +2687,31 @@
         }
 
         function populateCandidateBasic(candidate) {
+            const status = candidate.Status || 'New';
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Location:</div>
-                    <div class="detail-value ${!candidate.Location ? 'empty' : ''}">${candidate.Location || 'Not specified'}</div>
+                    <div class="detail-value ${!candidate.Location ? 'empty' : ''}">${escapeHtml(candidate.Location || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Status:</div>
                     <div class="detail-value">
-                        <span class="status-badge status-${(candidate.Status || 'new').toLowerCase()}">${candidate.Status || 'New'}</span>
+                        <span class="status-badge status-${escapeHtml(status.toLowerCase())}">${escapeHtml(status)}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Source:</div>
-                    <div class="detail-value">${candidate.Source || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(candidate.Source || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Salary:</div>
                     <div class="detail-value ${!candidate.Salary ? 'empty' : ''}">${
-                        candidate.Salary ? `$${candidate.Salary.toLocaleString()}` : 'Not specified'
+                        candidate.Salary ? `$${escapeHtml(candidate.Salary.toLocaleString())}` : 'Not specified'
                     }</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Quality Score:</div>
-                    <div class="detail-value ${!candidate['Quality Score'] ? 'empty' : ''}">${candidate['Quality Score'] || 'Not rated'}</div>
+                    <div class="detail-value ${!candidate['Quality Score'] ? 'empty' : ''}">${escapeHtml(candidate['Quality Score'] || 'Not rated')}</div>
                 </div>
             `;
             document.getElementById('candidateBasic').innerHTML = html;
@@ -2716,25 +2721,25 @@
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Title:</div>
-                    <div class="detail-value ${!candidate.Title ? 'empty' : ''}">${candidate.Title || 'Not specified'}</div>
+                    <div class="detail-value ${!candidate.Title ? 'empty' : ''}">${escapeHtml(candidate.Title || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company:</div>
-                    <div class="detail-value ${!candidate['Current Company'] ? 'empty' : ''}">${candidate['Current Company'] || 'Not specified'}</div>
+                    <div class="detail-value ${!candidate['Current Company'] ? 'empty' : ''}">${escapeHtml(candidate['Current Company'] || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Projects:</div>
-                    <div class="detail-value ${!candidate.Projects ? 'empty' : ''}" style="white-space: pre-wrap;">${candidate.Projects || 'Not specified'}</div>
+                    <div class="detail-value ${!candidate.Projects ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(candidate.Projects || 'Not specified')}</div>
                 </div>
             `;
             document.getElementById('candidateProfessional').innerHTML = html;
         }
 
         function populateCandidateSkills(candidate) {
-            const html = candidate.Skills && candidate.Skills.length > 0 ? 
+            const html = candidate.Skills && candidate.Skills.length > 0 ?
                 `<div class="tags-container">
-                    ${candidate.Skills.map(skill => `<span class="skill-item">${skill}</span>`).join('')}
-                </div>` : 
+                    ${candidate.Skills.map(skill => `<span class="skill-item">${escapeHtml(skill)}</span>`).join('')}
+                </div>` :
                 '<div class="detail-value empty">No skills specified</div>';
             document.getElementById('candidateSkills').innerHTML = html;
         }
@@ -2743,15 +2748,15 @@
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Motivation:</div>
-                    <div class="detail-value ${!candidate.Motivation ? 'empty' : ''}" style="white-space: pre-wrap;">${candidate.Motivation || 'Not specified'}</div>
+                    <div class="detail-value ${!candidate.Motivation ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(candidate.Motivation || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Tags:</div>
                     <div class="detail-value">
-                        ${candidate.Tags && candidate.Tags.length > 0 ? 
+                        ${candidate.Tags && candidate.Tags.length > 0 ?
                             `<div class="tags-container">
-                                ${candidate.Tags.map(tag => `<span class="tag-item">${tag}</span>`).join('')}
-                            </div>` : 
+                                ${candidate.Tags.map(tag => `<span class="tag-item">${escapeHtml(tag)}</span>`).join('')}
+                            </div>` :
                             '<span class="empty">No tags assigned</span>'}
                     </div>
                 </div>
@@ -2796,39 +2801,42 @@
             document.getElementById('jobDetailSubtitle').textContent = 
                 `${job.Company || 'Company TBD'} • ${job.location || 'Location TBD'}`;
 
+            const jobStatus = job.status || 'New';
+            const jobPriority = job.priority || 'Medium';
+
             // Job Information
             const jobInfoHtml = `
                 <div class="detail-field">
                     <div class="detail-label">Position Title:</div>
-                    <div class="detail-value">${job['Position Title'] || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job['Position Title'] || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company:</div>
-                    <div class="detail-value">${job.Company || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job.Company || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Location:</div>
-                    <div class="detail-value">${job.location || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job.location || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Salary Range:</div>
-                    <div class="detail-value">${job.salary_range || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job.salary_range || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Status:</div>
                     <div class="detail-value">
-                        <span class="status-badge job-status-${(job.status || 'new').toLowerCase().replace(' ', '-')}">${job.status || 'New'}</span>
+                        <span class="status-badge job-status-${escapeHtml(jobStatus.toLowerCase().replace(' ', '-'))}">${escapeHtml(jobStatus)}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Priority:</div>
                     <div class="detail-value">
-                        <span class="priority-badge priority-${(job.priority || 'medium').toLowerCase()}">${job.priority || 'Medium'}</span>
+                        <span class="priority-badge priority-${escapeHtml(jobPriority.toLowerCase())}">${escapeHtml(jobPriority)}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Timeline:</div>
-                    <div class="detail-value">${job.timeline || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job.timeline || 'Not specified')}</div>
                 </div>
             `;
             document.getElementById('jobInfo').innerHTML = jobInfoHtml;
@@ -2837,13 +2845,13 @@
             const clientHtml = `
                 <div class="detail-field">
                     <div class="detail-label">Client Name:</div>
-                    <div class="detail-value">${job.client_name || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(job.client_name || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Client Email:</div>
                     <div class="detail-value">
-                        ${job.client_email ? 
-                            `<a href="mailto:${job.client_email}">${job.client_email}</a>` : 
+                        ${job.client_email ?
+                            `<a href="mailto:${escapeHtml(job.client_email)}">${escapeHtml(job.client_email)}</a>` :
                             'Not provided'}
                     </div>
                 </div>
@@ -2851,12 +2859,12 @@
             document.getElementById('jobClient').innerHTML = clientHtml;
 
             // Job Description
-            document.getElementById('jobDescription').innerHTML = 
-                `<div class="detail-value ${!job.job_description ? 'empty' : ''}" style="white-space: pre-wrap;">${job.job_description || 'No description provided'}</div>`;
+            document.getElementById('jobDescription').innerHTML =
+                `<div class="detail-value ${!job.job_description ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(job.job_description || 'No description provided')}</div>`;
 
             // Requirements
-            document.getElementById('jobRequirements').innerHTML = 
-                `<div class="detail-value ${!job.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${job.notes || 'No requirements specified'}</div>`;
+            document.getElementById('jobRequirements').innerHTML =
+                `<div class="detail-value ${!job.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(job.notes || 'No requirements specified')}</div>`;
         }
 
         // Company Detail Functions
@@ -2905,11 +2913,11 @@
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Company Name:</div>
-                    <div class="detail-value">${company.company || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(company.company || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company Size:</div>
-                    <div class="detail-value ${!company.company_size ? 'empty' : ''}">${company.company_size || 'Not specified'}</div>
+                    <div class="detail-value ${!company.company_size ? 'empty' : ''}">${escapeHtml(company.company_size || 'Not specified')}</div>
                 </div>
             `;
             document.getElementById('companyInfo').innerHTML = html;
@@ -2919,21 +2927,21 @@
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Contact Name:</div>
-                    <div class="detail-value ${!company.Name ? 'empty' : ''}">${company.Name || 'Not specified'}</div>
+                    <div class="detail-value ${!company.Name ? 'empty' : ''}">${escapeHtml(company.Name || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Email:</div>
                     <div class="detail-value ${!company.Email ? 'empty' : ''}">
-                        ${company.Email ? 
-                            `<a href="mailto:${company.Email}">${company.Email}</a>` : 
+                        ${company.Email ?
+                            `<a href="mailto:${escapeHtml(company.Email)}">${escapeHtml(company.Email)}</a>` :
                             'Not provided'}
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Phone:</div>
                     <div class="detail-value ${!company.phone ? 'empty' : ''}">
-                        ${company.phone ? 
-                            `<a href="tel:${company.phone}">${company.phone}</a>` : 
+                        ${company.phone ?
+                            `<a href="tel:${escapeHtml(company.phone)}">${escapeHtml(company.phone)}</a>` :
                             'Not provided'}
                     </div>
                 </div>
@@ -2965,11 +2973,11 @@
             const infoHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Company Name:</div>
-                    <input type="text" id="editCompanyName" value="${currentCompany.company || ''}">
+                    <input type="text" id="editCompanyName" value="${escapeHtml(currentCompany.company || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Company Size:</div>
-                    <input type="text" id="editCompanySize" value="${currentCompany.company_size || ''}" placeholder="e.g. 50-100 employees">
+                    <input type="text" id="editCompanySize" value="${escapeHtml(currentCompany.company_size || '')}" placeholder="e.g. 50-100 employees">
                 </div>
             `;
             document.getElementById('companyInfo').innerHTML = infoHtml;
@@ -2978,15 +2986,15 @@
             const contactHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Contact Name:</div>
-                    <input type="text" id="editContactName" value="${currentCompany.Name || ''}">
+                    <input type="text" id="editContactName" value="${escapeHtml(currentCompany.Name || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Email:</div>
-                    <input type="email" id="editCompanyEmail" value="${currentCompany.Email || ''}">
+                    <input type="email" id="editCompanyEmail" value="${escapeHtml(currentCompany.Email || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Phone:</div>
-                    <input type="tel" id="editCompanyPhone" value="${currentCompany.phone || ''}">
+                    <input type="tel" id="editCompanyPhone" value="${escapeHtml(currentCompany.phone || '')}">
                 </div>
             `;
             document.getElementById('companyContact').innerHTML = contactHtml;
@@ -3198,41 +3206,42 @@
             const isZoomInfo = employee.Source === 'ZoomInfoD' || employee.ZoomInfoD === 'Yes';
             const nameClass = isZoomInfo ? 'employee-name zoominfo' : 'employee-name';
             
+            const linkedInSafe = safeUrl(employee.LinkedIn);
             return `
                 <div class="employee-card" onclick="openCandidateInNewTab('${employee.id}')">
-                    <div class="${nameClass}">${employee.Name || 'Unknown Name'}</div>
-                    <div class="employee-title">${employee['Current Title'] || 'No title specified'}</div>
-                    
+                    <div class="${nameClass}">${escapeHtml(employee.Name || 'Unknown Name')}</div>
+                    <div class="employee-title">${escapeHtml(employee['Current Title'] || 'No title specified')}</div>
+
                     <div class="employee-contacts">
                         <div class="employee-contact">
                             <i class="fas fa-briefcase"></i>
-                            ${employee['Work Email'] ? 
-                                `<a href="mailto:${employee['Work Email']}">${employee['Work Email']}</a>` : 
+                            ${employee['Work Email'] ?
+                                `<a href="mailto:${escapeHtml(employee['Work Email'])}">${escapeHtml(employee['Work Email'])}</a>` :
                                 '<span>No work email</span>'}
                         </div>
                         <div class="employee-contact">
                             <i class="fas fa-phone"></i>
-                            ${employee['Work Phone'] ? 
-                                `<a href="tel:${employee['Work Phone']}">${employee['Work Phone']}</a>` : 
+                            ${employee['Work Phone'] ?
+                                `<a href="tel:${escapeHtml(employee['Work Phone'])}">${escapeHtml(employee['Work Phone'])}</a>` :
                                 '<span>No work phone</span>'}
                         </div>
                         <div class="employee-contact">
                             <i class="fas fa-envelope"></i>
-                            ${employee['Personal Email'] ? 
-                                `<a href="mailto:${employee['Personal Email']}">${employee['Personal Email']}</a>` : 
+                            ${employee['Personal Email'] ?
+                                `<a href="mailto:${escapeHtml(employee['Personal Email'])}">${escapeHtml(employee['Personal Email'])}</a>` :
                                 '<span>No personal email</span>'}
                         </div>
                         <div class="employee-contact">
                             <i class="fas fa-mobile-alt"></i>
-                            ${employee['Personal Phone'] ? 
-                                `<a href="tel:${employee['Personal Phone']}">${employee['Personal Phone']}</a>` : 
+                            ${employee['Personal Phone'] ?
+                                `<a href="tel:${escapeHtml(employee['Personal Phone'])}">${escapeHtml(employee['Personal Phone'])}</a>` :
                                 '<span>No personal phone</span>'}
                         </div>
                     </div>
-                    
-                    ${employee.LinkedIn ? 
+
+                    ${linkedInSafe ?
                         `<div class="employee-linkedin">
-                            <a href="${employee.LinkedIn}" target="_blank">
+                            <a href="${escapeHtml(linkedInSafe)}" target="_blank" rel="noopener noreferrer">
                                 <i class="fab fa-linkedin"></i>
                                 View LinkedIn Profile
                             </a>
@@ -3327,23 +3336,23 @@
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Candidate Name:</div>
-                    <div class="detail-value">${deal.candidate_name || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(deal.candidate_name || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Candidate ID:</div>
-                    <div class="detail-value ${!deal.candidate_id ? 'empty' : ''}">${deal.candidate_id || 'Not specified'}</div>
+                    <div class="detail-value ${!deal.candidate_id ? 'empty' : ''}">${escapeHtml(deal.candidate_id || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Job Title:</div>
-                    <div class="detail-value">${deal.job_title || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(deal.job_title || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Job Order ID:</div>
-                    <div class="detail-value ${!deal.job_order_id ? 'empty' : ''}">${deal.job_order_id || 'Not specified'}</div>
+                    <div class="detail-value ${!deal.job_order_id ? 'empty' : ''}">${escapeHtml(deal.job_order_id || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Company:</div>
-                    <div class="detail-value">${deal.company || deal.Company || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(deal.company || deal.Company || 'Not specified')}</div>
                 </div>
             `;
             document.getElementById('pipelineCandidateJob').innerHTML = html;
@@ -3354,41 +3363,41 @@
                 <div class="detail-field">
                     <div class="detail-label">Current Stage:</div>
                     <div class="detail-value">
-                        <span class="status-badge">${deal.stage || 'Not specified'}</span>
+                        <span class="status-badge">${escapeHtml(deal.stage || 'Not specified')}</span>
                     </div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Deal Name:</div>
-                    <div class="detail-value ${!deal['Deal Name'] ? 'empty' : ''}">${deal['Deal Name'] || 'Not specified'}</div>
+                    <div class="detail-value ${!deal['Deal Name'] ? 'empty' : ''}">${escapeHtml(deal['Deal Name'] || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Status:</div>
-                    <div class="detail-value ${!deal.Status ? 'empty' : ''}">${deal.Status || 'Not specified'}</div>
+                    <div class="detail-value ${!deal.Status ? 'empty' : ''}">${escapeHtml(deal.Status || 'Not specified')}</div>
                 </div>
             `;
             document.getElementById('pipelineStatus').innerHTML = html;
         }
 
         function populatePipelineActions(deal) {
-            const nextActionDate = deal.next_action_date ? 
+            const nextActionDate = deal.next_action_date ?
                 new Date(deal.next_action_date).toLocaleDateString() : '';
-            
+
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Next Action:</div>
-                    <div class="detail-value ${!deal.next_action ? 'empty' : ''}">${deal.next_action || 'No action specified'}</div>
+                    <div class="detail-value ${!deal.next_action ? 'empty' : ''}">${escapeHtml(deal.next_action || 'No action specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Next Action Date:</div>
-                    <div class="detail-value ${!nextActionDate ? 'empty' : ''}">${nextActionDate || 'No date set'}</div>
+                    <div class="detail-value ${!nextActionDate ? 'empty' : ''}">${escapeHtml(nextActionDate || 'No date set')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Notes:</div>
-                    <div class="detail-value ${!deal.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${deal.notes || 'No notes'}</div>
+                    <div class="detail-value ${!deal.notes ? 'empty' : ''}" style="white-space: pre-wrap;">${escapeHtml(deal.notes || 'No notes')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Lost Reason:</div>
-                    <div class="detail-value ${!deal.lost_reason ? 'empty' : ''}">${deal.lost_reason || 'N/A'}</div>
+                    <div class="detail-value ${!deal.lost_reason ? 'empty' : ''}">${escapeHtml(deal.lost_reason || 'N/A')}</div>
                 </div>
             `;
             document.getElementById('pipelineActions').innerHTML = html;
@@ -3396,17 +3405,17 @@
 
         function populatePipelineFinancial(deal) {
             const feeAmount = deal.fee_amount ? `$${parseFloat(deal.fee_amount).toLocaleString()}` : '';
-            const placedDate = deal.placed_date ? 
+            const placedDate = deal.placed_date ?
                 new Date(deal.placed_date).toLocaleDateString() : '';
-            
+
             const html = `
                 <div class="detail-field">
                     <div class="detail-label">Fee Amount:</div>
-                    <div class="detail-value ${!feeAmount ? 'empty' : ''}">${feeAmount || 'Not specified'}</div>
+                    <div class="detail-value ${!feeAmount ? 'empty' : ''}">${escapeHtml(feeAmount || 'Not specified')}</div>
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Placed Date:</div>
-                    <div class="detail-value ${!placedDate ? 'empty' : ''}">${placedDate || 'Not placed yet'}</div>
+                    <div class="detail-value ${!placedDate ? 'empty' : ''}">${escapeHtml(placedDate || 'Not placed yet')}</div>
                 </div>
             `;
             document.getElementById('pipelineFinancial').innerHTML = html;
@@ -3428,23 +3437,23 @@
         function setupCandidateSearch() {
             const searchInput = document.getElementById('pipelineCandidateSearch');
             const resultsDiv = document.getElementById('candidateResults');
-            
+
             searchInput.addEventListener('input', debounce(async () => {
                 const query = searchInput.value.trim();
                 if (query.length < 2) {
                     resultsDiv.style.display = 'none';
                     return;
                 }
-                
-                const matches = allCandidates.filter(c => 
+
+                const matches = allCandidates.filter(c =>
                     c.Name && c.Name.toLowerCase().includes(query.toLowerCase())
                 ).slice(0, 5);
-                
+
                 if (matches.length > 0) {
                     resultsDiv.innerHTML = matches.map(c => `
-                        <div class="pipeline-search-item" onclick="selectCandidate('${c.id}', '${(c.Name || '').replace(/'/g, "\\'")}')">
-                            <div class="pipeline-search-item-name">${c.Name}</div>
-                            <div class="pipeline-search-item-details">${c['Current Title'] || 'No title'} at ${c['Current Company'] || 'Unknown'}</div>
+                        <div class="pipeline-search-item" data-id="${escapeHtml(c.id)}" data-name="${escapeHtml(c.Name || '')}">
+                            <div class="pipeline-search-item-name">${escapeHtml(c.Name || '')}</div>
+                            <div class="pipeline-search-item-details">${escapeHtml(c['Current Title'] || 'No title')} at ${escapeHtml(c['Current Company'] || 'Unknown')}</div>
                         </div>
                     `).join('');
                     resultsDiv.style.display = 'block';
@@ -3452,29 +3461,34 @@
                     resultsDiv.style.display = 'none';
                 }
             }, 300));
+
+            resultsDiv.addEventListener('click', (e) => {
+                const item = e.target.closest('.pipeline-search-item');
+                if (item) selectCandidate(item.dataset.id, item.dataset.name);
+            });
         }
 
         function setupJobOrderSearch() {
             const searchInput = document.getElementById('jobOrderSearch');
             const resultsDiv = document.getElementById('jobOrderResults');
-            
+
             searchInput.addEventListener('input', debounce(async () => {
                 const query = searchInput.value.trim();
                 if (query.length < 2) {
                     resultsDiv.style.display = 'none';
                     return;
                 }
-                
-                const matches = allJobOrders.filter(j => 
+
+                const matches = allJobOrders.filter(j =>
                     (j['Position Title'] && j['Position Title'].toLowerCase().includes(query.toLowerCase())) ||
                     (j.Company && j.Company.toLowerCase().includes(query.toLowerCase()))
                 ).slice(0, 5);
-                
+
                 if (matches.length > 0) {
                     resultsDiv.innerHTML = matches.map(j => `
-                        <div class="pipeline-search-item" onclick="selectJobOrder('${j.id}', '${(j['Position Title'] || '').replace(/'/g, "\\'")}', '${(j.Company || '').replace(/'/g, "\\'")}')">
-                            <div class="pipeline-search-item-name">${j['Position Title'] || 'Unknown Position'}</div>
-                            <div class="pipeline-search-item-details">${j.Company || 'Unknown Company'}</div>
+                        <div class="pipeline-search-item" data-id="${escapeHtml(j.id)}" data-title="${escapeHtml(j['Position Title'] || '')}" data-company="${escapeHtml(j.Company || '')}">
+                            <div class="pipeline-search-item-name">${escapeHtml(j['Position Title'] || 'Unknown Position')}</div>
+                            <div class="pipeline-search-item-details">${escapeHtml(j.Company || 'Unknown Company')}</div>
                         </div>
                     `).join('');
                     resultsDiv.style.display = 'block';
@@ -3482,6 +3496,11 @@
                     resultsDiv.style.display = 'none';
                 }
             }, 300));
+
+            resultsDiv.addEventListener('click', (e) => {
+                const item = e.target.closest('.pipeline-search-item');
+                if (item) selectJobOrder(item.dataset.id, item.dataset.title, item.dataset.company);
+            });
         }
 
         function selectCandidate(id, name) {
@@ -3650,27 +3669,27 @@
             const jobInfoHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Position Title:</div>
-                    <input type="text" id="editPositionTitle" value="${currentJobOrder['Position Title'] || ''}">
+                    <input type="text" id="editPositionTitle" value="${escapeHtml(currentJobOrder['Position Title'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Company:</div>
-                    <input type="text" id="editJobCompany" value="${currentJobOrder.Company || ''}">
+                    <input type="text" id="editJobCompany" value="${escapeHtml(currentJobOrder.Company || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Job Title:</div>
-                    <input type="text" id="editJobTitle" value="${currentJobOrder.job_title || ''}">
+                    <input type="text" id="editJobTitle" value="${escapeHtml(currentJobOrder.job_title || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Location:</div>
-                    <input type="text" id="editJobLocation" value="${currentJobOrder.location || ''}">
+                    <input type="text" id="editJobLocation" value="${escapeHtml(currentJobOrder.location || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Salary Range:</div>
-                    <input type="text" id="editSalaryRange" value="${currentJobOrder.salary_range || ''}">
+                    <input type="text" id="editSalaryRange" value="${escapeHtml(currentJobOrder.salary_range || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Timeline:</div>
-                    <input type="text" id="editTimeline" value="${currentJobOrder.timeline || ''}">
+                    <input type="text" id="editTimeline" value="${escapeHtml(currentJobOrder.timeline || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Status:</div>
@@ -3697,11 +3716,11 @@
             const clientHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Client Name:</div>
-                    <input type="text" id="editClientName" value="${currentJobOrder.client_name || ''}">
+                    <input type="text" id="editClientName" value="${escapeHtml(currentJobOrder.client_name || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Client Email:</div>
-                    <input type="email" id="editClientEmail" value="${currentJobOrder.client_email || ''}">
+                    <input type="email" id="editClientEmail" value="${escapeHtml(currentJobOrder.client_email || '')}">
                 </div>
             `;
             document.getElementById('jobClient').innerHTML = clientHtml;
@@ -3710,7 +3729,7 @@
             const descriptionHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Job Description:</div>
-                    <textarea id="editJobDescription" rows="6">${currentJobOrder.job_description || ''}</textarea>
+                    <textarea id="editJobDescription" rows="6">${escapeHtml(currentJobOrder.job_description || '')}</textarea>
                 </div>
             `;
             document.getElementById('jobDescription').innerHTML = descriptionHtml;
@@ -3719,7 +3738,7 @@
             const notesHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Notes:</div>
-                    <textarea id="editJobNotes" rows="4">${currentJobOrder.notes || ''}</textarea>
+                    <textarea id="editJobNotes" rows="4">${escapeHtml(currentJobOrder.notes || '')}</textarea>
                 </div>
             `;
             document.getElementById('jobRequirements').innerHTML = notesHtml;
@@ -3828,23 +3847,23 @@
             const contactHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Work Email:</div>
-                    <input type="email" id="editWorkEmail" value="${currentCandidate['Work Email'] || ''}">
+                    <input type="email" id="editWorkEmail" value="${escapeHtml(currentCandidate['Work Email'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Work Phone:</div>
-                    <input type="tel" id="editWorkPhone" value="${currentCandidate['Work Phone'] || ''}">
+                    <input type="tel" id="editWorkPhone" value="${escapeHtml(currentCandidate['Work Phone'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Personal Email:</div>
-                    <input type="email" id="editPersonalEmail" value="${currentCandidate['Personal Email'] || ''}">
+                    <input type="email" id="editPersonalEmail" value="${escapeHtml(currentCandidate['Personal Email'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Personal Phone:</div>
-                    <input type="tel" id="editPersonalPhone" value="${currentCandidate['Personal Phone'] || ''}">
+                    <input type="tel" id="editPersonalPhone" value="${escapeHtml(currentCandidate['Personal Phone'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">LinkedIn:</div>
-                    <input type="url" id="editLinkedIn" value="${currentCandidate.LinkedIn || ''}">
+                    <input type="url" id="editLinkedIn" value="${escapeHtml(currentCandidate.LinkedIn || '')}">
                 </div>
             `;
             document.getElementById('candidateContact').innerHTML = contactHtml;
@@ -3853,7 +3872,7 @@
             const basicHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Location:</div>
-                    <input type="text" id="editLocation" value="${currentCandidate.Location || ''}">
+                    <input type="text" id="editLocation" value="${escapeHtml(currentCandidate.Location || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Status:</div>
@@ -3866,15 +3885,15 @@
                 </div>
                 <div class="detail-field">
                     <div class="detail-label">Source:</div>
-                    <div class="detail-value">${currentCandidate.Source || 'Not specified'}</div>
+                    <div class="detail-value">${escapeHtml(currentCandidate.Source || 'Not specified')}</div>
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Salary:</div>
-                    <input type="text" id="editSalary" value="${currentCandidate.Salary || ''}">
+                    <input type="text" id="editSalary" value="${escapeHtml(currentCandidate.Salary || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Quality Score:</div>
-                    <input type="number" id="editQualityScore" min="1" max="10" value="${currentCandidate['Quality Score'] || ''}">
+                    <input type="number" id="editQualityScore" min="1" max="10" value="${escapeHtml(currentCandidate['Quality Score'] || '')}">
                 </div>
             `;
             document.getElementById('candidateBasic').innerHTML = basicHtml;
@@ -3883,15 +3902,15 @@
             const professionalHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Title:</div>
-                    <input type="text" id="editTitle" value="${currentCandidate.Title || ''}">
+                    <input type="text" id="editTitle" value="${escapeHtml(currentCandidate.Title || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Company:</div>
-                    <input type="text" id="editCompany" value="${currentCandidate['Current Company'] || ''}">
+                    <input type="text" id="editCompany" value="${escapeHtml(currentCandidate['Current Company'] || '')}">
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Projects:</div>
-                    <textarea id="editProjects">${currentCandidate.Projects || ''}</textarea>
+                    <textarea id="editProjects">${escapeHtml(currentCandidate.Projects || '')}</textarea>
                 </div>
             `;
             document.getElementById('candidateProfessional').innerHTML = professionalHtml;
@@ -3900,7 +3919,7 @@
             const skillsHtml = `
                 <div class="edit-field">
                     <textarea id="editSkills" placeholder="Skills (comma separated)">${
-                        currentCandidate.Skills ? currentCandidate.Skills.join(', ') : ''
+                        escapeHtml(currentCandidate.Skills ? currentCandidate.Skills.join(', ') : '')
                     }</textarea>
                 </div>
             `;
@@ -3910,12 +3929,12 @@
             const additionalHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Motivation:</div>
-                    <textarea id="editMotivation">${currentCandidate.Motivation || ''}</textarea>
+                    <textarea id="editMotivation">${escapeHtml(currentCandidate.Motivation || '')}</textarea>
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Tags:</div>
                     <input type="text" id="editTags" value="${
-                        currentCandidate.Tags ? currentCandidate.Tags.join(', ') : ''
+                        escapeHtml(currentCandidate.Tags ? currentCandidate.Tags.join(', ') : '')
                     }" placeholder="Tags (comma separated)">
                 </div>
             `;
@@ -4088,6 +4107,14 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        // Returns the URL if it's a safe http(s):// URL, else null.
+        // Callers render plain text when null is returned.
+        function safeUrl(url) {
+            if (!url) return null;
+            const s = String(url).trim();
+            return /^https?:\/\//i.test(s) ? s : null;
         }
 
         async function loadCandidateActivities(candidateId) {
