@@ -2463,7 +2463,7 @@
             
             const status = candidate.Status || 'New';
             return `
-                <div class="candidate-card ${contactClass}" onclick="openCandidateInNewTab('${candidate.id}')">
+                <div class="candidate-card ${contactClass}" onclick="openCandidate('${candidate.id}')">
                     <div class="candidate-name ${nameClass}">${escapeHtml(candidate.Name || 'Unknown Name')}</div>
                     <div class="candidate-title">${escapeHtml(candidate.Title || 'No title')}</div>
                     <div class="candidate-company">${escapeHtml(candidate['Current Company'] || 'No company')}</div>
@@ -2517,7 +2517,7 @@
             const jobStatus = job.status || 'New';
             const jobPriority = job.priority || 'Medium';
             return `
-                <div class="job-card ${statusClass}" onclick="openJobOrderInNewTab('${job.id}')">
+                <div class="job-card ${statusClass}" onclick="openJobOrder('${job.id}')">
                     <div class="job-title">${escapeHtml(job['Position Title'] || 'Untitled Position')}</div>
                     <div class="job-company">${escapeHtml(job.Company || 'Company TBD')}</div>
 
@@ -2564,7 +2564,7 @@
 
         function createCompanyCard(company) {
             return `
-                <div class="company-card" onclick="openCompanyInNewTab('${company.id}')">
+                <div class="company-card" onclick="openCompany('${company.id}')">
                     <div class="company-name">${escapeHtml(company.company || 'Unknown Company')}</div>
                     <div class="company-contact">${escapeHtml(company.Name || 'No contact name')}</div>
 
@@ -2742,7 +2742,7 @@
             const patchingClass = deal._patching ? ' patching' : '';
 
             return `
-                <div class="pipeline-card${patchingClass}" draggable="true" data-deal-id="${escapeHtml(deal.id)}" onclick="openPipelineInNewTab('${deal.id}')">
+                <div class="pipeline-card${patchingClass}" draggable="true" data-deal-id="${escapeHtml(deal.id)}" onclick="openPipeline('${deal.id}')">
                     <div class="pipeline-card-candidate">${escapeHtml(deal.candidate_name || 'Unknown Candidate')}</div>
                     <div class="pipeline-card-job">${escapeHtml(deal.job_title || 'Unknown Position')}</div>
                     <div class="pipeline-card-company">${escapeHtml(companyForDeal(deal))}</div>
@@ -2820,19 +2820,7 @@
 
         // Detail Pages
         function showCandidateDetail(id) {
-            let candidate = allCandidates.find(c => c.id === id);
-            
-            // Try sessionStorage if not found
-            if (!candidate) {
-                const stored = sessionStorage.getItem('selectedCandidate');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (parsed.id === id) {
-                        candidate = parsed;
-                    }
-                }
-            }
-
+            const candidate = allCandidates.find(c => c.id === id);
             if (!candidate) {
                 navigateTo('candidates');
                 return;
@@ -2985,27 +2973,13 @@
         }
 
         // Job Order Detail
-        function openJobOrderInNewTab(id) {
+        function openJobOrder(id) {
             const job = allJobOrders.find(j => j.id === id);
-            if (job) {
-                sessionStorage.setItem('selectedJobOrder', JSON.stringify(job));
-                navigateTo('job-orders', id);
-            }
+            if (job) navigateTo('job-orders', id);
         }
 
         function showJobOrderDetail(id) {
-            let job = allJobOrders.find(j => j.id === id);
-            
-            if (!job) {
-                const stored = sessionStorage.getItem('selectedJobOrder');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (parsed.id === id) {
-                        job = parsed;
-                    }
-                }
-            }
-
+            const job = allJobOrders.find(j => j.id === id);
             if (!job) {
                 navigateTo('job-orders');
                 return;
@@ -3088,27 +3062,13 @@
         }
 
         // Company Detail Functions
-        function openCompanyInNewTab(id) {
+        function openCompany(id) {
             const company = allCompanies.find(c => c.id === id);
-            if (company) {
-                sessionStorage.setItem('selectedCompany', JSON.stringify(company));
-                navigateTo('companies', id);
-            }
+            if (company) navigateTo('companies', id);
         }
 
         function showCompanyDetail(id) {
-            let company = allCompanies.find(c => c.id === id);
-            
-            if (!company) {
-                const stored = sessionStorage.getItem('selectedCompany');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (parsed.id === id) {
-                        company = parsed;
-                    }
-                }
-            }
-
+            const company = allCompanies.find(c => c.id === id);
             if (!company) {
                 navigateTo('companies');
                 return;
@@ -3428,7 +3388,7 @@
             
             const linkedInSafe = safeUrl(employee.LinkedIn);
             return `
-                <div class="employee-card" onclick="openCandidateInNewTab('${employee.id}')">
+                <div class="employee-card" onclick="openCandidate('${employee.id}')">
                     <div class="${nameClass}">${escapeHtml(employee.Name || 'Unknown Name')}</div>
                     <div class="employee-title">${escapeHtml(employee['Current Title'] || 'No title specified')}</div>
 
@@ -3470,21 +3430,15 @@
             `;
         }
 
-        function openCandidateInNewTab(id) {
+        function openCandidate(id) {
             const candidate = allCandidates.find(c => c.id === id) ||
                              currentCompanyEmployees.find(c => c.id === id);
-            if (candidate) {
-                sessionStorage.setItem('selectedCandidate', JSON.stringify(candidate));
-                navigateTo('candidates', id);
-            }
+            if (candidate) navigateTo('candidates', id);
         }
 
-        function openPipelineInNewTab(id) {
+        function openPipeline(id) {
             const deal = allPipelineDeals.find(d => d.id === id);
-            if (deal) {
-                sessionStorage.setItem('selectedPipelineDeal', JSON.stringify(deal));
-                navigateTo('pipeline', id);
-            }
+            if (deal) navigateTo('pipeline', id);
         }
 
         // Update dashboard stats to include pipeline
@@ -3585,18 +3539,7 @@
 
         // Pipeline Detail Functions
         function showPipelineDetail(id) {
-            let deal = allPipelineDeals.find(d => d.id === id);
-            
-            if (!deal) {
-                const stored = sessionStorage.getItem('selectedPipeline');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (parsed.id === id) {
-                        deal = parsed;
-                    }
-                }
-            }
-
+            const deal = allPipelineDeals.find(d => d.id === id);
             if (!deal) {
                 navigateTo('pipeline');
                 return;
