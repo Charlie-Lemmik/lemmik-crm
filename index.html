@@ -1900,7 +1900,7 @@
                 
                 <div class="create-form-group">
                     <label for="pipelineNextAction">Next Action</label>
-                    <input type="text" id="pipelineNextAction" placeholder="e.g. Schedule phone call">
+                    <select id="pipelineNextAction"></select>
                 </div>
                 
                 <div class="create-form-group">
@@ -3708,6 +3708,27 @@
             document.getElementById('pipelineFinancial').innerHTML = html;
         }
 
+        const NEXT_ACTION_OPTIONS = ['Call', 'Email', 'SMS', 'LinkedIn', 'Meeting',
+                                     'Submission', 'Interview', 'Reference Check', 'Offer'];
+
+        // Builds <option> elements for the Next Action <select>.
+        // Legacy free-text values (pre-Session 3) are injected as a "Custom: X"
+        // option at the top, selected by default — preserves the existing data
+        // and lets the user switch to a canonical option on save.
+        function buildNextActionOptions(currentValue) {
+            const isCustom = currentValue && !NEXT_ACTION_OPTIONS.includes(currentValue);
+            let html = '';
+            if (isCustom) {
+                html += `<option value="${escapeHtml(currentValue)}" selected>Custom: ${escapeHtml(currentValue)}</option>`;
+            }
+            html += `<option value=""${!currentValue ? ' selected' : ''}>— Choose one —</option>`;
+            NEXT_ACTION_OPTIONS.forEach(o => {
+                const sel = (currentValue === o) ? ' selected' : '';
+                html += `<option value="${escapeHtml(o)}"${sel}>${escapeHtml(o)}</option>`;
+            });
+            return html;
+        }
+
         // Pipeline Editing
         function toggleEditPipeline() {
             if (!isEditingPipeline) {
@@ -3755,7 +3776,7 @@
             const actionsHtml = `
                 <div class="detail-field edit-field">
                     <div class="detail-label">Next Action:</div>
-                    <input type="text" id="editPipelineNextAction" value="${escapeHtml(deal.next_action || '')}">
+                    <select id="editPipelineNextAction">${buildNextActionOptions(deal.next_action || '')}</select>
                 </div>
                 <div class="detail-field edit-field">
                     <div class="detail-label">Next Action Date:</div>
@@ -3874,6 +3895,7 @@
         function showAddPipelineModal() {
             document.getElementById('addPipelineModal').classList.add('active');
             document.getElementById('addPipelineForm').reset();
+            document.getElementById('pipelineNextAction').innerHTML = buildNextActionOptions('');
             hideAddPipelineMessages();
             setupCandidateSearch();
             setupJobOrderSearch();
