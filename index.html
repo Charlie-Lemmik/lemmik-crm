@@ -1769,8 +1769,8 @@
             
             <form id="addPipelineForm" onsubmit="createPipelineEntry(event)">
                 <div class="pipeline-search-group">
-                    <label for="candidateSearch">Select Candidate *</label>
-                    <input type="text" id="candidateSearch" class="pipeline-search-input" placeholder="Search candidates..." required>
+                    <label for="pipelineCandidateSearch">Select Candidate *</label>
+                    <input type="text" id="pipelineCandidateSearch" class="pipeline-search-input" placeholder="Search candidates..." required>
                     <div id="candidateResults" class="pipeline-search-results" style="display: none;"></div>
                     <input type="hidden" id="selectedCandidateId">
                     <input type="hidden" id="selectedCandidateName">
@@ -3801,7 +3801,7 @@
         }
 
         function setupCandidateSearch() {
-            const searchInput = document.getElementById('candidateSearch');
+            const searchInput = document.getElementById('pipelineCandidateSearch');
             const resultsDiv = document.getElementById('candidateResults');
             
             searchInput.addEventListener('input', debounce(async () => {
@@ -3862,7 +3862,7 @@
         function selectCandidate(id, name) {
             document.getElementById('selectedCandidateId').value = id;
             document.getElementById('selectedCandidateName').value = name;
-            document.getElementById('candidateSearch').value = name;
+            document.getElementById('pipelineCandidateSearch').value = name;
             document.getElementById('candidateResults').style.display = 'none';
         }
 
