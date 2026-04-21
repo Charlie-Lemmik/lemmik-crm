@@ -1718,11 +1718,8 @@
                     </button>
                     <h1 class="detail-name" id="pipelineDetailName">Loading...</h1>
                     <p class="detail-subtitle" id="pipelineDetailSubtitle">Loading...</p>
-                    <div class="detail-actions">
-                        <button class="btn" id="editPipelineBtn" onclick="toggleEditPipeline()">✏️ Edit</button>
-                        <button class="btn btn-create" id="savePipelineBtn" onclick="savePipeline()" style="display: none;">💾 Save</button>
-                        <button class="btn btn-cancel" id="cancelPipelineBtn" onclick="cancelEditPipeline()" style="display: none;">❌ Cancel</button>
-                    </div>
+                    <!-- Pipeline edit feature deferred — to be built as a dedicated task -->
+                    <div class="detail-actions"></div>
                 </div>
             </div>
             
@@ -2002,11 +1999,9 @@
         let isEditingCandidate = false;
         let isEditingCompany = false;
         let isEditingJobOrder = false;
-        let isEditingPipeline = false;
         let originalCandidateData = null;
         let originalCompanyData = null;
         let originalJobOrderData = null;
-        let originalPipelineData = null;
 
         // App Initialization
         document.addEventListener('DOMContentLoaded', function() {
