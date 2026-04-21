@@ -2131,6 +2131,8 @@
                 } else {
                     showPage('pipeline');
                 }
+            // Legacy singular-form aliases — kept for existing bookmarks.
+            // New code should navigate via the plural forms above.
             } else if (page === 'candidate') {
                 showCandidateDetail(id);
             } else if (page === 'job-order') {
@@ -2769,7 +2771,7 @@
             const job = allJobOrders.find(j => j.id === id);
             if (job) {
                 sessionStorage.setItem('selectedJobOrder', JSON.stringify(job));
-                window.open(`${window.location.origin}${window.location.pathname}#job-order/${id}`, '_blank');
+                navigateTo('job-orders', id);
             }
         }
 
@@ -2872,7 +2874,7 @@
             const company = allCompanies.find(c => c.id === id);
             if (company) {
                 sessionStorage.setItem('selectedCompany', JSON.stringify(company));
-                window.open(`${window.location.origin}${window.location.pathname}#company/${id}`, '_blank');
+                navigateTo('companies', id);
             }
         }
 
@@ -3251,11 +3253,11 @@
         }
 
         function openCandidateInNewTab(id) {
-            const candidate = allCandidates.find(c => c.id === id) || 
+            const candidate = allCandidates.find(c => c.id === id) ||
                              currentCompanyEmployees.find(c => c.id === id);
             if (candidate) {
                 sessionStorage.setItem('selectedCandidate', JSON.stringify(candidate));
-                window.open(`${window.location.origin}${window.location.pathname}#candidate/${id}`, '_blank');
+                navigateTo('candidates', id);
             }
         }
 
@@ -3263,7 +3265,7 @@
             const deal = allPipelineDeals.find(d => d.id === id);
             if (deal) {
                 sessionStorage.setItem('selectedPipelineDeal', JSON.stringify(deal));
-                window.open(`${window.location.origin}${window.location.pathname}#pipeline-detail/${id}`, '_blank');
+                navigateTo('pipeline', id);
             }
         }
 
