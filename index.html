@@ -799,6 +799,14 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        .pipeline-card.dragging { opacity: 0.4; }
+        .pipeline-card.patching { cursor: not-allowed; opacity: 0.6; }
+        .pipeline-column.drag-over {
+            background: #eff6ff;
+            outline: 2px dashed var(--secondary-blue);
+            outline-offset: -4px;
+        }
+
         .pipeline-column.placed .pipeline-card {
             border-left-color: var(--success-green);
         }
@@ -2146,6 +2154,10 @@
 
             // Hash change for routing
             window.addEventListener('hashchange', handleRouting);
+
+            // Pipeline drag-and-drop (delegated on the stable #pipelineBoard container,
+            // so it survives every renderPipelineBoard() innerHTML replacement).
+            setupPipelineDragAndDrop();
         }
 
         // Token Management
@@ -2594,9 +2606,9 @@
                 const columnClass = stage === 'Placed' ? 'placed' : stage === 'Lost' ? 'lost' : '';
                 
                 boardHtml += `
-                    <div class="pipeline-column ${columnClass}">
+                    <div class="pipeline-column ${columnClass}" data-stage="${escapeHtml(stage)}">
                         <div class="pipeline-column-header">
-                            <div class="pipeline-column-title">${stage}</div>
+                            <div class="pipeline-column-title">${escapeHtml(stage)}</div>
                             <div class="pipeline-column-count">${stageDeals.length}</div>
                         </div>
                         <div class="pipeline-cards">
@@ -2610,6 +2622,112 @@
             board.style.display = 'flex';
         }
 
+        function setupPipelineDragAndDrop() {
+            const board = document.getElementById('pipelineBoard');
+            if (!board) return;
+
+            board.addEventListener('dragstart', (e) => {
+                const card = e.target.closest('.pipeline-card');
+                if (!card) return;
+                const dealId = card.dataset.dealId;
+                const deal = allPipelineDeals.find(d => d.id === dealId);
+                if (!deal || deal._patching) {
+                    e.preventDefault();
+                    return;
+                }
+                e.dataTransfer.effectAllowed = 'move';
+                // Firefox requires dataTransfer to have a payload for the drag to start.
+                e.dataTransfer.setData('text/plain', dealId);
+                card.classList.add('dragging');
+            });
+
+            board.addEventListener('dragend', (e) => {
+                const card = e.target.closest('.pipeline-card');
+                if (card) card.classList.remove('dragging');
+                board.querySelectorAll('.pipeline-column.drag-over')
+                    .forEach(c => c.classList.remove('drag-over'));
+            });
+
+            board.addEventListener('dragover', (e) => {
+                const column = e.target.closest('.pipeline-column');
+                if (!column) return;
+                e.preventDefault(); // required or `drop` won't fire
+                e.dataTransfer.dropEffect = 'move';
+                column.classList.add('drag-over');
+            });
+
+            board.addEventListener('dragleave', (e) => {
+                const column = e.target.closest('.pipeline-column');
+                if (!column) return;
+                // dragleave fires when crossing into child elements; only clear the
+                // highlight if we've actually left the column boundary.
+                if (!column.contains(e.relatedTarget)) {
+                    column.classList.remove('drag-over');
+                }
+            });
+
+            board.addEventListener('drop', (e) => {
+                const column = e.target.closest('.pipeline-column');
+                if (!column) return;
+                e.preventDefault();
+                column.classList.remove('drag-over');
+                const dealId = e.dataTransfer.getData('text/plain');
+                const newStage = column.dataset.stage;
+                if (!dealId || !newStage) return;
+                patchDealStage(dealId, newStage);
+            });
+        }
+
+        async function patchDealStage(dealId, newStage) {
+            const deal = allPipelineDeals.find(d => d.id === dealId);
+            if (!deal) return;
+            if (deal.stage === newStage) return;  // dropped on same column, no-op
+            if (deal._patching) return;            // overlap guard
+
+            const originalStage = deal.stage;
+
+            // Optimistic: move the card immediately; mark as patching so subsequent
+            // drag attempts on the same card are blocked until this PATCH settles.
+            deal.stage = newStage;
+            deal._patching = true;
+            renderPipelineBoard();
+            updateDashboardStats();
+
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${CONFIG.baseId}/PIPELINE/${dealId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${CONFIG.apiToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fields: { stage: newStage } })
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                }
+                // Keep sessionStorage in sync so the detail page shows fresh stage if user clicks through.
+                const stored = sessionStorage.getItem('selectedPipelineDeal');
+                if (stored) {
+                    try {
+                        const parsed = JSON.parse(stored);
+                        if (parsed.id === dealId) {
+                            parsed.stage = newStage;
+                            sessionStorage.setItem('selectedPipelineDeal', JSON.stringify(parsed));
+                        }
+                    } catch (_) { /* corrupt payload — ignore */ }
+                }
+            } catch (err) {
+                console.error('Error updating pipeline stage:', err);
+                deal.stage = originalStage;  // revert in-memory
+                showError('pipelineError', `Could not move deal: ${err.message}`);
+            } finally {
+                delete deal._patching;
+                renderPipelineBoard();
+                updateDashboardStats();
+            }
+        }
+
         // Company on a pipeline deal lives on the linked JOB_ORDERS record,
         // not on PIPELINE itself (see Session 2 Task 1 schema audit).
         function companyForDeal(deal) {
@@ -2619,11 +2737,12 @@
         }
 
         function createPipelineCard(deal) {
-            const nextActionDate = deal.next_action_date ? 
+            const nextActionDate = deal.next_action_date ?
                 new Date(deal.next_action_date).toLocaleDateString() : '';
-            
+            const patchingClass = deal._patching ? ' patching' : '';
+
             return `
-                <div class="pipeline-card" onclick="openPipelineInNewTab('${deal.id}')">
+                <div class="pipeline-card${patchingClass}" draggable="true" data-deal-id="${escapeHtml(deal.id)}" onclick="openPipelineInNewTab('${deal.id}')">
                     <div class="pipeline-card-candidate">${escapeHtml(deal.candidate_name || 'Unknown Candidate')}</div>
                     <div class="pipeline-card-job">${escapeHtml(deal.job_title || 'Unknown Position')}</div>
                     <div class="pipeline-card-company">${escapeHtml(companyForDeal(deal))}</div>
