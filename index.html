@@ -2077,8 +2077,12 @@
             <form id="createCandidateForm" onsubmit="createCandidate(event)">
                 <div class="create-form-grid">
                     <div class="create-form-group">
-                        <label for="newCandidateName">Name *</label>
-                        <input type="text" id="newCandidateName" required>
+                        <label for="newCandidateFirstName">First Name *</label>
+                        <input type="text" id="newCandidateFirstName" required>
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateLastName">Last Name *</label>
+                        <input type="text" id="newCandidateLastName" required>
                     </div>
                     <div class="create-form-group">
                         <label for="newCandidateTitle">Current Title</label>
@@ -3500,8 +3504,12 @@
             event.preventDefault();
             hideCreateCandidateMessages();
 
+            // Name is a formula field (FirstName + LastName) in Airtable —
+            // we write the two source fields; Name computes automatically
+            // on the returned record.
             const candidateData = {
-                'Name': document.getElementById('newCandidateName').value.trim(),
+                'FirstName': document.getElementById('newCandidateFirstName').value.trim(),
+                'LastName': document.getElementById('newCandidateLastName').value.trim(),
                 'Title': document.getElementById('newCandidateTitle').value.trim(),
                 'Current Company': document.getElementById('newCandidateCompany').value.trim(),
                 'Location': document.getElementById('newCandidateLocation').value.trim(),
