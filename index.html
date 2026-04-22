@@ -5,8 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lemmik Recruiting CRM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
+        /* Blueprint theme tokens (Session 6 pilot — scoped via body.bp-theme) */
+        :root {
+            --bp-bg: #F5F2EA;
+            --bp-surface: #FFF;
+            --bp-ink: #1C1B19;
+            --bp-ink-soft: #3A3935;
+            --bp-muted: #6B6860;
+            --bp-hint: #8A8679;
+            --bp-divider: #D6D2C4;
+            --bp-accent: #2AA9E0;
+            --bp-accent-ink: #FFF;
+            --bp-grid: #2AA9E018;
+            --bp-alert: #D85A30;
+        }
+
         /* CSS Variables */
         :root {
             --primary-orange: #fb923c;
@@ -1425,11 +1443,150 @@
             font-style: italic;
             padding: 0.75rem 0;
         }
+
+        /* ===========================================================
+           BLUEPRINT THEME (Session 6 — scoped to body.bp-theme, which
+           handleRouting sets only on #candidates and #candidate/:id).
+           Everything below is dormant unless the class is active.
+           =========================================================== */
+
+        /* Default state: new blueprint headers are invisible. */
+        .bp-top-strip,
+        .bp-header { display: none; }
+
+        body.bp-theme {
+            background: var(--bp-bg);
+            color: var(--bp-ink);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        /* Hide the legacy orange-accent header on blueprint routes. */
+        body.bp-theme .legacy-header { display: none; }
+
+        body.bp-theme .bp-top-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 28px;
+            background: var(--bp-ink);
+            color: var(--bp-hint);
+            padding: 0 1.5rem;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        body.bp-theme .bp-header {
+            display: block;
+            background: var(--bp-surface);
+            border-bottom: 1.5px solid var(--bp-ink);
+            padding: 16px 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.bp-theme .bp-header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        body.bp-theme .bp-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        body.bp-theme .bp-brand-logo {
+            width: 38px;
+            height: 40px;
+            object-fit: contain;
+            display: block;
+        }
+
+        body.bp-theme .bp-brand-stack {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        body.bp-theme .bp-brand-name {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--bp-ink);
+        }
+
+        body.bp-theme .bp-brand-tag {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            color: var(--bp-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        body.bp-theme .bp-nav {
+            display: flex;
+            gap: 0;
+        }
+
+        body.bp-theme .bp-nav-item {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--bp-muted);
+            padding: 8px 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        body.bp-theme .bp-nav-item:hover {
+            color: var(--bp-ink);
+        }
+
+        body.bp-theme .bp-nav-item.active {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
+    <!-- Blueprint theme header — shown only when body.bp-theme is active -->
+    <div class="bp-top-strip">
+        <span class="bp-top-strip-left">DWG · LEMMIK-CRM · SHEET 02 OF 08 · REV 2.3</span>
+        <span class="bp-top-strip-right" id="bpHeaderDate"></span>
+    </div>
+    <header class="bp-header">
+        <div class="bp-header-inner">
+            <div class="bp-brand">
+                <img src="https://lemmikrecruiting.com/lemmik_logo_robot_v2.jpg" alt="Lemmik" class="bp-brand-logo">
+                <div class="bp-brand-stack">
+                    <div class="bp-brand-name">LEMMIK</div>
+                    <div class="bp-brand-tag">RECRUITING · CONSTRUCTION</div>
+                </div>
+            </div>
+            <nav class="bp-nav">
+                <span class="bp-nav-item" data-page="dashboard">DASHBOARD</span>
+                <span class="bp-nav-item" data-page="candidates">CANDIDATES</span>
+                <span class="bp-nav-item" data-page="job-orders">JOBS</span>
+                <span class="bp-nav-item" data-page="companies">COMPANIES</span>
+                <span class="bp-nav-item" data-page="pipeline">PIPELINE</span>
+            </nav>
+        </div>
+    </header>
+
+    <header class="header legacy-header">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
@@ -2257,6 +2414,12 @@
         });
 
         function initializeApp() {
+            // Blueprint top-strip date (computed once; won't roll past midnight).
+            const d = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const dateEl = document.getElementById('bpHeaderDate');
+            if (dateEl) dateEl.textContent = `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`;
+
             const token = localStorage.getItem('lemmikApiToken');
             if (token) {
                 CONFIG.apiToken = token;
@@ -2347,9 +2510,15 @@
 
             // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            
-            // Update nav
-            document.querySelectorAll('.nav-link').forEach(link => {
+
+            // Blueprint theme scoped to the Candidates routes only
+            // (#candidates, #candidates/<id>, plus the legacy singular alias).
+            const isBpRoute = page === 'candidates' || page === 'candidate';
+            document.body.classList.toggle('bp-theme', isBpRoute);
+
+            // Update nav — legacy .nav-link AND blueprint .bp-nav-item both
+            // get the active class so switching themes never desyncs state.
+            document.querySelectorAll('.nav-link, .bp-nav-item').forEach(link => {
                 link.classList.remove('active');
                 if (link.dataset.page === (page || 'dashboard')) {
                     link.classList.add('active');
