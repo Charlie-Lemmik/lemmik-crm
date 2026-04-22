@@ -1558,6 +1558,320 @@
             background: var(--bp-accent);
             color: var(--bp-accent-ink);
         }
+
+        /* --- Candidates page body: faint cyan grid background --- */
+        body.bp-theme #candidates {
+            background-image:
+                linear-gradient(var(--bp-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--bp-grid) 1px, transparent 1px);
+            background-size: 24px 24px;
+            padding: 2rem 1.5rem;
+            max-width: 1400px;
+        }
+
+        /* --- Section header block --- */
+        .bp-section-header { display: none; }
+        body.bp-theme .bp-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 1.5px solid var(--bp-ink);
+        }
+        body.bp-theme .bp-section-label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        body.bp-theme .bp-section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            color: var(--bp-ink);
+            line-height: 1;
+        }
+        body.bp-theme .bp-section-right {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+        body.bp-theme .bp-section-stat {
+            display: flex;
+            flex-direction: column;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            line-height: 1.2;
+        }
+        body.bp-theme .bp-section-stat-label {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        body.bp-theme .bp-section-stat-value {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            font-variant-numeric: tabular-nums;
+        }
+        body.bp-theme .bp-add-btn {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+            border: 1.5px solid var(--bp-ink);
+            padding: 10px 14px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 0;
+        }
+        body.bp-theme .bp-add-btn:hover { background: #1f8bba; }
+
+        /* --- Controls row restyled --- */
+        body.bp-theme #candidates .controls { margin-bottom: 16px; }
+        body.bp-theme #candidates .search-filter-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+        body.bp-theme #candidates .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+        body.bp-theme #candidates .search-box .search-icon { display: none; }
+        body.bp-theme #candidates .search-input {
+            width: 100%;
+            padding: 9px 12px;
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            color: var(--bp-ink);
+            box-shadow: none;
+        }
+        body.bp-theme #candidates .search-input:focus {
+            outline: none;
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme #candidates .search-input::placeholder {
+            color: var(--bp-hint);
+            letter-spacing: 0.04em;
+        }
+        body.bp-theme #candidates .filter-group { gap: 8px; }
+        body.bp-theme #candidates .filter-select {
+            padding: 9px 10px;
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-ink);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            min-width: 140px;
+        }
+        /* Legacy "+ New Candidate" button in the filter group — moved to
+           the section header under bp-theme. */
+        body.bp-theme #candidates .filter-group > button { display: none; }
+
+        /* Hide legacy card grid under bp-theme */
+        body.bp-theme #candidatesGrid { display: none !important; }
+
+        /* --- Blueprint table --- */
+        .bp-table-wrap, .bp-pagination { display: none; }
+        body.bp-theme .bp-table-wrap {
+            display: block;
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-ink);
+            margin-bottom: 16px;
+        }
+        body.bp-theme .bp-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+        }
+        body.bp-theme .bp-table thead tr { background: var(--bp-ink); }
+        body.bp-theme .bp-table th {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-bg);
+            padding: 10px 12px;
+            text-align: left;
+            text-transform: uppercase;
+            border-right: 0.5px solid var(--bp-hint);
+            white-space: nowrap;
+        }
+        body.bp-theme .bp-table th:last-child { border-right: none; }
+        body.bp-theme .bp-table th.bp-col-num { text-align: center; width: 48px; }
+        body.bp-theme .bp-table th.bp-col-status { text-align: right; width: 96px; }
+        body.bp-theme .bp-table th.bp-col-loc { width: 140px; }
+
+        body.bp-theme .bp-row {
+            border-bottom: 0.5px solid var(--bp-divider);
+            cursor: pointer;
+        }
+        body.bp-theme .bp-row:last-child { border-bottom: none; }
+        body.bp-theme .bp-row:hover { background: #F9F7F2; }
+        body.bp-theme .bp-row td {
+            padding: 14px 12px;
+            border-right: 0.5px dashed var(--bp-divider);
+            vertical-align: top;
+        }
+        body.bp-theme .bp-row td:last-child { border-right: none; }
+
+        body.bp-theme .bp-col-num {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-hint);
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.bp-theme .bp-cell-name-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        body.bp-theme .bp-cell-name-alert { color: var(--bp-alert); }
+
+        body.bp-theme .bp-cell-email {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-accent);
+            letter-spacing: 0.04em;
+        }
+        body.bp-theme .bp-cell-nocontact {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-hint);
+            letter-spacing: 0.04em;
+        }
+
+        body.bp-theme .bp-cell-title {
+            font-size: 12px;
+            color: var(--bp-ink-soft);
+            margin-bottom: 2px;
+        }
+        body.bp-theme .bp-cell-company {
+            font-size: 11px;
+            color: var(--bp-muted);
+        }
+
+        body.bp-theme .bp-col-loc {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            color: var(--bp-ink-soft);
+        }
+        body.bp-theme .bp-col-loc-empty { color: var(--bp-hint); }
+
+        body.bp-theme .bp-col-status { text-align: right; }
+        body.bp-theme .bp-status {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+            border: 1px solid transparent;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        body.bp-theme .bp-status-new {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-status-active {
+            background: var(--bp-surface);
+            color: var(--bp-accent);
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-status-placed {
+            background: var(--bp-ink);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-ink);
+        }
+        body.bp-theme .bp-status-inactive {
+            background: var(--bp-surface);
+            color: var(--bp-hint);
+            border-color: var(--bp-hint);
+        }
+
+        /* --- Pagination row --- */
+        body.bp-theme .bp-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 2px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+        }
+        body.bp-theme .bp-pagination-right { display: flex; gap: 1.5rem; }
+        body.bp-theme .bp-page-nav {
+            color: var(--bp-ink);
+            cursor: pointer;
+            user-select: none;
+        }
+        body.bp-theme .bp-page-nav:hover { color: var(--bp-accent); }
+        body.bp-theme .bp-page-nav.disabled {
+            color: var(--bp-hint);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* --- Empty + loading + error states --- */
+        body.bp-theme .bp-empty {
+            padding: 56px 24px;
+            text-align: center;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+        }
+        body.bp-theme #candidates .loading {
+            justify-content: center;
+            padding: 48px 24px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            color: var(--bp-muted);
+        }
+        body.bp-theme #candidates .loading i { display: none; }
+        body.bp-theme #candidates .loading span {
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: lowercase;
+        }
+        body.bp-theme #candidates .loading span::before { content: '> '; }
+        body.bp-theme #candidatesError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
     </style>
 </head>
 <body>
@@ -1686,6 +2000,25 @@
 
     <!-- Candidates Page -->
     <div id="candidates" class="page container">
+        <!-- Blueprint section header: bp-theme only -->
+        <div class="bp-section-header">
+            <div class="bp-section-left">
+                <div class="bp-section-label">SECTION 02 · ROSTER</div>
+                <div class="bp-section-title">CANDIDATES</div>
+            </div>
+            <div class="bp-section-right">
+                <div class="bp-section-stat">
+                    <div class="bp-section-stat-label">TOTAL</div>
+                    <div class="bp-section-stat-value" id="bpCandidatesTotal">—</div>
+                </div>
+                <div class="bp-section-stat">
+                    <div class="bp-section-stat-label">W / CONTACT</div>
+                    <div class="bp-section-stat-value" id="bpCandidatesWithContact">—</div>
+                </div>
+                <button class="bp-add-btn" onclick="showCreateCandidateModal()">+ ADD CANDIDATE</button>
+            </div>
+        </div>
+
         <div class="controls">
             <div class="search-filter-row">
                 <div class="search-box">
@@ -1722,7 +2055,26 @@
             <span id="candidatesErrorMessage"></span>
         </div>
 
+        <!-- Legacy card grid: hidden under bp-theme -->
         <div id="candidatesGrid" class="cards-grid" style="display: none;"></div>
+
+        <!-- Blueprint table: visible only under bp-theme -->
+        <div class="bp-table-wrap">
+            <table class="bp-table" id="candidatesTable">
+                <thead>
+                    <tr>
+                        <th class="bp-col-num">#</th>
+                        <th class="bp-col-name">NAME</th>
+                        <th class="bp-col-tc">TITLE / COMPANY</th>
+                        <th class="bp-col-loc">LOCATION</th>
+                        <th class="bp-col-status">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="candidatesTableBody"></tbody>
+            </table>
+            <div class="bp-empty" id="candidatesEmpty" style="display: none;">NO CANDIDATES MATCH FILTER</div>
+        </div>
+        <div class="bp-pagination" id="candidatesPagination"></div>
     </div>
 
     <!-- Job Orders Page -->
@@ -2390,6 +2742,9 @@
         // eager-loaded at startup and always present in memory.
         let candidatesLoaded = false;
         let candidatesLoading = null;
+        // Blueprint candidates table pagination (Session 6)
+        let currentCandidatesPage = 1;
+        const BP_CANDIDATES_PAGE_SIZE = 50;
         let filteredJobOrders = [];
         let filteredCompanies = [];
         let currentCandidate = null;
@@ -2515,6 +2870,12 @@
             // (#candidates, #candidates/<id>, plus the legacy singular alias).
             const isBpRoute = page === 'candidates' || page === 'candidate';
             document.body.classList.toggle('bp-theme', isBpRoute);
+
+            // Swap the candidate search placeholder to match the active theme.
+            const candSearch = document.getElementById('candidateSearch');
+            if (candSearch) {
+                candSearch.placeholder = isBpRoute ? '> search_' : 'Search candidates...';
+            }
 
             // Update nav — legacy .nav-link AND blueprint .bp-nav-item both
             // get the active class so switching themes never desyncs state.
@@ -2800,18 +3161,140 @@
         }
 
         // Rendering
+        // Branch on theme: legacy cards for dashboard-style pages, blueprint
+        // table for the Session 6 pilot. Both DOM trees exist in the HTML;
+        // CSS hides the inactive one.
         function renderCandidates() {
+            if (document.body.classList.contains('bp-theme')) {
+                renderCandidatesTable();
+            } else {
+                renderCandidatesCards();
+            }
+            updateBpSectionStats();
+        }
+
+        function renderCandidatesCards() {
             const grid = document.getElementById('candidatesGrid');
-            
             if (filteredCandidates.length === 0) {
                 grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray-500);">No candidates found</p>';
                 grid.style.display = 'grid';
                 return;
             }
-
             const cards = filteredCandidates.map(candidate => createCandidateCard(candidate)).join('');
             grid.innerHTML = cards;
             grid.style.display = 'grid';
+        }
+
+        // Populates the TOTAL / W-CONTACT stats shown in the blueprint section
+        // header. Reads allCandidates (not filteredCandidates) because the
+        // stats are whole-dataset counts, not filter-dependent.
+        function updateBpSectionStats() {
+            const totalEl = document.getElementById('bpCandidatesTotal');
+            const withEl = document.getElementById('bpCandidatesWithContact');
+            if (!totalEl || !withEl) return;
+            if (!candidatesLoaded) {
+                totalEl.textContent = '—';
+                withEl.textContent = '—';
+                return;
+            }
+            const active = allCandidates.filter(c => !c.Archived);
+            const withContact = active.filter(c =>
+                c['Work Email'] || c['Work Phone'] || c['Personal Email'] || c['Personal Phone']
+            );
+            totalEl.textContent = String(active.length).padStart(4, '0');
+            withEl.textContent = String(withContact.length).padStart(4, '0');
+        }
+
+        function renderCandidatesTable() {
+            const body = document.getElementById('candidatesTableBody');
+            const table = document.getElementById('candidatesTable');
+            const empty = document.getElementById('candidatesEmpty');
+            const pagination = document.getElementById('candidatesPagination');
+            if (!body) return; // defensive: DOM not yet built
+
+            const total = filteredCandidates.length;
+            if (total === 0) {
+                body.innerHTML = '';
+                table.style.display = 'none';
+                empty.style.display = 'block';
+                pagination.innerHTML = '';
+                return;
+            }
+            table.style.display = '';
+            empty.style.display = 'none';
+
+            const pageSize = BP_CANDIDATES_PAGE_SIZE;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentCandidatesPage > totalPages) currentCandidatesPage = totalPages;
+            if (currentCandidatesPage < 1) currentCandidatesPage = 1;
+
+            const start = (currentCandidatesPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageSlice = filteredCandidates.slice(start, end);
+
+            body.innerHTML = pageSlice
+                .map((c, i) => createCandidateTableRow(c, start + i + 1))
+                .join('');
+            renderCandidatesPagination(start, end, total, currentCandidatesPage, totalPages);
+        }
+
+        // Build one <tr>. Row number is 1-based filtered-list position, not
+        // record ID; zero-padded to 3 digits for the blueprint mono aesthetic.
+        function createCandidateTableRow(c, rowNumber) {
+            const rowNumStr = String(rowNumber).padStart(3, '0');
+            const isZoomInfoD = c.Source === 'ZoomInfoD';
+            const nameCls = 'bp-cell-name-text' + (isZoomInfoD ? ' bp-cell-name-alert' : '');
+
+            const email = c['Work Email'] || c['Personal Email'] || '';
+            const contactLine = email
+                ? `<div class="bp-cell-email">${escapeHtml(email)}</div>`
+                : `<div class="bp-cell-nocontact">— no contact info</div>`;
+
+            const title = c.Title ? `<div class="bp-cell-title">${escapeHtml(c.Title)}</div>` : '';
+            const company = c['Current Company'] ? `<div class="bp-cell-company">${escapeHtml(c['Current Company'])}</div>` : '';
+
+            const locCls = c.Location ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
+            const loc = c.Location ? escapeHtml(c.Location) : '—';
+
+            const status = c.Status || 'New';
+            const statusCls = 'bp-status bp-status-' + escapeHtml(status.toLowerCase());
+
+            return `
+                <tr class="bp-row" onclick="openCandidate('${escapeHtml(c.id)}')">
+                    <td class="bp-col-num">${rowNumStr}</td>
+                    <td>
+                        <div class="${nameCls}">${escapeHtml(c.Name || 'Unknown')}</div>
+                        ${contactLine}
+                    </td>
+                    <td>
+                        ${title}
+                        ${company}
+                    </td>
+                    <td class="${locCls}">${loc}</td>
+                    <td class="bp-col-status"><span class="${statusCls}">${escapeHtml(status)}</span></td>
+                </tr>
+            `;
+        }
+
+        function renderCandidatesPagination(start, end, total, page, totalPages) {
+            const el = document.getElementById('candidatesPagination');
+            if (!el) return;
+            const prevDisabled = page <= 1;
+            const nextDisabled = page >= totalPages;
+            const prevClick = prevDisabled ? '' : ' onclick="changeCandidatesPage(-1)"';
+            const nextClick = nextDisabled ? '' : ' onclick="changeCandidatesPage(1)"';
+            el.innerHTML = `
+                <div class="bp-pagination-left">PAGE ${page} / ${totalPages} · ENTRIES ${start + 1}–${end} OF ${total}</div>
+                <div class="bp-pagination-right">
+                    <span class="bp-page-nav${prevDisabled ? ' disabled' : ''}"${prevClick}>← PREV</span>
+                    <span class="bp-page-nav${nextDisabled ? ' disabled' : ''}"${nextClick}>NEXT →</span>
+                </div>
+            `;
+        }
+
+        function changeCandidatesPage(delta) {
+            currentCandidatesPage += delta;
+            renderCandidates();
         }
 
         function createCandidateCard(candidate) {
@@ -3118,6 +3601,9 @@
 
         // Filtering
         function filterCandidates() {
+            // Any filter/search change resets the blueprint paginator to page 1
+            // (harmless under legacy theme — var is simply ignored).
+            currentCandidatesPage = 1;
             const search = document.getElementById('candidateSearch').value.toLowerCase();
             const status = document.getElementById('statusFilter').value;
             const contact = document.getElementById('contactFilter').value;
