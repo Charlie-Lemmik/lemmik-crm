@@ -3312,10 +3312,14 @@
                 const responseData = await response.json();
                 currentCompany = { id: currentCompany.id, ...responseData.fields };
                 
-                // Update in allCompanies array
+                // Update in allCompanies array, then re-run the filter so
+                // filteredCompanies picks up the fresh object reference —
+                // otherwise the list view shows stale data for this record
+                // until a user action re-triggers filterCompanies().
                 const index = allCompanies.findIndex(c => c.id === currentCompany.id);
                 if (index !== -1) {
                     allCompanies[index] = currentCompany;
+                    filterCompanies();
                 }
                 
                 sessionStorage.setItem('selectedCompany', JSON.stringify(currentCompany));
@@ -4310,10 +4314,12 @@
                 const responseData = await response.json();
                 currentJobOrder = { id: currentJobOrder.id, ...responseData.fields };
                 
-                // Update in allJobOrders array
+                // Update in allJobOrders array, then re-run the filter so
+                // filteredJobOrders picks up the fresh object reference.
                 const index = allJobOrders.findIndex(j => j.id === currentJobOrder.id);
                 if (index !== -1) {
                     allJobOrders[index] = currentJobOrder;
+                    filterJobOrders();
                 }
                 
                 sessionStorage.setItem('selectedJobOrder', JSON.stringify(currentJobOrder));
@@ -4530,10 +4536,12 @@
                 const responseData = await response.json();
                 currentCandidate = { id: currentCandidate.id, ...responseData.fields };
                 
-                // Update in allCandidates array
+                // Update in allCandidates array, then re-run the filter so
+                // filteredCandidates picks up the fresh object reference.
                 const index = allCandidates.findIndex(c => c.id === currentCandidate.id);
                 if (index !== -1) {
                     allCandidates[index] = currentCandidate;
+                    filterCandidates();
                 }
                 
                 sessionStorage.setItem('selectedCandidate', JSON.stringify(currentCandidate));
