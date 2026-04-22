@@ -526,6 +526,19 @@
             margin-bottom: 1rem;
         }
 
+        .create-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .create-form-grid .create-form-group {
+            margin-bottom: 0;
+        }
+        @media (max-width: 600px) {
+            .create-form-grid { grid-template-columns: 1fr; }
+        }
+
         .create-form-group label {
             display: block;
             margin-bottom: 0.5rem;
@@ -1535,6 +1548,9 @@
                         <option value="has-contact">Has Contact Info</option>
                         <option value="no-contact">No Contact Info</option>
                     </select>
+                    <button class="btn" onclick="showCreateCandidateModal()">
+                        <i class="fas fa-plus"></i> New Candidate
+                    </button>
                 </div>
             </div>
         </div>
@@ -2042,6 +2058,72 @@
                 <div class="create-modal-actions">
                     <button type="button" class="btn btn-cancel" onclick="hideCreateJobOrderModal()">Cancel</button>
                     <button type="submit" class="btn btn-create">Create Job Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Candidate Modal -->
+    <div id="createCandidateModal" class="create-modal">
+        <div class="create-modal-content">
+            <h2><i class="fas fa-user-plus"></i> New Candidate</h2>
+
+            <div class="success" id="createCandidateSuccess" style="display: none;">✅ Candidate created successfully!</div>
+            <div class="error" id="createCandidateError" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="createCandidateErrorMessage"></span>
+            </div>
+
+            <form id="createCandidateForm" onsubmit="createCandidate(event)">
+                <div class="create-form-grid">
+                    <div class="create-form-group">
+                        <label for="newCandidateName">Name *</label>
+                        <input type="text" id="newCandidateName" required>
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateTitle">Current Title</label>
+                        <input type="text" id="newCandidateTitle">
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateCompany">Current Company</label>
+                        <input type="text" id="newCandidateCompany">
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateLocation">Location</label>
+                        <input type="text" id="newCandidateLocation">
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateWorkEmail">Work Email</label>
+                        <input type="email" id="newCandidateWorkEmail">
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateWorkPhone">Work Phone</label>
+                        <input type="tel" id="newCandidateWorkPhone">
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateStatus">Status *</label>
+                        <select id="newCandidateStatus" required>
+                            <option value="New" selected>New</option>
+                            <option value="Active">Active</option>
+                            <option value="Placed">Placed</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="create-form-group">
+                        <label for="newCandidateSource">Source</label>
+                        <select id="newCandidateSource">
+                            <option value="Manual" selected>Manual</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="Referral">Referral</option>
+                            <option value="ZoomInfoD">ZoomInfoD</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="create-modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="hideCreateCandidateModal()">Cancel</button>
+                    <button type="submit" class="btn btn-create">Create Candidate</button>
                 </div>
             </form>
         </div>
@@ -3396,6 +3478,78 @@
         function hideCompanyMessages() {
             document.getElementById('companySaveMessage').style.display = 'none';
             document.getElementById('companySaveError').style.display = 'none';
+        }
+
+        // Create Candidate Functions
+        function showCreateCandidateModal() {
+            document.getElementById('createCandidateModal').classList.add('active');
+            document.getElementById('createCandidateForm').reset();
+            hideCreateCandidateMessages();
+        }
+
+        function hideCreateCandidateModal() {
+            document.getElementById('createCandidateModal').classList.remove('active');
+        }
+
+        function hideCreateCandidateMessages() {
+            document.getElementById('createCandidateSuccess').style.display = 'none';
+            document.getElementById('createCandidateError').style.display = 'none';
+        }
+
+        async function createCandidate(event) {
+            event.preventDefault();
+            hideCreateCandidateMessages();
+
+            const candidateData = {
+                'Name': document.getElementById('newCandidateName').value.trim(),
+                'Title': document.getElementById('newCandidateTitle').value.trim(),
+                'Current Company': document.getElementById('newCandidateCompany').value.trim(),
+                'Location': document.getElementById('newCandidateLocation').value.trim(),
+                'Work Email': document.getElementById('newCandidateWorkEmail').value.trim(),
+                'Work Phone': document.getElementById('newCandidateWorkPhone').value.trim(),
+                'Status': document.getElementById('newCandidateStatus').value,
+                'Source': document.getElementById('newCandidateSource').value
+            };
+
+            try {
+                const response = await fetch(`https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${CONFIG.apiToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ fields: candidateData })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                const newCandidate = { id: responseData.id, ...responseData.fields };
+
+                // Prepend to the in-memory list. If the cache is already
+                // warm, filterCandidates() will re-render the list with
+                // the new record visible. If the cache is cold, this
+                // prepend is a harmless no-op — the subsequent navigate
+                // to the new candidate's detail page will trigger
+                // ensureCandidates(), which overwrites allCandidates with
+                // a fresh fetch that already includes this record.
+                allCandidates.unshift(newCandidate);
+                if (candidatesLoaded) filterCandidates();
+                updateDashboardStats();
+
+                showSuccess('createCandidateSuccess');
+                setTimeout(() => {
+                    hideCreateCandidateModal();
+                    navigateTo('candidates', newCandidate.id);
+                }, 800);
+
+            } catch (error) {
+                console.error('Error creating candidate:', error);
+                showError('createCandidateError', `Error creating candidate: ${error.message}`);
+            }
         }
 
         // Create Company Functions
