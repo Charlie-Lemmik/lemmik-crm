@@ -2924,8 +2924,14 @@
             nameEl.textContent = candidate.Name || 'Unknown';
             nameEl.className = `detail-name ${candidate.Source === 'ZoomInfoD' ? 'zoominfo-d' : ''}`;
             
-            document.getElementById('candidateDetailSubtitle').textContent = 
-                `${candidate.Title || 'Not provided'} at ${candidate['Current Company'] || 'Not provided'}`;
+            // If both Title and Current Company are empty, render a single
+            // message rather than "Not provided at Not provided".
+            const cTitle = candidate.Title;
+            const cCompany = candidate['Current Company'];
+            document.getElementById('candidateDetailSubtitle').textContent =
+                (!cTitle && !cCompany)
+                    ? 'Details not provided yet'
+                    : `${cTitle || 'Not provided'} at ${cCompany || 'Not provided'}`;
 
             populateCandidateContact(candidate);
             populateCandidateBasic(candidate);
@@ -3080,8 +3086,14 @@
 
         function populateJobOrderDetail(job) {
             document.getElementById('jobDetailTitle').textContent = job['Position Title'] || 'Untitled Position';
-            document.getElementById('jobDetailSubtitle').textContent = 
-                `${job.Company || 'Unknown'} • ${job.location || 'Not provided'}`;
+            // Same collapse as candidate subtitle — if both fields are empty,
+            // render a single message rather than "Unknown • Not provided".
+            const jCompany = job.Company;
+            const jLocation = job.location;
+            document.getElementById('jobDetailSubtitle').textContent =
+                (!jCompany && !jLocation)
+                    ? 'Details not provided yet'
+                    : `${jCompany || 'Unknown'} • ${jLocation || 'Not provided'}`;
 
             const jobStatus = job.status || 'New';
             const jobPriority = job.priority || 'Medium';
