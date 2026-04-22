@@ -2108,6 +2108,10 @@
         let allCompanies = [];
         let allPipelineDeals = [];
         let filteredCandidates = [];
+        // Lazy-load state for CANDIDATES only — the three other tables are
+        // eager-loaded at startup and always present in memory.
+        let candidatesLoaded = false;
+        let candidatesLoading = null;
         let filteredJobOrders = [];
         let filteredCompanies = [];
         let currentCandidate = null;
@@ -2237,6 +2241,24 @@
                     showCandidateDetail(id);
                 } else {
                     showPage('candidates');
+                    if (candidatesLoaded) {
+                        // Cached — render is synchronous, no spinner needed.
+                        renderCandidates();
+                    } else {
+                        // Spinner shows only if the fetch exceeds 300ms.
+                        // loadCandidates() (invoked via ensureCandidates)
+                        // calls renderCandidates() itself on success. On
+                        // failure the error banner is already surfaced;
+                        // we swallow the rejection to keep it off the
+                        // console.
+                        const spinnerTimer = setTimeout(() => showLoading('candidatesLoading'), 300);
+                        ensureCandidates()
+                            .catch(() => { /* error banner already shown */ })
+                            .finally(() => {
+                                clearTimeout(spinnerTimer);
+                                hideLoading('candidatesLoading');
+                            });
+                    }
                 }
             } else if (page === 'job-orders') {
                 if (id) {
@@ -2279,24 +2301,52 @@
         // Data Loading
         async function loadData() {
             await Promise.all([
-                loadCandidates(),
                 loadJobOrders(),
                 loadCompanies(),
                 loadPipelineDeals()
             ]);
             updateDashboardStats();
+            // Background prefetch candidates — don't block dashboard
+            // interactivity. When it resolves, refresh dashboard stats so
+            // the two candidate-count cards fill in. No spinner — silent.
+            // A concurrent foreground ensureCandidates() (e.g. a deep-link
+            // to #candidates/recXXX) reuses the same in-flight promise.
+            ensureCandidates()
+                .then(() => updateDashboardStats())
+                .catch(() => { /* error banner already surfaced by loadCandidates */ });
         }
 
+        // Returns allCandidates, fetching once per session if needed.
+        // Concurrent callers share the same in-flight promise.
+        async function ensureCandidates() {
+            if (candidatesLoaded) return allCandidates;
+            if (candidatesLoading) return candidatesLoading;
+            candidatesLoading = (async () => {
+                try {
+                    await loadCandidates();
+                    candidatesLoaded = true;
+                    return allCandidates;
+                } finally {
+                    candidatesLoading = null;
+                }
+            })();
+            return candidatesLoading;
+        }
+
+        // Callers manage the spinner (with the 300ms-delay pattern) so
+        // background prefetch stays silent while foreground navigation
+        // surfaces progress. Errors set the existing #candidatesError
+        // banner on the Candidates list page and re-throw so callers can
+        // clean up their spinner in finally{}.
         async function loadCandidates() {
+            hideError('candidatesError');
+
+            let allRecords = [];
+            let offset = null;
+
             try {
-                showLoading('candidatesLoading');
-                hideError('candidatesError');
-
-                let allRecords = [];
-                let offset = null;
-
                 do {
-                    const url = `https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES` + 
+                    const url = `https://api.airtable.com/v0/${CONFIG.baseId}/CANDIDATES` +
                         (offset ? `?offset=${offset}` : '');
 
                     const response = await fetch(url, {
@@ -2322,12 +2372,10 @@
                 allCandidates = allRecords;
                 filteredCandidates = [...allCandidates];
                 renderCandidates();
-                hideLoading('candidatesLoading');
-
             } catch (error) {
                 console.error('Error loading candidates:', error);
                 showError('candidatesError', `Failed to load candidates: ${error.message}`);
-                hideLoading('candidatesLoading');
+                throw error;
             }
         }
 
@@ -2841,7 +2889,26 @@
         }
 
         // Detail Pages
-        function showCandidateDetail(id) {
+        async function showCandidateDetail(id) {
+            // Show the detail page immediately. If the cache is cold we
+            // block on ensureCandidates() with the static "Loading..."
+            // header as the visible progress indicator; no separate
+            // spinner. If the cache is already warm we proceed
+            // synchronously — no flicker.
+            showPage('candidate-detail');
+            if (!candidatesLoaded) {
+                document.getElementById('candidateDetailName').textContent = 'Loading...';
+                document.getElementById('candidateDetailSubtitle').textContent = '';
+                try {
+                    await ensureCandidates();
+                } catch (e) {
+                    // loadCandidates already surfaced the error banner on
+                    // the list page — bounce the user there so they see it.
+                    navigateTo('candidates');
+                    return;
+                }
+            }
+
             const candidate = allCandidates.find(c => c.id === id);
             if (!candidate) {
                 navigateTo('candidates');
@@ -2849,7 +2916,6 @@
             }
 
             currentCandidate = candidate;
-            showPage('candidate-detail');
             populateCandidateDetail(candidate);
         }
 
@@ -3455,10 +3521,12 @@
             `;
         }
 
+        // With lazy-loaded candidates the defensive in-memory find guard
+        // that used to live here doesn't work reliably (allCandidates may
+        // be empty on dashboard-only sessions). showCandidateDetail
+        // handles the load-then-find and unknown-ID-redirect paths.
         function openCandidate(id) {
-            const candidate = allCandidates.find(c => c.id === id) ||
-                             currentCompanyEmployees.find(c => c.id === id);
-            if (candidate) navigateTo('candidates', id);
+            navigateTo('candidates', id);
         }
 
         function openPipeline(id) {
@@ -3468,10 +3536,17 @@
 
         // Update dashboard stats to include pipeline
         function updateDashboardStats() {
-            const totalCandidates = allCandidates.length;
-            const contactCandidates = allCandidates.filter(c => 
-                c['Work Email'] || c['Work Phone'] || c['Personal Email'] || c['Personal Phone']
-            ).length;
+            // Candidates is lazy — on cold start allCandidates is empty
+            // until the background prefetch lands (or a user visit fills
+            // the cache). Show "—" rather than a misleading 0 during that
+            // window. loadData() re-invokes this function when the
+            // prefetch resolves.
+            const totalCandidates = candidatesLoaded ? allCandidates.length : '—';
+            const contactCandidates = candidatesLoaded
+                ? allCandidates.filter(c =>
+                      c['Work Email'] || c['Work Phone'] || c['Personal Email'] || c['Personal Phone']
+                  ).length
+                : '—';
             const totalJobs = allJobOrders.length;
             const totalCompanies = allCompanies.length;
             const activePipeline = allPipelineDeals.filter(d => 
@@ -3865,6 +3940,12 @@
             document.getElementById('addPipelineForm').reset();
             document.getElementById('pipelineNextAction').innerHTML = buildNextActionOptions('');
             hideAddPipelineMessages();
+            // Fire-and-forget — candidate search is client-side over
+            // allCandidates, so we kick off the cache fill here. Modal
+            // opens instantly; the search returns empty until the fetch
+            // lands, then works. Shared-promise dedupe handles the case
+            // where a background prefetch is already in flight.
+            ensureCandidates();
             setupCandidateSearch();
             setupJobOrderSearch();
         }
