@@ -1568,14 +1568,9 @@
         }
 
         /* --- Candidates page body: faint cyan grid background --- */
-        body.bp-theme #candidates {
-            background-image:
-                linear-gradient(var(--bp-grid) 1px, transparent 1px),
-                linear-gradient(90deg, var(--bp-grid) 1px, transparent 1px);
-            background-size: 24px 24px;
-            padding: 1rem 1.5rem;
-            max-width: 1400px;
-        }
+        /* (The old #candidates-scoped page chrome was deleted in
+           Session 7 Task 4 — .bp-page now owns the grid bg + padding
+           + max-width, applied to every page that opts in.) */
 
         /* --- Section header block --- */
         .bp-section-header { display: none; }
@@ -1645,19 +1640,19 @@
         body.bp-theme .bp-add-btn:hover { background: #1f8bba; }
 
         /* --- Controls row restyled --- */
-        body.bp-theme #candidates .controls { margin-bottom: 16px; }
-        body.bp-theme #candidates .search-filter-row {
+        body.bp-theme .bp-page .controls { margin-bottom: 16px; }
+        body.bp-theme .bp-page .search-filter-row {
             display: flex;
             gap: 12px;
             margin-bottom: 0;
         }
-        body.bp-theme #candidates .search-box {
+        body.bp-theme .bp-page .search-box {
             flex: 1;
             min-width: 240px;
             position: relative;
         }
-        body.bp-theme #candidates .search-box .search-icon { display: none; }
-        body.bp-theme #candidates .search-input {
+        body.bp-theme .bp-page .search-box .search-icon { display: none; }
+        body.bp-theme .bp-page .search-input {
             width: 100%;
             padding: 9px 12px;
             background: var(--bp-surface);
@@ -1668,16 +1663,16 @@
             color: var(--bp-ink);
             box-shadow: none;
         }
-        body.bp-theme #candidates .search-input:focus {
+        body.bp-theme .bp-page .search-input:focus {
             outline: none;
             border-color: var(--bp-accent);
         }
-        body.bp-theme #candidates .search-input::placeholder {
+        body.bp-theme .bp-page .search-input::placeholder {
             color: var(--bp-hint);
             letter-spacing: 0.04em;
         }
-        body.bp-theme #candidates .filter-group { gap: 8px; }
-        body.bp-theme #candidates .filter-select {
+        body.bp-theme .bp-page .filter-group { gap: 8px; }
+        body.bp-theme .bp-page .filter-select {
             padding: 9px 10px;
             background: var(--bp-surface);
             border: 1px solid var(--bp-ink);
@@ -1691,7 +1686,7 @@
         }
         /* Legacy "+ New Candidate" button in the filter group — moved to
            the section header under bp-theme. */
-        body.bp-theme #candidates .filter-group > button { display: none; }
+        body.bp-theme .bp-page .filter-group > button { display: none; }
 
         /* --- Blueprint table --- */
         .bp-table-wrap, .bp-pagination { display: none; }
@@ -1855,19 +1850,19 @@
             color: var(--bp-muted);
             text-transform: uppercase;
         }
-        body.bp-theme #candidates .loading {
+        body.bp-theme .bp-page .loading {
             justify-content: center;
             padding: 48px 24px;
             font-family: 'JetBrains Mono', ui-monospace, monospace;
             color: var(--bp-muted);
         }
-        body.bp-theme #candidates .loading i { display: none; }
-        body.bp-theme #candidates .loading span {
+        body.bp-theme .bp-page .loading i { display: none; }
+        body.bp-theme .bp-page .loading span {
             font-size: 12px;
             letter-spacing: 0.14em;
             text-transform: lowercase;
         }
-        body.bp-theme #candidates .loading span::before { content: '> '; }
+        body.bp-theme .bp-page .loading span::before { content: '> '; }
         body.bp-theme #candidatesError {
             background: var(--bp-surface);
             border: 1.5px solid var(--bp-alert);
@@ -2730,6 +2725,105 @@
             justify-content: flex-end;
             flex-wrap: wrap;
         }
+
+        /* ===========================================================
+           TASK 4 — Job Orders blueprint
+           =========================================================== */
+
+        /* Additional .bp-status pill variants for job statuses */
+        body.bp-theme .bp-status-on-hold {
+            background: var(--bp-surface);
+            color: var(--bp-hint);
+            border-color: var(--bp-hint);
+        }
+        body.bp-theme .bp-status-filled {
+            background: var(--bp-ink);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-ink);
+        }
+        body.bp-theme .bp-status-cancelled {
+            background: var(--bp-surface);
+            color: var(--bp-alert);
+            border-color: var(--bp-alert);
+        }
+
+        /* Priority pill — same pill vocabulary as .bp-status but its
+           own class so job tables can show status + priority side-by-side
+           without cross-contamination. */
+        body.bp-theme .bp-priority {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+            border: 1px solid transparent;
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        body.bp-theme .bp-priority-high {
+            background: var(--bp-surface);
+            color: var(--bp-alert);
+            border-color: var(--bp-alert);
+        }
+        body.bp-theme .bp-priority-medium {
+            background: var(--bp-surface);
+            color: var(--bp-accent);
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-priority-low {
+            background: var(--bp-surface);
+            color: var(--bp-hint);
+            border-color: var(--bp-hint);
+        }
+
+        /* CREATED column on the Job Orders table — mono YYYY.MM.DD right-aligned */
+        body.bp-theme .bp-table th.bp-col-created,
+        body.bp-theme .bp-col-created {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-muted);
+            text-align: right;
+            width: 110px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.04em;
+        }
+
+        /* Job Orders list error banner + save banners on detail — same
+           treatment as the candidate equivalents. */
+        body.bp-theme #jobsError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+        body.bp-theme #jobSaveMessage,
+        body.bp-theme #jobSaveError {
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        body.bp-theme #jobSaveMessage {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-accent);
+            color: var(--bp-accent);
+        }
+        body.bp-theme #jobSaveError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+        }
+        body.bp-theme #jobSaveError i { display: none; }
     </style>
 </head>
 <body class="bp-theme">
@@ -2815,7 +2909,7 @@
     </div>
 
     <!-- Candidates Page -->
-    <div id="candidates" class="page container">
+    <div id="candidates" class="page container bp-page">
         <!-- Blueprint section header: bp-theme only -->
         <div class="bp-section-header">
             <div class="bp-section-left">
@@ -2894,12 +2988,22 @@
     </div>
 
     <!-- Job Orders Page -->
-    <div id="job-orders" class="page container">
+    <div id="job-orders" class="page container bp-page">
+        <div class="bp-section-header">
+            <div class="bp-section-left">
+                <div class="bp-section-label">SECTION 03 · JOBS</div>
+                <div class="bp-section-title">JOB ORDERS</div>
+            </div>
+            <div class="bp-section-right bp-section-right-actions">
+                <button class="bp-btn bp-btn-primary" onclick="showCreateJobOrderModal()">+ ADD JOB ORDER</button>
+            </div>
+        </div>
+
         <div class="controls">
             <div class="search-filter-row">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="jobSearch" placeholder="Search job orders...">
+                    <input type="text" class="search-input" id="jobSearch" placeholder="> search_">
                 </div>
                 <div class="filter-group">
                     <select class="filter-select" id="jobStatusFilter">
@@ -2933,7 +3037,25 @@
             <span id="jobsErrorMessage"></span>
         </div>
 
-        <div id="jobsGrid" class="cards-grid" style="display: none;"></div>
+        <div class="bp-table-wrap">
+            <table class="bp-table" id="jobOrdersTable">
+                <thead>
+                    <tr>
+                        <th class="bp-col-num">#</th>
+                        <th>TITLE / COMPANY</th>
+                        <th class="bp-col-loc">LOCATION</th>
+                        <th class="bp-col-status">STATUS</th>
+                        <th class="bp-col-status">PRIORITY</th>
+                        <th class="bp-col-created">CREATED</th>
+                    </tr>
+                </thead>
+                <tbody id="jobOrdersTableBody"></tbody>
+            </table>
+            <div class="bp-empty" id="jobsEmpty" style="display: none;">NO JOB ORDERS MATCH FILTER</div>
+        </div>
+        <div class="bp-pagination" id="jobOrdersPagination"></div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Companies Page -->
@@ -3061,63 +3183,69 @@
     </div>
 
     <!-- Job Order Detail Page -->
-    <div id="job-order-detail" class="page container">
-        <div class="detail-page">
-            <div class="detail-header">
-                <div class="container">
-                    <button class="back-btn" onclick="navigateTo('job-orders')">
-                        ← Back to Job Orders
-                    </button>
-                    <h1 class="detail-name" id="jobDetailTitle">Loading...</h1>
-                    <p class="detail-subtitle" id="jobDetailSubtitle">Loading...</p>
-                    <div class="detail-actions">
-                        <button class="btn" id="editJobBtn" onclick="toggleEditJobOrder()">✏️ Edit</button>
-                        <button class="btn btn-create" id="saveJobBtn" onclick="saveJobOrder()" style="display: none;">💾 Save</button>
-                        <button class="btn btn-cancel" id="cancelJobBtn" onclick="cancelEditJobOrder()" style="display: none;">❌ Cancel</button>
-                        <button class="btn-archive" id="archiveJobBtn" onclick="confirmArchive('job-order')" style="display: none;">🗄 Archive</button>
-                    </div>
+    <div id="job-order-detail" class="page container bp-page">
+        <div class="bp-detail-header">
+            <div class="bp-detail-header-left">
+                <div class="bp-section-label">SECTION 03.1 · JOB ORDER</div>
+                <h1 class="bp-detail-name" id="jobDetailTitle">Loading...</h1>
+                <div class="bp-detail-subtitle" id="jobDetailSubtitle">Loading...</div>
+            </div>
+            <div class="bp-detail-header-right">
+                <span class="bp-back-link" onclick="navigateTo('job-orders')">← BACK TO JOBS</span>
+                <div class="bp-detail-actions">
+                    <button class="bp-btn bp-btn-primary" id="editJobBtn" onclick="toggleEditJobOrder()">EDIT</button>
+                    <button class="bp-btn bp-btn-primary" id="saveJobBtn" onclick="saveJobOrder()" style="display: none;">SAVE</button>
+                    <button class="bp-btn bp-btn-ghost" id="cancelJobBtn" onclick="cancelEditJobOrder()" style="display: none;">CANCEL</button>
+                    <button class="bp-btn bp-btn-danger" id="archiveJobBtn" onclick="confirmArchive('job-order')" style="display: none;">ARCHIVE</button>
                 </div>
             </div>
-            
-            <div class="success" id="jobSaveMessage" style="display: none;">✅ Job order updated successfully!</div>
-            <div class="error" id="jobSaveError" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="jobSaveErrorMessage"></span>
-            </div>
-            
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h3>💼 Job Information</h3>
-                    <div id="jobInfo"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>🏢 Client Information</h3>
-                    <div id="jobClient"></div>
-                </div>
-            </div>
-            
-            <div class="full-width-section">
-                <h3>📝 Job Description</h3>
-                <div id="jobDescription"></div>
-            </div>
-            
-            <div class="full-width-section">
-                <h3>✅ Requirements</h3>
-                <div id="jobRequirements"></div>
-            </div>
+        </div>
 
-            <div class="full-width-section">
-                <div class="activity-header">
-                    <h3>📒 Activity Log</h3>
-                    <button class="btn" id="jobOrderLogActivityBtn" onclick="showLogActivityForm('job-order')">+ Log Activity</button>
+        <div class="success" id="jobSaveMessage" style="display: none;"><span class="legacy-emoji">✅ </span>JOB ORDER UPDATED</div>
+        <div class="error" id="jobSaveError" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="jobSaveErrorMessage"></span>
+        </div>
+
+        <div class="bp-detail-grid">
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">JOB INFORMATION</div>
+                    <div class="bp-card-body" id="jobInfo"></div>
                 </div>
+            </div>
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">CLIENT INFORMATION</div>
+                    <div class="bp-card-body" id="jobClient"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header">DESCRIPTION</div>
+            <div class="bp-card-body" id="jobDescription"></div>
+        </div>
+
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header">NOTES</div>
+            <div class="bp-card-body" id="jobRequirements"></div>
+        </div>
+
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header bp-card-header-actions">
+                <span>ACTIVITY LOG</span>
+                <button class="bp-btn bp-btn-primary bp-btn-sm" id="jobOrderLogActivityBtn" onclick="showLogActivityForm('job-order')">+ LOG ACTIVITY</button>
+            </div>
+            <div class="bp-card-body">
                 <div id="jobOrderActivityLogForm" class="activity-form" style="display: none;"></div>
-                <div id="jobOrderActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
-                <div id="jobOrderActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="jobOrderActivityLogLoading" style="display: none;">Loading activity…</div>
+                <div id="jobOrderActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet.</div>
                 <div id="jobOrderActivityLogTimeline"></div>
             </div>
         </div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Company Detail Page -->
@@ -3581,6 +3709,8 @@
         // Blueprint candidates table pagination (Session 6)
         let currentCandidatesPage = 1;
         const BP_CANDIDATES_PAGE_SIZE = 50;
+        let currentJobOrdersPage = 1;
+        const BP_JOB_ORDERS_PAGE_SIZE = 50;
         let filteredJobOrders = [];
         let filteredCompanies = [];
         let currentCandidate = null;
@@ -3881,8 +4011,11 @@
                     }
 
                     const data = await response.json();
+                    // Preserve Airtable's createdTime metadata — the
+                    // blueprint table surfaces it in the CREATED column.
                     allRecords.push(...data.records.map(record => ({
                         id: record.id,
+                        createdTime: record.createdTime,
                         ...record.fields
                     })));
 
@@ -4109,55 +4242,96 @@
 
 
         function renderJobOrders() {
-            const grid = document.getElementById('jobsGrid');
-            
-            if (filteredJobOrders.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray-500);">No job orders found</p>';
-                grid.style.display = 'grid';
-                return;
-            }
-
-            const cards = filteredJobOrders.map(job => createJobOrderCard(job)).join('');
-            grid.innerHTML = cards;
-            grid.style.display = 'grid';
+            renderJobOrdersTable();
         }
 
-        function createJobOrderCard(job) {
-            const statusClass = `status-${(job.status || 'new').toLowerCase().replace(' ', '-')}`;
-            const priorityClass = `priority-${(job.priority || 'medium').toLowerCase()}`;
-            
-            const jobStatus = job.status || 'New';
-            const jobPriority = job.priority || 'Medium';
+        function renderJobOrdersTable() {
+            const body = document.getElementById('jobOrdersTableBody');
+            const table = document.getElementById('jobOrdersTable');
+            const empty = document.getElementById('jobsEmpty');
+            const pagination = document.getElementById('jobOrdersPagination');
+            if (!body) return;
+
+            const total = filteredJobOrders.length;
+            if (total === 0) {
+                body.innerHTML = '';
+                table.style.display = 'none';
+                empty.style.display = 'block';
+                pagination.innerHTML = '';
+                return;
+            }
+            table.style.display = '';
+            empty.style.display = 'none';
+
+            const pageSize = BP_JOB_ORDERS_PAGE_SIZE;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentJobOrdersPage > totalPages) currentJobOrdersPage = totalPages;
+            if (currentJobOrdersPage < 1) currentJobOrdersPage = 1;
+            const start = (currentJobOrdersPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageSlice = filteredJobOrders.slice(start, end);
+
+            body.innerHTML = pageSlice
+                .map((j, i) => createJobOrderTableRow(j, start + i + 1))
+                .join('');
+            renderJobOrdersPagination(start, end, total, currentJobOrdersPage, totalPages);
+        }
+
+        function createJobOrderTableRow(j, rowNumber) {
+            const rowNumStr = String(rowNumber).padStart(3, '0');
+            const title = j['Position Title'] || 'Untitled';
+            const company = j.Company || 'Unknown';
+            const hasLoc = !!j.location;
+            const loc = hasLoc ? escapeHtml(j.location) : '—';
+            const locCls = hasLoc ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
+            const status = j.status || 'New';
+            const priority = j.priority || 'Medium';
+            const statusSlug = escapeHtml(status.toLowerCase().replace(/\s+/g, '-'));
+            const prioritySlug = escapeHtml(priority.toLowerCase());
+            const createdStr = formatCreatedDate(j.createdTime);
+
             return `
-                <div class="job-card ${statusClass}" onclick="openJobOrder('${job.id}')">
-                    <div class="job-title">${escapeHtml(job['Position Title'] || 'Untitled Position')}</div>
-                    <div class="job-company">${escapeHtml(job.Company || 'Unknown')}</div>
+                <tr class="bp-row" onclick="openJobOrder('${escapeHtml(j.id)}')">
+                    <td class="bp-col-num">${rowNumStr}</td>
+                    <td>
+                        <div class="bp-cell-name-text">${escapeHtml(title)}</div>
+                        <div class="bp-cell-company">${escapeHtml(company)}</div>
+                    </td>
+                    <td class="${locCls}">${loc}</td>
+                    <td class="bp-col-status"><span class="bp-status bp-status-${statusSlug}">${escapeHtml(status)}</span></td>
+                    <td class="bp-col-status"><span class="bp-priority bp-priority-${prioritySlug}">${escapeHtml(priority)}</span></td>
+                    <td class="bp-col-created">${escapeHtml(createdStr)}</td>
+                </tr>
+            `;
+        }
 
-                    <div class="job-details">
-                        <div class="job-detail">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>${escapeHtml(job.location || 'Not provided')}</span>
-                        </div>
-                        <div class="job-detail">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>${escapeHtml(job.salary_range || 'Not provided')}</span>
-                        </div>
-                        <div class="job-detail">
-                            <i class="fas fa-clock"></i>
-                            <span>${escapeHtml(job.timeline || 'Not provided')}</span>
-                        </div>
-                        <div class="job-detail">
-                            <i class="fas fa-building"></i>
-                            <span>${escapeHtml(job.client_name || 'Not provided')}</span>
-                        </div>
-                    </div>
-
-                    <div class="job-badges">
-                        <span class="status-badge job-status-${escapeHtml(jobStatus.toLowerCase().replace(' ', '-'))}">${escapeHtml(jobStatus)}</span>
-                        <span class="priority-badge ${priorityClass}">${escapeHtml(jobPriority)}</span>
-                    </div>
+        function renderJobOrdersPagination(start, end, total, page, totalPages) {
+            const el = document.getElementById('jobOrdersPagination');
+            if (!el) return;
+            const prevDisabled = page <= 1;
+            const nextDisabled = page >= totalPages;
+            const prevClick = prevDisabled ? '' : ' onclick="changeJobOrdersPage(-1)"';
+            const nextClick = nextDisabled ? '' : ' onclick="changeJobOrdersPage(1)"';
+            el.innerHTML = `
+                <div class="bp-pagination-left">PAGE ${page} / ${totalPages} · ENTRIES ${start + 1}–${end} OF ${total}</div>
+                <div class="bp-pagination-right">
+                    <span class="bp-page-nav${prevDisabled ? ' disabled' : ''}"${prevClick}>← PREV</span>
+                    <span class="bp-page-nav${nextDisabled ? ' disabled' : ''}"${nextClick}>NEXT →</span>
                 </div>
             `;
+        }
+
+        function changeJobOrdersPage(delta) {
+            currentJobOrdersPage += delta;
+            renderJobOrders();
+        }
+
+        // YYYY.MM.DD mono — matches the header top-strip date format.
+        // Input is Airtable's createdTime ISO; falls back to em-dash.
+        function formatCreatedDate(iso) {
+            if (!iso) return '—';
+            const ymd = String(iso).slice(0, 10);
+            return ymd.replace(/-/g, '.');
         }
 
         function renderCompanies() {
@@ -4495,6 +4669,8 @@
         }
 
         function filterJobOrders() {
+            // Reset blueprint paginator to page 1 on any filter/search change.
+            currentJobOrdersPage = 1;
             const search = document.getElementById('jobSearch').value.toLowerCase();
             const status = document.getElementById('jobStatusFilter').value;
             const priority = document.getElementById('jobPriorityFilter').value;
