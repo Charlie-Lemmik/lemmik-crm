@@ -2523,9 +2523,9 @@
            below 140px — board scrolls horizontally on narrow screens. */
         body.bp-theme .pipeline-board {
             display: grid;
-            grid-template-columns: repeat(10, minmax(140px, 1fr));
+            grid-template-columns: repeat(10, minmax(0, 1fr));
             gap: 8px;
-            overflow-x: auto;
+            overflow-x: visible;
             min-height: 60vh;
             padding-bottom: 4px;
         }
@@ -2546,7 +2546,8 @@
             padding: 8px 10px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            min-height: 40px;
             border-bottom: none;
         }
         body.bp-theme .pipeline-column-title {
@@ -2554,6 +2555,7 @@
             font-size: 10px;
             font-weight: 500;
             letter-spacing: 0.14em;
+            line-height: 1.25;
             text-transform: uppercase;
             color: var(--bp-bg);
         }
@@ -2585,7 +2587,7 @@
             border: 1px solid var(--bp-ink);
             border-radius: 0;
             border-left: 1px solid var(--bp-ink); /* override Session 1 cyan accent */
-            padding: 8px 10px;
+            padding: 6px 8px;
             cursor: grab;
             transition: none;
             position: relative; /* for sub-stage pill absolute positioning */
@@ -2616,10 +2618,18 @@
             color: var(--bp-ink);
             line-height: 1.2;
             margin-bottom: 2px;
-            padding-right: 50px; /* leave room for sub-stage pill */
-            word-break: break-word;
+            overflow-wrap: anywhere;
         }
         body.bp-theme .pipeline-card-candidate.zoominfo-d { color: var(--bp-alert); }
+        /* Only reserve right-padding for the sub-stage pill when a card
+           actually has one — otherwise narrow columns wrap the name
+           prematurely. :has() is supported in all modern Chromium/Safari/
+           Firefox releases; legacy browsers fall back to the un-padded
+           rule above, which just means the pill can visually overlap a
+           very long name on Closed-column cards. */
+        body.bp-theme .pipeline-card:has(.bp-pipeline-substage) .pipeline-card-candidate {
+            padding-right: 50px;
+        }
         body.bp-theme .pipeline-card-job {
             font-family: 'Inter', sans-serif;
             font-size: 11px;
