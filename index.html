@@ -23,6 +23,7 @@
             --bp-accent-ink: #FFF;
             --bp-grid: #2AA9E018;
             --bp-alert: #D85A30;
+            --bp-danger: #B02A1E;
         }
 
         /* CSS Variables */
@@ -2383,6 +2384,140 @@
             color: var(--bp-alert);
         }
         body.bp-theme #candidateSaveError i { display: none; }
+
+        /* ===========================================================
+           TASK 2 — Dashboard blueprint (icon-less mono stat cards +
+           Today's Focus restyle)
+           =========================================================== */
+
+        /* Section-header variant where the right side is a button group
+           (used by Dashboard and reusable by other pages). */
+        body.bp-theme .bp-section-right-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Stat cards: mono label above, large mono tabular-nums value below.
+           No icons. 5-up on wide screens, responsive collapse. */
+        body.bp-theme .bp-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        body.bp-theme .bp-stat-card {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-ink);
+            border-radius: 0;
+            padding: 14px 16px;
+        }
+        body.bp-theme .bp-stat-label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        body.bp-theme .bp-stat-value {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 30px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        /* Today's Focus section */
+        body.bp-theme .bp-focus-section { margin-bottom: 16px; }
+        body.bp-theme .bp-focus-section-header {
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--bp-ink);
+        }
+        body.bp-theme .bp-focus-group {
+            margin-bottom: 16px;
+        }
+        body.bp-theme .bp-focus-group:last-child { margin-bottom: 0; }
+        body.bp-theme .bp-focus-subheader {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* .focus-card markup is emitted by renderFocusCards() JS — restyle
+           via overrides without changing the JS. Accent left-border color
+           per urgency: overdue = --bp-danger (deeper red),
+           today = --bp-alert (coral), week = --bp-accent (cyan). */
+        body.bp-theme .focus-card {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-ink);
+            border-left: 4px solid var(--bp-ink);
+            border-radius: 0;
+            padding: 10px 14px;
+        }
+        body.bp-theme .focus-card:hover {
+            transform: none;
+            box-shadow: none;
+            background: #F9F7F2;
+        }
+        body.bp-theme .focus-card.overdue { border-left-color: var(--bp-danger); }
+        body.bp-theme .focus-card.today   { border-left-color: var(--bp-alert); }
+        body.bp-theme .focus-card.week    { border-left-color: var(--bp-accent); }
+
+        body.bp-theme .focus-card-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            margin-bottom: 2px;
+        }
+        body.bp-theme .focus-card-subtitle {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-ink-soft);
+            margin-bottom: 4px;
+            letter-spacing: 0.02em;
+        }
+        body.bp-theme .focus-card-action {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--bp-muted);
+            margin-bottom: 4px;
+        }
+        body.bp-theme .focus-card-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--bp-hint);
+            text-transform: uppercase;
+        }
+        body.bp-theme .focus-card-stage {
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-hint);
+            color: var(--bp-hint);
+            padding: 1px 6px;
+            font-size: 9px;
+            border-radius: 0;
+        }
+        body.bp-theme .focus-empty {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            color: var(--bp-hint);
+            text-transform: uppercase;
+            padding: 10px 0;
+            font-style: normal;
+        }
     </style>
 </head>
 <body class="bp-theme">
@@ -2411,82 +2546,60 @@
     </header>
 
     <!-- Dashboard Page -->
-    <div id="dashboard" class="page container">
-        <div class="dashboard-hero">
-            <div class="container">
-                <h1 class="dashboard-title">
-                    <i class="fas fa-hard-hat"></i> Lemmik Recruiting CRM
-                </h1>
-                <p class="dashboard-subtitle">
-                    Construction Industry Executive Search & Recruiting Management System
-                </p>
-                <div class="quick-actions">
-                    <span class="btn" data-page="candidates">
-                        <i class="fas fa-users"></i> View Candidates
-                    </span>
-                    <span class="btn btn-secondary" data-page="job-orders">
-                        <i class="fas fa-briefcase"></i> View Job Orders
-                    </span>
-                </div>
+    <div id="dashboard" class="page container bp-page">
+        <div class="bp-section-header">
+            <div class="bp-section-left">
+                <div class="bp-section-label">SECTION 01 · OVERVIEW</div>
+                <div class="bp-section-title">DASHBOARD</div>
+            </div>
+            <div class="bp-section-right bp-section-right-actions">
+                <span class="bp-btn bp-btn-ghost" data-page="candidates">VIEW CANDIDATES</span>
+                <span class="bp-btn bp-btn-primary" data-page="job-orders">VIEW JOB ORDERS</span>
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon candidates">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-number" id="totalCandidates">-</div>
-                <div class="stat-label">Total Candidates</div>
+        <div class="bp-stats-grid">
+            <div class="bp-stat-card">
+                <div class="bp-stat-label">TOTAL CANDIDATES</div>
+                <div class="bp-stat-value" id="totalCandidates">—</div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon contact">
-                    <i class="fas fa-address-book"></i>
-                </div>
-                <div class="stat-number" id="contactCandidates">-</div>
-                <div class="stat-label">Candidates with Contact</div>
+            <div class="bp-stat-card">
+                <div class="bp-stat-label">W / CONTACT</div>
+                <div class="bp-stat-value" id="contactCandidates">—</div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon jobs">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <div class="stat-number" id="totalJobs">-</div>
-                <div class="stat-label">Total Job Orders</div>
+            <div class="bp-stat-card">
+                <div class="bp-stat-label">JOB ORDERS</div>
+                <div class="bp-stat-value" id="totalJobs">—</div>
             </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon active">
-                    <i class="fas fa-funnel-dollar"></i>
-                </div>
-                <div class="stat-number" id="activePipeline">-</div>
-                <div class="stat-label">Active Pipeline</div>
+            <div class="bp-stat-card">
+                <div class="bp-stat-label">COMPANIES</div>
+                <div class="bp-stat-value" id="totalCompanies">—</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon active">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div class="stat-number" id="totalCompanies">-</div>
-                <div class="stat-label">Total Companies</div>
+            <div class="bp-stat-card">
+                <div class="bp-stat-label">ACTIVE PIPELINE</div>
+                <div class="bp-stat-value" id="activePipeline">—</div>
             </div>
         </div>
 
-        <div class="todays-focus">
-            <h2>📅 Today's Focus</h2>
-            <div class="focus-group">
-                <h3>Overdue</h3>
+        <div class="bp-focus-section">
+            <div class="bp-focus-section-header">
+                <div class="bp-section-label">SECTION 01.1 · TODAY&apos;S FOCUS</div>
+            </div>
+            <div class="bp-focus-group">
+                <div class="bp-focus-subheader">OVERDUE</div>
                 <div id="focusOverdue" class="focus-cards"></div>
             </div>
-            <div class="focus-group">
-                <h3>Due Today</h3>
+            <div class="bp-focus-group">
+                <div class="bp-focus-subheader">DUE TODAY</div>
                 <div id="focusToday" class="focus-cards"></div>
             </div>
-            <div class="focus-group">
-                <h3>Due This Week</h3>
+            <div class="bp-focus-group">
+                <div class="bp-focus-subheader">DUE THIS WEEK</div>
                 <div id="focusWeek" class="focus-cards"></div>
             </div>
         </div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Candidates Page -->
