@@ -2518,6 +2518,218 @@
             padding: 10px 0;
             font-style: normal;
         }
+
+        /* ===========================================================
+           TASK 3 — Pipeline blueprint (10-column grid kanban with a
+           virtual Closed column aggregating Placed / Lost / On Hold)
+           =========================================================== */
+
+        /* 10-column grid. minmax(140px, 1fr) means columns never shrink
+           below 140px — board scrolls horizontally on narrow screens. */
+        body.bp-theme .pipeline-board {
+            display: grid;
+            grid-template-columns: repeat(10, minmax(140px, 1fr));
+            gap: 8px;
+            overflow-x: auto;
+            min-height: 60vh;
+            padding-bottom: 4px;
+        }
+
+        body.bp-theme .pipeline-column {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-ink);
+            border-radius: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        body.bp-theme .pipeline-column-header {
+            background: var(--bp-ink);
+            color: var(--bp-bg);
+            padding: 8px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: none;
+        }
+        body.bp-theme .pipeline-column-title {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--bp-bg);
+        }
+        body.bp-theme .pipeline-column-count {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--bp-bg);
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        body.bp-theme .pipeline-cards {
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-height: 40px;
+        }
+
+        /* Card: 1px ink border, sharp, no shadow. Restyle via overrides of
+           the existing .pipeline-card markup from Session 2 — JS unchanged. */
+        body.bp-theme .pipeline-card {
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            border-left: 1px solid var(--bp-ink); /* override Session 1 cyan accent */
+            padding: 8px 10px;
+            cursor: grab;
+            transition: none;
+            position: relative; /* for sub-stage pill absolute positioning */
+        }
+        body.bp-theme .pipeline-card:hover {
+            transform: none;
+            box-shadow: none;
+            background: #F9F7F2;
+        }
+        body.bp-theme .pipeline-card.dragging { opacity: 0.4; }
+        body.bp-theme .pipeline-card.patching {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Drag-over highlight — cyan-tinted cream + dashed cyan outline */
+        body.bp-theme .pipeline-column.drag-over {
+            background: rgba(42, 169, 224, 0.08);
+            outline: 2px dashed var(--bp-accent);
+            outline-offset: -3px;
+        }
+
+        /* Card body content */
+        body.bp-theme .pipeline-card-candidate {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            line-height: 1.2;
+            margin-bottom: 2px;
+            padding-right: 50px; /* leave room for sub-stage pill */
+            word-break: break-word;
+        }
+        body.bp-theme .pipeline-card-candidate.zoominfo-d { color: var(--bp-alert); }
+        body.bp-theme .pipeline-card-job {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--bp-ink-soft);
+            line-height: 1.25;
+            margin-bottom: 1px;
+            word-break: break-word;
+        }
+        body.bp-theme .pipeline-card-company {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--bp-muted);
+            line-height: 1.25;
+            word-break: break-word;
+        }
+        body.bp-theme .pipeline-card-next {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 0.5px solid var(--bp-divider);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            color: var(--bp-muted);
+            background: transparent;
+            padding-left: 0;
+            padding-right: 0;
+            padding-bottom: 0;
+            border-radius: 0;
+        }
+        body.bp-theme .pipeline-card-next.overdue { color: var(--bp-alert); }
+        body.bp-theme .pipeline-card-action {
+            color: inherit;
+            font-weight: 500;
+            margin-bottom: 1px;
+        }
+        body.bp-theme .pipeline-card-date {
+            color: inherit;
+            font-size: 9px;
+            letter-spacing: 0.04em;
+        }
+
+        /* Sub-stage pill for cards in the Closed column. Positioned
+           top-right so it sits over the padding reserved by the
+           .pipeline-card-candidate padding-right rule. */
+        body.bp-theme .bp-pipeline-substage {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 8px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            padding: 2px 5px;
+            text-transform: uppercase;
+            border-radius: 0;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+        body.bp-theme .bp-pipeline-substage-placed {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-pipeline-substage-lost {
+            background: var(--bp-surface);
+            color: var(--bp-alert);
+            border-color: var(--bp-alert);
+        }
+        body.bp-theme .bp-pipeline-substage-on-hold {
+            background: var(--bp-surface);
+            color: var(--bp-hint);
+            border-color: var(--bp-hint);
+        }
+
+        /* Close-deal modal (disambiguation when drag-dropping into Closed) */
+        body.bp-theme #closeDealModal .create-modal-content {
+            border-radius: 0;
+            border: 1.5px solid var(--bp-ink);
+            background: var(--bp-surface);
+            padding: 20px;
+            max-width: 520px;
+            width: 92%;
+        }
+        body.bp-theme #closeDealModal h2 {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--bp-ink);
+            border-bottom: 1.5px solid var(--bp-ink);
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        body.bp-theme .bp-close-deal-message {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--bp-ink-soft);
+            margin-bottom: 16px;
+        }
+        body.bp-theme .bp-close-deal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body class="bp-theme">
@@ -2754,15 +2966,14 @@
     </div>
 
     <!-- Pipeline Page -->
-    <div id="pipeline" class="page container">
-        <div class="controls">
-            <div class="search-filter-row">
-                <h2 style="margin: 0; color: var(--gray-900);">Pipeline Management</h2>
-                <div class="filter-group">
-                    <button class="btn" onclick="showAddPipelineModal()">
-                        <i class="fas fa-plus"></i> Add to Pipeline
-                    </button>
-                </div>
+    <div id="pipeline" class="page container bp-page">
+        <div class="bp-section-header">
+            <div class="bp-section-left">
+                <div class="bp-section-label">SECTION 05 · PIPELINE</div>
+                <div class="bp-section-title">PIPELINE MANAGEMENT</div>
+            </div>
+            <div class="bp-section-right bp-section-right-actions">
+                <button class="bp-btn bp-btn-primary" onclick="showAddPipelineModal()">+ ADD TO PIPELINE</button>
             </div>
         </div>
 
@@ -2777,6 +2988,8 @@
         </div>
 
         <div id="pipelineBoard" class="pipeline-board" style="display: none;"></div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Candidate Detail Page -->
@@ -3060,8 +3273,9 @@
                         <option value="Interested">Interested</option>
                         <option value="Screened">Screened</option>
                         <option value="Submitted">Submitted</option>
-                        <option value="Client Review">Client Review</option>
-                        <option value="Interview">Interview</option>
+                        <option value="Interview Scheduled">Interview Scheduled</option>
+                        <option value="Interviewed">Interviewed</option>
+                        <option value="Reference Check">Reference Check</option>
                         <option value="Offer">Offer</option>
                     </select>
                 </div>
@@ -3306,6 +3520,21 @@
             <div class="create-modal-actions">
                 <button type="button" class="btn btn-cancel" onclick="hideArchiveConfirm()">Cancel</button>
                 <button type="button" class="btn-archive" id="archiveConfirmBtn">Confirm Archive</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Close Deal disambiguation modal (triggered when user drags a
+         deal to the virtual "Closed" column — pick which sub-stage) -->
+    <div id="closeDealModal" class="create-modal">
+        <div class="create-modal-content">
+            <h2>MARK DEAL AS?</h2>
+            <p id="closeDealMessage" class="bp-close-deal-message"></p>
+            <div class="bp-close-deal-actions">
+                <button type="button" class="bp-btn bp-btn-ghost" onclick="hideCloseDealModal()">CANCEL</button>
+                <button type="button" class="bp-btn bp-btn-primary" onclick="closeDealAs('Placed')">PLACED</button>
+                <button type="button" class="bp-btn bp-btn-danger" onclick="closeDealAs('Lost')">LOST</button>
+                <button type="button" class="bp-btn bp-btn-ghost" onclick="closeDealAs('On Hold')">ON HOLD</button>
             </div>
         </div>
     </div>
@@ -3973,36 +4202,74 @@
             `;
         }
 
+        // Pipeline stage model (Session 7). Nine REAL active stages that map
+        // to Airtable stage enum values 1:1, plus a VIRTUAL "Closed" column
+        // that aggregates three real sub-stages (Placed / Lost / On Hold).
+        // The "Closed" string is NOT a valid stage value for writes — when
+        // drag-and-drop drops onto it we prompt the user for the sub-stage.
+        const PIPELINE_ACTIVE_STAGES = [
+            'Sourced',
+            'Contacted',
+            'Interested',
+            'Screened',
+            'Submitted',
+            'Interview Scheduled',
+            'Interviewed',
+            'Reference Check',
+            'Offer'
+        ];
+        const PIPELINE_CLOSED_STAGES = ['Placed', 'Lost', 'On Hold'];
+        // All 12 real stage values — used by the edit-mode stage dropdown.
+        const PIPELINE_ALL_STAGES = [...PIPELINE_ACTIVE_STAGES, ...PIPELINE_CLOSED_STAGES];
+
         function renderPipelineBoard() {
             const board = document.getElementById('pipelineBoard');
-            
-            const stages = [
-                'Sourced', 'Contacted', 'Interested', 'Screened', 
-                'Submitted', 'Client Review', 'Interview', 'Offer', 
-                'Placed', 'Lost'
-            ];
-            
+            const closedSet = new Set(PIPELINE_CLOSED_STAGES);
+
+            // Each deal is rendered in exactly one column:
+            //   - if its stage is in PIPELINE_ACTIVE_STAGES → that stage column
+            //   - if its stage is in PIPELINE_CLOSED_STAGES → the Closed column
+            //   - otherwise (legacy "Client Review" / "Interview" / empty)
+            //     → not rendered; count will not include it
+            // Closed column count = |Placed| + |Lost| + |On Hold| by construction,
+            // and no deal appears twice.
             let boardHtml = '';
-            
-            stages.forEach(stage => {
-                const stageDeals = allPipelineDeals.filter(deal => deal.stage === stage && !deal.Archived);
-                const columnClass = stage === 'Placed' ? 'placed' : stage === 'Lost' ? 'lost' : '';
-                
+
+            PIPELINE_ACTIVE_STAGES.forEach(stage => {
+                const stageDeals = allPipelineDeals.filter(d =>
+                    d.stage === stage && !d.Archived
+                );
                 boardHtml += `
-                    <div class="pipeline-column ${columnClass}" data-stage="${escapeHtml(stage)}">
+                    <div class="pipeline-column" data-stage="${escapeHtml(stage)}">
                         <div class="pipeline-column-header">
                             <div class="pipeline-column-title">${escapeHtml(stage)}</div>
                             <div class="pipeline-column-count">${stageDeals.length}</div>
                         </div>
                         <div class="pipeline-cards">
-                            ${stageDeals.map(deal => createPipelineCard(deal)).join('')}
+                            ${stageDeals.map(deal => createPipelineCard(deal, false)).join('')}
                         </div>
                     </div>
                 `;
             });
-            
+
+            // Virtual Closed column
+            const closedDeals = allPipelineDeals.filter(d =>
+                closedSet.has(d.stage) && !d.Archived
+            );
+            boardHtml += `
+                <div class="pipeline-column pipeline-column-closed" data-stage="Closed">
+                    <div class="pipeline-column-header">
+                        <div class="pipeline-column-title">CLOSED</div>
+                        <div class="pipeline-column-count">${closedDeals.length}</div>
+                    </div>
+                    <div class="pipeline-cards">
+                        ${closedDeals.map(deal => createPipelineCard(deal, true)).join('')}
+                    </div>
+                </div>
+            `;
+
             board.innerHTML = boardHtml;
-            board.style.display = 'flex';
+            board.style.display = 'grid';
         }
 
         function setupPipelineDragAndDrop() {
@@ -4057,8 +4324,35 @@
                 const dealId = e.dataTransfer.getData('text/plain');
                 const newStage = column.dataset.stage;
                 if (!dealId || !newStage) return;
-                patchDealStage(dealId, newStage);
+                // Dropping onto the virtual Closed column — ask which
+                // real sub-stage (Placed / Lost / On Hold). No optimistic
+                // move yet; the card stays put until the user picks.
+                if (newStage === 'Closed') {
+                    promptCloseDeal(dealId);
+                } else {
+                    patchDealStage(dealId, newStage);
+                }
             });
+        }
+
+        // --- Close-deal disambiguation (Session 7 Task 3) ---
+        let pendingCloseDealId = null;
+        function promptCloseDeal(dealId) {
+            pendingCloseDealId = dealId;
+            const deal = allPipelineDeals.find(d => d.id === dealId);
+            const name = deal && deal.candidate_name ? deal.candidate_name : 'THIS DEAL';
+            document.getElementById('closeDealMessage').textContent =
+                `"${name}" — pick a close state:`;
+            document.getElementById('closeDealModal').classList.add('active');
+        }
+        function hideCloseDealModal() {
+            document.getElementById('closeDealModal').classList.remove('active');
+            pendingCloseDealId = null;
+        }
+        function closeDealAs(subStage) {
+            const dealId = pendingCloseDealId;
+            hideCloseDealModal();
+            if (dealId) patchDealStage(dealId, subStage);
         }
 
         async function patchDealStage(dealId, newStage) {
@@ -4119,19 +4413,48 @@
             return (job && job.Company) ? job.Company : 'Unknown';
         }
 
-        function createPipelineCard(deal) {
+        function createPipelineCard(deal, showSubStage = false) {
             const nextActionDate = deal.next_action_date ?
                 new Date(deal.next_action_date).toLocaleDateString() : '';
             const patchingClass = deal._patching ? ' patching' : '';
 
+            // Overdue check — if next_action_date is in the past, color the
+            // bottom meta row with the alert accent.
+            const naYmd = deal.next_action_date
+                ? String(deal.next_action_date).slice(0, 10)
+                : '';
+            const isOverdue = naYmd && naYmd < toYmd(new Date());
+            const overdueClass = isOverdue ? ' overdue' : '';
+
+            // ZoomInfoD candidates get coral name. Requires looking up the
+            // source candidate via candidate_id — PIPELINE doesn't carry
+            // Source itself. Safe only when the candidates cache is warm;
+            // otherwise the name stays ink-colored and will recolor once
+            // the cache lands (board re-renders on candidate load).
+            let nameClass = 'pipeline-card-candidate';
+            if (candidatesLoaded && deal.candidate_id) {
+                const c = allCandidates.find(x => x.id === deal.candidate_id);
+                if (c && c.Source === 'ZoomInfoD') nameClass += ' zoominfo-d';
+            }
+
+            // Sub-stage pill for cards in the virtual Closed column — lets
+            // the user see whether a closed deal is Placed / Lost / On Hold
+            // without opening the detail page.
+            let subStagePill = '';
+            if (showSubStage && deal.stage) {
+                const slug = deal.stage.toLowerCase().replace(/\s+/g, '-');
+                subStagePill = `<span class="bp-pipeline-substage bp-pipeline-substage-${escapeHtml(slug)}">${escapeHtml(deal.stage.toUpperCase())}</span>`;
+            }
+
             return `
                 <div class="pipeline-card${patchingClass}" draggable="true" data-deal-id="${escapeHtml(deal.id)}" onclick="openPipeline('${deal.id}')">
-                    <div class="pipeline-card-candidate">${escapeHtml(deal.candidate_name || 'Unknown')}</div>
+                    ${subStagePill}
+                    <div class="${nameClass}">${escapeHtml(deal.candidate_name || 'Unknown')}</div>
                     <div class="pipeline-card-job">${escapeHtml(deal.job_title || 'Unknown')}</div>
                     <div class="pipeline-card-company">${escapeHtml(companyForDeal(deal))}</div>
 
                     ${deal.next_action || nextActionDate ? `
-                        <div class="pipeline-card-next">
+                        <div class="pipeline-card-next${overdueClass}">
                             ${deal.next_action ? `<div class="pipeline-card-action">${escapeHtml(deal.next_action)}</div>` : ''}
                             ${nextActionDate ? `<div class="pipeline-card-date">Due: ${escapeHtml(nextActionDate)}</div>` : ''}
                         </div>
@@ -5306,9 +5629,16 @@
             populatePipelineCandidateJob(deal);
 
             // Status — stage editable, Deal Name read-only
-            const stages = ['Sourced', 'Contacted', 'Interested', 'Screened', 'Submitted',
-                            'Client Review', 'Interview', 'Offer', 'Placed', 'Lost'];
-            const stageOptions = stages.map(s =>
+            // Full 12 stages (9 active + 3 closed) for manual edit. If the
+            // deal's current stage is a legacy value not in this list
+            // (e.g. "Client Review", "Interview"), inject it as a selected
+            // "Legacy: X" option at the top so the user can see + migrate.
+            const stages = [...PIPELINE_ALL_STAGES];
+            const isLegacyStage = deal.stage && !stages.includes(deal.stage);
+            const legacyOption = isLegacyStage
+                ? `<option value="${escapeHtml(deal.stage)}" selected>Legacy: ${escapeHtml(deal.stage)}</option>`
+                : '';
+            const stageOptions = legacyOption + stages.map(s =>
                 `<option value="${escapeHtml(s)}" ${deal.stage === s ? 'selected' : ''}>${escapeHtml(s)}</option>`
             ).join('');
             const statusHtml = `
