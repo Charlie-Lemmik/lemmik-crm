@@ -2824,6 +2824,223 @@
             color: var(--bp-alert);
         }
         body.bp-theme #jobSaveError i { display: none; }
+
+        /* ===========================================================
+           TASK 5 — Companies blueprint
+           =========================================================== */
+
+        /* SIZE + ACTIVE JOBS column widths + typography */
+        body.bp-theme .bp-table th.bp-col-size,
+        body.bp-theme .bp-col-size {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            color: var(--bp-ink-soft);
+            letter-spacing: 0.04em;
+            width: 110px;
+        }
+        body.bp-theme .bp-col-active-jobs {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            width: 100px;
+        }
+
+        /* Card-header count (used by EMPLOYEES + JOB ORDERS cards on the
+           company detail page). Small mono tabular-nums right-aligned. */
+        body.bp-theme .bp-card-header-count {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Empty-state text inside a card body */
+        body.bp-theme .bp-card-empty {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            color: var(--bp-hint);
+            text-transform: uppercase;
+            padding: 12px 0;
+            text-align: center;
+        }
+
+        /* Linked-row list pattern (used for JOB ORDERS on company detail,
+           reusable for any "linked list inside a card" surface). */
+        body.bp-theme .bp-linked-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 0.5px dashed var(--bp-divider);
+            cursor: pointer;
+        }
+        body.bp-theme .bp-linked-row:last-child { border-bottom: none; }
+        body.bp-theme .bp-linked-row:hover { background: #F9F7F2; }
+        body.bp-theme .bp-linked-row-main {
+            min-width: 0;
+            flex: 1;
+        }
+        body.bp-theme .bp-linked-row-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            line-height: 1.2;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+        body.bp-theme .bp-linked-row-sub {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            color: var(--bp-muted);
+            letter-spacing: 0.04em;
+        }
+
+        /* Employee cards inside the EMPLOYEES card body — restyle the
+           existing .employee-card / .employee-name / .employee-title /
+           .employee-contacts / .employee-linkedin markup from Session 3. */
+        body.bp-theme .employees-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        body.bp-theme .employee-card {
+            background: var(--bp-surface);
+            border: none;
+            border-left: none;
+            border-radius: 0;
+            border-bottom: 0.5px dashed var(--bp-divider);
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        body.bp-theme .employee-card:last-child { border-bottom: none; }
+        body.bp-theme .employee-card:hover {
+            transform: none;
+            box-shadow: none;
+            background: #F9F7F2;
+        }
+        body.bp-theme .employee-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            margin-bottom: 2px;
+        }
+        body.bp-theme .employee-name.zoominfo { color: var(--bp-alert); }
+        body.bp-theme .employee-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--bp-ink-soft);
+            font-style: normal;
+            margin-bottom: 4px;
+        }
+        body.bp-theme .employee-contacts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px 10px;
+            margin-bottom: 2px;
+        }
+        body.bp-theme .employee-contact {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            color: var(--bp-muted);
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.bp-theme .employee-contact i { display: none; }
+        body.bp-theme .employee-contact a {
+            color: var(--bp-accent);
+            text-decoration: none;
+        }
+        body.bp-theme .employee-contact a:hover { text-decoration: underline; }
+        body.bp-theme .employee-linkedin {
+            margin-top: 2px;
+        }
+        body.bp-theme .employee-linkedin a {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            color: var(--bp-accent);
+            letter-spacing: 0.04em;
+            text-decoration: none;
+        }
+        body.bp-theme .employee-linkedin a i { display: none; }
+        body.bp-theme .employees-loading,
+        body.bp-theme .employees-empty {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            color: var(--bp-hint);
+            text-transform: uppercase;
+            padding: 12px 0;
+            text-align: center;
+            font-style: normal;
+        }
+
+        /* Companies list error banner + save banners on detail */
+        body.bp-theme #companiesError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+        body.bp-theme #companySaveMessage,
+        body.bp-theme #companySaveError {
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        body.bp-theme #companySaveMessage {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-accent);
+            color: var(--bp-accent);
+        }
+        body.bp-theme #companySaveError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+        }
+        body.bp-theme #companySaveError i { display: none; }
+
+        /* Also the pipeline-detail save banners — they overlay the pipeline
+           detail which is still legacy-styled this session, but when the
+           banner shows it should at least look blueprint-consistent. */
+        body.bp-theme #pipelineSaveMessage,
+        body.bp-theme #pipelineSaveError {
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        body.bp-theme #pipelineSaveMessage {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-accent);
+            color: var(--bp-accent);
+        }
+        body.bp-theme #pipelineSaveError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+        }
+        body.bp-theme #pipelineSaveError i { display: none; }
     </style>
 </head>
 <body class="bp-theme">
@@ -3059,12 +3276,22 @@
     </div>
 
     <!-- Companies Page -->
-    <div id="companies" class="page container">
+    <div id="companies" class="page container bp-page">
+        <div class="bp-section-header">
+            <div class="bp-section-left">
+                <div class="bp-section-label">SECTION 04 · COMPANIES</div>
+                <div class="bp-section-title">COMPANIES</div>
+            </div>
+            <div class="bp-section-right bp-section-right-actions">
+                <button class="bp-btn bp-btn-primary" onclick="showCreateCompanyModal()">+ ADD COMPANY</button>
+            </div>
+        </div>
+
         <div class="controls">
             <div class="search-filter-row">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="companySearch" placeholder="Search companies or contacts...">
+                    <input type="text" class="search-input" id="companySearch" placeholder="> search_">
                 </div>
                 <div class="filter-group">
                     <button class="btn" onclick="showCreateCompanyModal()">
@@ -3084,7 +3311,25 @@
             <span id="companiesErrorMessage"></span>
         </div>
 
-        <div id="companiesGrid" class="cards-grid" style="display: none;"></div>
+        <div class="bp-table-wrap">
+            <table class="bp-table" id="companiesTable">
+                <thead>
+                    <tr>
+                        <th class="bp-col-num">#</th>
+                        <th>COMPANY NAME</th>
+                        <th class="bp-col-loc">LOCATION</th>
+                        <th class="bp-col-size">SIZE</th>
+                        <th>INDUSTRY</th>
+                        <th class="bp-col-status">ACTIVE JOBS</th>
+                    </tr>
+                </thead>
+                <tbody id="companiesTableBody"></tbody>
+            </table>
+            <div class="bp-empty" id="companiesEmpty" style="display: none;">NO COMPANIES MATCH FILTER</div>
+        </div>
+        <div class="bp-pagination" id="companiesPagination"></div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Pipeline Page -->
@@ -3249,71 +3494,79 @@
     </div>
 
     <!-- Company Detail Page -->
-    <div id="company-detail" class="page container">
-        <div class="detail-page">
-            <div class="detail-header">
-                <div class="container">
-                    <button class="back-btn" onclick="navigateTo('companies')">
-                        ← Back to Companies
-                    </button>
-                    <h1 class="detail-name" id="companyDetailName">Loading...</h1>
-                    <p class="detail-subtitle" id="companyDetailSubtitle">Loading...</p>
-                    <div class="detail-actions">
-                        <button class="btn" id="editCompanyBtn" onclick="toggleEditCompany()">✏️ Edit</button>
-                        <button class="btn btn-create" id="saveCompanyBtn" onclick="saveCompany()" style="display: none;">💾 Save</button>
-                        <button class="btn btn-cancel" id="cancelCompanyBtn" onclick="cancelEditCompany()" style="display: none;">❌ Cancel</button>
-                        <button class="btn-archive" id="archiveCompanyBtn" onclick="confirmArchive('company')" style="display: none;">🗄 Archive</button>
-                    </div>
+    <div id="company-detail" class="page container bp-page">
+        <div class="bp-detail-header">
+            <div class="bp-detail-header-left">
+                <div class="bp-section-label">SECTION 04.1 · COMPANY</div>
+                <h1 class="bp-detail-name" id="companyDetailName">Loading...</h1>
+                <div class="bp-detail-subtitle" id="companyDetailSubtitle">Loading...</div>
+            </div>
+            <div class="bp-detail-header-right">
+                <span class="bp-back-link" onclick="navigateTo('companies')">← BACK TO COMPANIES</span>
+                <div class="bp-detail-actions">
+                    <button class="bp-btn bp-btn-primary" id="editCompanyBtn" onclick="toggleEditCompany()">EDIT</button>
+                    <button class="bp-btn bp-btn-primary" id="saveCompanyBtn" onclick="saveCompany()" style="display: none;">SAVE</button>
+                    <button class="bp-btn bp-btn-ghost" id="cancelCompanyBtn" onclick="cancelEditCompany()" style="display: none;">CANCEL</button>
+                    <button class="bp-btn bp-btn-danger" id="archiveCompanyBtn" onclick="confirmArchive('company')" style="display: none;">ARCHIVE</button>
                 </div>
             </div>
-            
-            <div class="success" id="companySaveMessage" style="display: none;">✅ Company updated successfully!</div>
-            <div class="error" id="companySaveError" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="companySaveErrorMessage"></span>
-            </div>
-            
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h3>🏢 Company Information</h3>
-                    <div id="companyInfo"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>👤 Contact Information</h3>
-                    <div id="companyContact"></div>
-                </div>
-                
-                <div class="detail-section employees-section">
-                    <div class="employees-header">
-                        <h3>👥 Employees</h3>
-                        <div class="employee-count" id="employeeCount">0 employees</div>
-                    </div>
-                    
-                    <div class="employees-loading" id="employeesLoading" style="display: none;">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <span>Loading employees...</span>
-                    </div>
-                    
-                    <div class="employees-empty" id="employeesEmpty" style="display: none;">
-                        No employees found for this company
-                    </div>
-                    
-                    <div class="employees-grid" id="employeesGrid"></div>
-                </div>
-            </div>
+        </div>
 
-            <div class="full-width-section">
-                <div class="activity-header">
-                    <h3>📒 Activity Log</h3>
-                    <button class="btn" id="companyLogActivityBtn" onclick="showLogActivityForm('company')">+ Log Activity</button>
+        <div class="success" id="companySaveMessage" style="display: none;"><span class="legacy-emoji">✅ </span>COMPANY UPDATED</div>
+        <div class="error" id="companySaveError" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="companySaveErrorMessage"></span>
+        </div>
+
+        <div class="bp-detail-grid">
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">COMPANY INFORMATION</div>
+                    <div class="bp-card-body" id="companyInfo"></div>
                 </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">CONTACT</div>
+                    <div class="bp-card-body" id="companyContact"></div>
+                </div>
+            </div>
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header bp-card-header-actions">
+                        <span>EMPLOYEES</span>
+                        <span class="bp-card-header-count" id="employeeCount">—</span>
+                    </div>
+                    <div class="bp-card-body">
+                        <div class="employees-loading" id="employeesLoading" style="display: none;">Loading employees…</div>
+                        <div class="employees-empty" id="employeesEmpty" style="display: none;">No employees at this company.</div>
+                        <div class="employees-grid" id="employeesGrid"></div>
+                    </div>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-header bp-card-header-actions">
+                        <span>JOB ORDERS</span>
+                        <span class="bp-card-header-count" id="companyJobsCount">—</span>
+                    </div>
+                    <div class="bp-card-body">
+                        <div id="companyJobsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header bp-card-header-actions">
+                <span>ACTIVITY LOG</span>
+                <button class="bp-btn bp-btn-primary bp-btn-sm" id="companyLogActivityBtn" onclick="showLogActivityForm('company')">+ LOG ACTIVITY</button>
+            </div>
+            <div class="bp-card-body">
                 <div id="companyActivityLogForm" class="activity-form" style="display: none;"></div>
-                <div id="companyActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
-                <div id="companyActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="companyActivityLogLoading" style="display: none;">Loading activity…</div>
+                <div id="companyActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet.</div>
                 <div id="companyActivityLogTimeline"></div>
             </div>
         </div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Pipeline Detail Page -->
@@ -3711,6 +3964,8 @@
         const BP_CANDIDATES_PAGE_SIZE = 50;
         let currentJobOrdersPage = 1;
         const BP_JOB_ORDERS_PAGE_SIZE = 50;
+        let currentCompaniesPage = 1;
+        const BP_COMPANIES_PAGE_SIZE = 50;
         let filteredJobOrders = [];
         let filteredCompanies = [];
         let currentCandidate = null;
@@ -4335,45 +4590,140 @@
         }
 
         function renderCompanies() {
-            const grid = document.getElementById('companiesGrid');
-            
-            if (filteredCompanies.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray-500);">No companies found</p>';
-                grid.style.display = 'grid';
-                return;
-            }
-
-            const cards = filteredCompanies.map(company => createCompanyCard(company)).join('');
-            grid.innerHTML = cards;
-            grid.style.display = 'grid';
+            renderCompaniesTable();
         }
 
-        function createCompanyCard(company) {
-            return `
-                <div class="company-card" onclick="openCompany('${company.id}')">
-                    <div class="company-name">${escapeHtml(company.company || 'Unknown')}</div>
-                    <div class="company-contact">${escapeHtml(company.Name || 'Not provided')}</div>
+        function renderCompaniesTable() {
+            const body = document.getElementById('companiesTableBody');
+            const table = document.getElementById('companiesTable');
+            const empty = document.getElementById('companiesEmpty');
+            const pagination = document.getElementById('companiesPagination');
+            if (!body) return;
 
-                    <div class="company-details">
-                        <div class="company-detail">
-                            <i class="fas fa-envelope"></i>
-                            ${company.Email ?
-                                `<a href="mailto:${escapeHtml(company.Email)}">${escapeHtml(company.Email)}</a>` :
-                                '<span>Not provided</span>'}
-                        </div>
-                        <div class="company-detail">
-                            <i class="fas fa-phone"></i>
-                            ${company.phone ?
-                                `<a href="tel:${escapeHtml(company.phone)}">${escapeHtml(company.phone)}</a>` :
-                                '<span>Not provided</span>'}
-                        </div>
-                        <div class="company-detail">
-                            <i class="fas fa-users"></i>
-                            <span>${escapeHtml(company.company_size || 'Not provided')}</span>
-                        </div>
-                    </div>
+            const total = filteredCompanies.length;
+            if (total === 0) {
+                body.innerHTML = '';
+                table.style.display = 'none';
+                empty.style.display = 'block';
+                pagination.innerHTML = '';
+                return;
+            }
+            table.style.display = '';
+            empty.style.display = 'none';
+
+            const pageSize = BP_COMPANIES_PAGE_SIZE;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentCompaniesPage > totalPages) currentCompaniesPage = totalPages;
+            if (currentCompaniesPage < 1) currentCompaniesPage = 1;
+            const start = (currentCompaniesPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageSlice = filteredCompanies.slice(start, end);
+
+            body.innerHTML = pageSlice
+                .map((c, i) => createCompanyTableRow(c, start + i + 1))
+                .join('');
+            renderCompaniesPagination(start, end, total, currentCompaniesPage, totalPages);
+        }
+
+        function createCompanyTableRow(c, rowNumber) {
+            const rowNumStr = String(rowNumber).padStart(3, '0');
+            const name = c.company || 'Unknown';
+            const contact = c.Name ? escapeHtml(c.Name) : '';
+
+            // Location + Industry aren't in the current COMPANIES schema
+            // (flagged in Task 5 summary). Fields are emitted as em-dashes
+            // so adding columns to Airtable later needs no code change.
+            const hasLoc = !!c.location;
+            const loc = hasLoc ? escapeHtml(c.location) : '—';
+            const locCls = hasLoc ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
+            const hasInd = !!c.industry;
+            const industry = hasInd ? escapeHtml(c.industry) : '—';
+            const industryCls = hasInd ? '' : 'bp-col-loc-empty';
+            const hasSize = !!c.company_size;
+            const size = hasSize ? escapeHtml(c.company_size) : '—';
+            const sizeCls = hasSize ? 'bp-col-size' : 'bp-col-size bp-col-loc-empty';
+
+            const activeJobs = activeJobsCountForCompany(c.company);
+
+            return `
+                <tr class="bp-row" onclick="openCompany('${escapeHtml(c.id)}')">
+                    <td class="bp-col-num">${rowNumStr}</td>
+                    <td>
+                        <div class="bp-cell-name-text">${escapeHtml(name)}</div>
+                        ${contact ? `<div class="bp-cell-company">${contact}</div>` : ''}
+                    </td>
+                    <td class="${locCls}">${loc}</td>
+                    <td class="${sizeCls}">${size}</td>
+                    <td class="${industryCls}">${industry}</td>
+                    <td class="bp-col-active-jobs">${String(activeJobs).padStart(3, '0')}</td>
+                </tr>
+            `;
+        }
+
+        function renderCompaniesPagination(start, end, total, page, totalPages) {
+            const el = document.getElementById('companiesPagination');
+            if (!el) return;
+            const prevDisabled = page <= 1;
+            const nextDisabled = page >= totalPages;
+            const prevClick = prevDisabled ? '' : ' onclick="changeCompaniesPage(-1)"';
+            const nextClick = nextDisabled ? '' : ' onclick="changeCompaniesPage(1)"';
+            el.innerHTML = `
+                <div class="bp-pagination-left">PAGE ${page} / ${totalPages} · ENTRIES ${start + 1}–${end} OF ${total}</div>
+                <div class="bp-pagination-right">
+                    <span class="bp-page-nav${prevDisabled ? ' disabled' : ''}"${prevClick}>← PREV</span>
+                    <span class="bp-page-nav${nextDisabled ? ' disabled' : ''}"${nextClick}>NEXT →</span>
                 </div>
             `;
+        }
+
+        function changeCompaniesPage(delta) {
+            currentCompaniesPage += delta;
+            renderCompanies();
+        }
+
+        // Active = job orders linked to this company, not archived, and not
+        // in a terminal state (Filled / Cancelled). Used by the Companies
+        // list's ACTIVE JOBS column.
+        function activeJobsCountForCompany(companyName) {
+            if (!companyName) return 0;
+            return allJobOrders.filter(j =>
+                j.Company === companyName &&
+                !j.Archived &&
+                j.status !== 'Filled' &&
+                j.status !== 'Cancelled'
+            ).length;
+        }
+
+        // Renders the JOB ORDERS card on a company detail page — one row
+        // per non-archived job linked by Company name.
+        function renderCompanyJobOrders(company) {
+            const listEl = document.getElementById('companyJobsList');
+            const countEl = document.getElementById('companyJobsCount');
+            if (!listEl || !countEl) return;
+
+            const companyName = company && company.company;
+            const jobs = companyName
+                ? allJobOrders.filter(j => j.Company === companyName && !j.Archived)
+                : [];
+            countEl.textContent = String(jobs.length).padStart(4, '0');
+
+            if (jobs.length === 0) {
+                listEl.innerHTML = '<div class="bp-card-empty">No job orders linked to this company.</div>';
+                return;
+            }
+            listEl.innerHTML = jobs.map(j => {
+                const status = j.status || 'New';
+                const statusSlug = escapeHtml(status.toLowerCase().replace(/\s+/g, '-'));
+                return `
+                    <div class="bp-linked-row" onclick="openJobOrder('${escapeHtml(j.id)}')">
+                        <div class="bp-linked-row-main">
+                            <div class="bp-linked-row-title">${escapeHtml(j['Position Title'] || 'Untitled')}</div>
+                            <div class="bp-linked-row-sub">${escapeHtml(j.location || '—')}</div>
+                        </div>
+                        <span class="bp-status bp-status-${statusSlug}">${escapeHtml(status)}</span>
+                    </div>
+                `;
+            }).join('');
         }
 
         // Pipeline stage model (Session 7). Nine REAL active stages that map
@@ -4693,6 +5043,8 @@
         }
 
         function filterCompanies() {
+            // Reset blueprint paginator to page 1 on any search change.
+            currentCompaniesPage = 1;
             const search = document.getElementById('companySearch').value.toLowerCase();
 
             filteredCompanies = allCompanies.filter(company => {
@@ -5010,6 +5362,7 @@
             populateCompanyInfo(company);
             populateCompanyContact(company);
             loadCompanyEmployees(company);
+            renderCompanyJobOrders(company);
             loadActivities('company', company.id);
         }
 
@@ -5324,7 +5677,7 @@
             document.getElementById('employeesLoading').style.display = 'block';
             document.getElementById('employeesEmpty').style.display = 'none';
             document.getElementById('employeesGrid').innerHTML = '';
-            document.getElementById('employeeCount').textContent = '0 employees';
+            document.getElementById('employeeCount').textContent = '—';
             
             try {
                 // Use filterByFormula to find employees at this company,
@@ -5369,7 +5722,7 @@
                 console.error('Error loading company employees:', error);
                 document.getElementById('employeesLoading').style.display = 'none';
                 document.getElementById('employeesEmpty').style.display = 'block';
-                document.getElementById('employeeCount').textContent = '0 employees';
+                document.getElementById('employeeCount').textContent = '—';
             }
         }
 
@@ -5377,7 +5730,9 @@
             const grid = document.getElementById('employeesGrid');
             const countElement = document.getElementById('employeeCount');
             
-            countElement.textContent = `${employees.length} employee${employees.length !== 1 ? 's' : ''}`;
+            // Blueprint header count: zero-padded 4-digit mono, matching
+            // the Candidates TOTAL / W-CONTACT style from Session 6.
+            countElement.textContent = String(employees.length).padStart(4, '0');
             
             if (employees.length === 0) {
                 document.getElementById('employeesEmpty').style.display = 'block';
