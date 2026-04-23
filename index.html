@@ -1460,9 +1460,6 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         }
 
-        /* Hide the legacy orange-accent header on blueprint routes. */
-        body.bp-theme .legacy-header { display: none; }
-
         body.bp-theme .bp-top-strip {
             display: flex;
             justify-content: space-between;
@@ -1694,9 +1691,6 @@
         /* Legacy "+ New Candidate" button in the filter group — moved to
            the section header under bp-theme. */
         body.bp-theme #candidates .filter-group > button { display: none; }
-
-        /* Hide legacy card grid under bp-theme */
-        body.bp-theme #candidatesGrid { display: none !important; }
 
         /* --- Blueprint table --- */
         .bp-table-wrap, .bp-pagination { display: none; }
@@ -2000,9 +1994,398 @@
             text-transform: uppercase;
         }
         body.bp-theme #createCandidateModal .error i { display: none; }
+
+        /* ===========================================================
+           SESSION 7 — Blueprint extended to detail pages + other app
+           surfaces. body.bp-theme is now hardcoded on <body>; every
+           selector below runs unconditionally.
+           =========================================================== */
+
+        /* Shared page-container chrome: grid bg + padding + max-width.
+           Used by any page that opts in via the .bp-page class. */
+        body.bp-theme .bp-page {
+            background-image:
+                linear-gradient(var(--bp-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--bp-grid) 1px, transparent 1px);
+            background-size: 24px 24px;
+            padding: 1rem 1.5rem;
+            max-width: 1400px;
+        }
+
+        /* --- Detail page header (reusable across candidate/job/company/pipeline detail) --- */
+        body.bp-theme .bp-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 16px;
+            margin-bottom: 18px;
+            border-bottom: 1.5px solid var(--bp-ink);
+            gap: 1rem;
+        }
+        body.bp-theme .bp-detail-header-left {
+            flex: 1;
+            min-width: 0;
+        }
+        body.bp-theme .bp-detail-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 500;
+            letter-spacing: -0.015em;
+            color: var(--bp-ink);
+            line-height: 1.1;
+            margin: 4px 0 6px;
+        }
+        body.bp-theme .bp-detail-name.zoominfo-d { color: var(--bp-alert); }
+        body.bp-theme .bp-detail-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--bp-muted);
+            line-height: 1.3;
+        }
+        body.bp-theme .bp-detail-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        body.bp-theme .bp-back-link {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            cursor: pointer;
+            user-select: none;
+        }
+        body.bp-theme .bp-back-link:hover { color: var(--bp-accent); }
+        body.bp-theme .bp-detail-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* --- Blueprint button variants --- */
+        body.bp-theme .bp-btn {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 0;
+            border: 1.5px solid var(--bp-ink);
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+        }
+        body.bp-theme .bp-btn-primary {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-ink);
+        }
+        body.bp-theme .bp-btn-primary:hover { background: #1f8bba; }
+        body.bp-theme .bp-btn-ghost {
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+            border-width: 1px;
+        }
+        body.bp-theme .bp-btn-ghost:hover { background: var(--bp-bg); }
+        body.bp-theme .bp-btn-danger {
+            background: var(--bp-surface);
+            color: var(--bp-alert);
+            border-color: var(--bp-alert);
+        }
+        body.bp-theme .bp-btn-danger:hover {
+            background: var(--bp-alert);
+            color: var(--bp-accent-ink);
+        }
+        body.bp-theme .bp-btn-sm {
+            padding: 6px 10px;
+            font-size: 10px;
+        }
+
+        /* --- 2-column detail grid --- */
+        body.bp-theme .bp-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        body.bp-theme .bp-detail-col {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            body.bp-theme .bp-detail-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- Card component (reusable) --- */
+        body.bp-theme .bp-card {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-ink);
+            border-radius: 0;
+        }
+        body.bp-theme .bp-card-fullwidth {
+            margin-bottom: 16px;
+        }
+        body.bp-theme .bp-card-header {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--bp-ink);
+            background: var(--bp-surface);
+        }
+        body.bp-theme .bp-card-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 14px;
+        }
+        body.bp-theme .bp-card-body { padding: 14px; }
+
+        /* --- Field rows inside cards: populateCandidateX JS emits
+           .detail-field / .detail-label / .detail-value markup.
+           Restyle to blueprint mono-label-above-Inter-value. --- */
+        body.bp-theme .bp-card-body .detail-field {
+            margin-bottom: 12px;
+        }
+        body.bp-theme .bp-card-body .detail-field:last-child { margin-bottom: 0; }
+        body.bp-theme .bp-card-body .detail-label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        body.bp-theme .bp-card-body .detail-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--bp-ink-soft);
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        body.bp-theme .bp-card-body .detail-value.empty {
+            color: var(--bp-hint);
+            font-style: normal;
+        }
+        body.bp-theme .bp-card-body .detail-value a {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            color: var(--bp-accent);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+        }
+        body.bp-theme .bp-card-body .detail-value a:hover { text-decoration: underline; }
+
+        /* Edit-mode inputs */
+        body.bp-theme .bp-card-body .edit-field input,
+        body.bp-theme .bp-card-body .edit-field select,
+        body.bp-theme .bp-card-body .edit-field textarea {
+            width: 100%;
+            padding: 8px 10px;
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--bp-ink);
+            box-shadow: none;
+        }
+        body.bp-theme .bp-card-body .edit-field input:focus,
+        body.bp-theme .bp-card-body .edit-field select:focus,
+        body.bp-theme .bp-card-body .edit-field textarea:focus {
+            outline: none;
+            border-color: var(--bp-accent);
+            box-shadow: none;
+        }
+
+        /* Tag + skill chips inside cards */
+        body.bp-theme .bp-card-body .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        body.bp-theme .bp-card-body .tag-item,
+        body.bp-theme .bp-card-body .skill-item {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            padding: 3px 8px;
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            text-transform: none;
+        }
+        body.bp-theme .bp-card-body .skill-item {
+            background: var(--bp-accent);
+            color: var(--bp-accent-ink);
+            border-color: var(--bp-accent);
+        }
+
+        /* Status badge inside detail-value (reused pill styles) */
+        body.bp-theme .bp-card-body .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--bp-surface);
+            color: var(--bp-ink);
+            border: 1px solid transparent;
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        body.bp-theme .bp-card-body .status-badge.status-new {
+            background: var(--bp-accent); color: var(--bp-accent-ink); border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-card-body .status-badge.status-active {
+            background: var(--bp-surface); color: var(--bp-accent); border-color: var(--bp-accent);
+        }
+        body.bp-theme .bp-card-body .status-badge.status-placed {
+            background: var(--bp-ink); color: var(--bp-accent-ink); border-color: var(--bp-ink);
+        }
+        body.bp-theme .bp-card-body .status-badge.status-inactive {
+            background: var(--bp-surface); color: var(--bp-hint); border-color: var(--bp-hint);
+        }
+
+        /* --- Activity Log restyle --- */
+        body.bp-theme .activity-card {
+            background: var(--bp-surface);
+            border: 1px solid var(--bp-divider);
+            border-left: 3px solid var(--bp-ink);
+            border-radius: 0;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+        body.bp-theme .activity-card .activity-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+        }
+        body.bp-theme .activity-type-badge {
+            font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+            font-size: 9px !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.14em !important;
+            padding: 2px 6px !important;
+            border-radius: 0 !important;
+            background: var(--bp-accent) !important;
+            color: var(--bp-accent-ink) !important;
+            border: 1px solid var(--bp-accent) !important;
+            text-transform: uppercase;
+        }
+        body.bp-theme .activity-logger {
+            margin-left: auto;
+            color: var(--bp-hint);
+            font-size: 9px;
+        }
+        body.bp-theme .activity-subject {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--bp-ink);
+            margin-bottom: 4px;
+        }
+        body.bp-theme .activity-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: var(--bp-ink-soft);
+            line-height: 1.4;
+        }
+        body.bp-theme .activity-empty {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+            padding: 24px;
+            text-align: center;
+            font-style: normal;
+        }
+        body.bp-theme .activity-form {
+            background: var(--bp-bg);
+            border: 1px solid var(--bp-ink);
+            border-radius: 0;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        body.bp-theme .activity-form label {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            color: var(--bp-muted);
+            text-transform: uppercase;
+        }
+        body.bp-theme .activity-form input,
+        body.bp-theme .activity-form select,
+        body.bp-theme .activity-form textarea {
+            border-radius: 0;
+            border: 1px solid var(--bp-ink);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+        }
+        body.bp-theme .activity-form input:focus,
+        body.bp-theme .activity-form select:focus,
+        body.bp-theme .activity-form textarea:focus {
+            outline: none;
+            border-color: var(--bp-accent);
+        }
+        body.bp-theme .activity-form .form-actions button {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 0;
+            border: 1.5px solid var(--bp-ink);
+            padding: 8px 12px;
+        }
+
+        /* --- Save banners on the candidate detail page --- */
+        body.bp-theme #candidateSaveMessage,
+        body.bp-theme #candidateSaveError {
+            border-radius: 0;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        body.bp-theme #candidateSaveMessage {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-accent);
+            color: var(--bp-accent);
+        }
+        body.bp-theme #candidateSaveError {
+            background: var(--bp-surface);
+            border: 1.5px solid var(--bp-alert);
+            color: var(--bp-alert);
+        }
+        body.bp-theme #candidateSaveError i { display: none; }
     </style>
 </head>
-<body>
+<body class="bp-theme">
     <!-- Header -->
     <!-- Blueprint theme header — shown only when body.bp-theme is active -->
     <div class="bp-top-strip">
@@ -2024,25 +2407,6 @@
                 <span class="bp-nav-item" data-page="companies">COMPANIES</span>
                 <span class="bp-nav-item" data-page="pipeline">PIPELINE</span>
             </nav>
-        </div>
-    </header>
-
-    <header class="header legacy-header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-hard-hat"></i>
-                    <span>Lemmik Recruiting CRM</span>
-                </div>
-                <nav class="main-nav">
-                    <span class="nav-link" data-page="dashboard">Dashboard</span>
-                    <span class="nav-link" data-page="candidates">Candidates</span>
-                    <span class="nav-link" data-page="job-orders">Job Orders</span>
-                    <span class="nav-link" data-page="companies">Companies</span>
-                    <span class="nav-link" data-page="pipeline">Pipeline</span>
-                </nav>
-
-            </div>
         </div>
     </header>
 
@@ -2182,10 +2546,7 @@
             <span id="candidatesErrorMessage"></span>
         </div>
 
-        <!-- Legacy card grid: hidden under bp-theme -->
-        <div id="candidatesGrid" class="cards-grid" style="display: none;"></div>
-
-        <!-- Blueprint table: visible only under bp-theme -->
+        <!-- Blueprint table -->
         <div class="bp-table-wrap">
             <table class="bp-table" id="candidatesTable">
                 <thead>
@@ -2306,68 +2667,71 @@
     </div>
 
     <!-- Candidate Detail Page -->
-    <div id="candidate-detail" class="page container">
-        <div class="detail-page">
-            <div class="detail-header">
-                <div class="container">
-                    <button class="back-btn" onclick="navigateTo('candidates')">
-                        ← Back to Candidates
-                    </button>
-                    <h1 class="detail-name" id="candidateDetailName">Loading...</h1>
-                    <p class="detail-subtitle" id="candidateDetailSubtitle">Loading...</p>
-                    <div class="detail-actions">
-                        <button class="btn" id="editCandidateBtn" onclick="toggleEditCandidate()">✏️ Edit</button>
-                        <button class="btn" id="saveCandidateBtn" onclick="saveCandidate()" style="display: none;">💾 Save</button>
-                        <button class="btn-secondary btn" id="cancelCandidateBtn" onclick="cancelEditCandidate()" style="display: none;">❌ Cancel</button>
-                        <button class="btn-archive" id="archiveCandidateBtn" onclick="confirmArchive('candidate')" style="display: none;">🗄 Archive</button>
-                    </div>
+    <div id="candidate-detail" class="page container bp-page">
+        <div class="bp-detail-header">
+            <div class="bp-detail-header-left">
+                <div class="bp-section-label">SECTION 02.1 · PROFILE</div>
+                <h1 class="bp-detail-name" id="candidateDetailName">Loading...</h1>
+                <div class="bp-detail-subtitle" id="candidateDetailSubtitle">Loading...</div>
+            </div>
+            <div class="bp-detail-header-right">
+                <span class="bp-back-link" onclick="navigateTo('candidates')">← BACK TO ROSTER</span>
+                <div class="bp-detail-actions">
+                    <button class="bp-btn bp-btn-primary" id="editCandidateBtn" onclick="toggleEditCandidate()">EDIT</button>
+                    <button class="bp-btn bp-btn-primary" id="saveCandidateBtn" onclick="saveCandidate()" style="display: none;">SAVE</button>
+                    <button class="bp-btn bp-btn-ghost" id="cancelCandidateBtn" onclick="cancelEditCandidate()" style="display: none;">CANCEL</button>
+                    <button class="bp-btn bp-btn-danger" id="archiveCandidateBtn" onclick="confirmArchive('candidate')" style="display: none;">ARCHIVE</button>
                 </div>
             </div>
-            
-            <div class="success" id="candidateSaveMessage">✅ Candidate updated successfully!</div>
-            <div class="error" id="candidateSaveError" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="candidateSaveErrorMessage"></span>
-            </div>
-            
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h3>📞 Contact Information</h3>
-                    <div id="candidateContact"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>📋 Basic Information</h3>
-                    <div id="candidateBasic"></div>
-                </div>
-            </div>
-            
-            <div class="full-width-section">
-                <h3>💼 Professional Details</h3>
-                <div id="candidateProfessional"></div>
-            </div>
-            
-            <div class="full-width-section">
-                <h3>🔧 Skills</h3>
-                <div id="candidateSkills"></div>
-            </div>
-            
-            <div class="full-width-section">
-                <h3>📝 Additional Information</h3>
-                <div id="candidateAdditional"></div>
-            </div>
+        </div>
 
-            <div class="full-width-section">
-                <div class="activity-header">
-                    <h3>📒 Activity Log</h3>
-                    <button class="btn" id="candidateLogActivityBtn" onclick="showLogActivityForm('candidate')">+ Log Activity</button>
+        <div class="success" id="candidateSaveMessage"><span class="legacy-emoji">✅ </span>CANDIDATE UPDATED</div>
+        <div class="error" id="candidateSaveError" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="candidateSaveErrorMessage"></span>
+        </div>
+
+        <div class="bp-detail-grid">
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">CONTACT</div>
+                    <div class="bp-card-body" id="candidateContact"></div>
                 </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">BASIC INFORMATION</div>
+                    <div class="bp-card-body" id="candidateBasic"></div>
+                </div>
+            </div>
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">PROFESSIONAL</div>
+                    <div class="bp-card-body" id="candidateProfessional"></div>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">SKILLS</div>
+                    <div class="bp-card-body" id="candidateSkills"></div>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">ADDITIONAL</div>
+                    <div class="bp-card-body" id="candidateAdditional"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header bp-card-header-actions">
+                <span>ACTIVITY LOG</span>
+                <button class="bp-btn bp-btn-primary bp-btn-sm" id="candidateLogActivityBtn" onclick="showLogActivityForm('candidate')">+ LOG ACTIVITY</button>
+            </div>
+            <div class="bp-card-body">
                 <div id="candidateActivityLogForm" class="activity-form" style="display: none;"></div>
-                <div id="candidateActivityLogLoading" style="display: none; color: var(--gray-500); padding: 1rem;">Loading activity…</div>
-                <div id="candidateActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet. Click "+ Log Activity" to add the first entry.</div>
+                <div id="candidateActivityLogLoading" style="display: none;">Loading activity…</div>
+                <div id="candidateActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet.</div>
                 <div id="candidateActivityLogTimeline"></div>
             </div>
         </div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Job Order Detail Page -->
@@ -2996,19 +3360,9 @@
             // Hide all pages
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-            // Blueprint theme scoped to the Candidates routes only
-            // (#candidates, #candidates/<id>, plus the legacy singular alias).
-            const isBpRoute = page === 'candidates' || page === 'candidate';
-            document.body.classList.toggle('bp-theme', isBpRoute);
-
-            // Swap the candidate search placeholder to match the active theme.
-            const candSearch = document.getElementById('candidateSearch');
-            if (candSearch) {
-                candSearch.placeholder = isBpRoute ? '> search_' : 'Search candidates...';
-            }
-
-            // Update nav — legacy .nav-link AND blueprint .bp-nav-item both
-            // get the active class so switching themes never desyncs state.
+            // bp-theme is hardcoded on <body> now (Session 7) — no per-route
+            // toggle needed. Legacy .nav-link rules still sync the active
+            // class alongside .bp-nav-item in case anything references them.
             document.querySelectorAll('.nav-link, .bp-nav-item').forEach(link => {
                 link.classList.remove('active');
                 if (link.dataset.page === (page || 'dashboard')) {
@@ -3295,24 +3649,8 @@
         // table for the Session 6 pilot. Both DOM trees exist in the HTML;
         // CSS hides the inactive one.
         function renderCandidates() {
-            if (document.body.classList.contains('bp-theme')) {
-                renderCandidatesTable();
-            } else {
-                renderCandidatesCards();
-            }
+            renderCandidatesTable();
             updateBpSectionStats();
-        }
-
-        function renderCandidatesCards() {
-            const grid = document.getElementById('candidatesGrid');
-            if (filteredCandidates.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--gray-500);">No candidates found</p>';
-                grid.style.display = 'grid';
-                return;
-            }
-            const cards = filteredCandidates.map(candidate => createCandidateCard(candidate)).join('');
-            grid.innerHTML = cards;
-            grid.style.display = 'grid';
         }
 
         // Populates the TOTAL / W-CONTACT stats shown in the blueprint section
@@ -3427,46 +3765,6 @@
             renderCandidates();
         }
 
-        function createCandidateCard(candidate) {
-            const hasContact = candidate['Work Email'] || candidate['Work Phone'] || 
-                              candidate['Personal Email'] || candidate['Personal Phone'];
-            const contactClass = hasContact ? 'has-contact' : '';
-            const nameClass = candidate.Source === 'ZoomInfoD' ? 'zoominfo-d' : '';
-            
-            const status = candidate.Status || 'New';
-            return `
-                <div class="candidate-card ${contactClass}" onclick="openCandidate('${candidate.id}')">
-                    <div class="candidate-name ${nameClass}">${escapeHtml(candidate.Name || 'Unknown')}</div>
-                    <div class="candidate-title">${escapeHtml(candidate.Title || 'Not provided')}</div>
-                    <div class="candidate-company">${escapeHtml(candidate['Current Company'] || 'Not provided')}</div>
-
-                    <div class="candidate-details">
-                        <div class="candidate-detail">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>${escapeHtml(candidate.Location || 'Not provided')}</span>
-                        </div>
-                        <div class="candidate-detail">
-                            <i class="fas fa-tag"></i>
-                            <span class="status-badge status-${escapeHtml(status.toLowerCase())}">${escapeHtml(status)}</span>
-                        </div>
-                        ${hasContact ?
-                            `<div class="candidate-detail">
-                                <i class="fas fa-envelope"></i>
-                                <span>${escapeHtml(candidate['Work Email'] || candidate['Personal Email'] || 'Not provided')}</span>
-                            </div>` :
-                            `<div class="candidate-detail">
-                                <i class="fas fa-exclamation-triangle" style="color: var(--warning-yellow);"></i>
-                                <span>No contact info</span>
-                            </div>`
-                        }
-                        <div class="candidate-detail">
-                            <i class="fas fa-building"></i>
-                            <span>${escapeHtml(candidate.Source || 'Not provided')}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
 
         function renderJobOrders() {
             const grid = document.getElementById('jobsGrid');
@@ -3833,7 +4131,7 @@
         function populateCandidateDetail(candidate) {
             const nameEl = document.getElementById('candidateDetailName');
             nameEl.textContent = candidate.Name || 'Unknown';
-            nameEl.className = `detail-name ${candidate.Source === 'ZoomInfoD' ? 'zoominfo-d' : ''}`;
+            nameEl.className = `bp-detail-name${candidate.Source === 'ZoomInfoD' ? ' zoominfo-d' : ''}`;
             
             // If both Title and Current Company are empty, render a single
             // message rather than "Not provided at Not provided".
