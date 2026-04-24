@@ -3718,6 +3718,19 @@
             </div>
         </div>
 
+        <div class="bp-card bp-card-fullwidth">
+            <div class="bp-card-header bp-card-header-actions">
+                <span>ACTIVITY LOG</span>
+                <button class="bp-btn bp-btn-primary bp-btn-sm" id="pipelineLogActivityBtn" onclick="showLogActivityForm('pipeline')">+ LOG ACTIVITY</button>
+            </div>
+            <div class="bp-card-body">
+                <div id="pipelineActivityLogForm" class="activity-form" style="display: none;"></div>
+                <div id="pipelineActivityLogLoading" style="display: none;">Loading activity…</div>
+                <div id="pipelineActivityLogEmpty" class="activity-empty" style="display: none;">No activity logged yet.</div>
+                <div id="pipelineActivityLogTimeline"></div>
+            </div>
+        </div>
+
         <div class="bp-caution-stripe"></div>
     </div>
 
@@ -6202,6 +6215,7 @@
             populatePipelineStatus(deal);
             populatePipelineActions(deal);
             populatePipelineFinancial(deal);
+            loadActivities('pipeline', deal.id);
         }
 
         function populatePipelineCandidateJob(deal) {
@@ -7245,6 +7259,20 @@
                     loading: 'companyActivityLogLoading',
                     empty: 'companyActivityLogEmpty',
                     timeline: 'companyActivityLogTimeline'
+                }
+            },
+            pipeline: {
+                displayName: 'Deal',
+                table: 'PIPELINE',
+                linkField: 'pipeline_id',
+                reverseLinkField: 'COMMUNICATIONS',
+                currentRecord: () => currentPipelineDeal,
+                ids: {
+                    btn: 'pipelineLogActivityBtn',
+                    form: 'pipelineActivityLogForm',
+                    loading: 'pipelineActivityLogLoading',
+                    empty: 'pipelineActivityLogEmpty',
+                    timeline: 'pipelineActivityLogTimeline'
                 }
             }
         };
