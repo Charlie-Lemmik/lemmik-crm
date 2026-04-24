@@ -1763,6 +1763,41 @@
             color: var(--bp-ink-soft);
         }
 
+        /* Session 8 Task 3 — pure-CSS email hover tooltip on NAME cell.
+           The td establishes the positioning context; the tooltip is an
+           absolutely-positioned child that fades in on td:hover. No JS,
+           no animation — instant opacity flip matching the rest of the
+           blueprint's no-transition aesthetic. */
+        body.bp-theme #candidatesTable td.bp-col-name-cell {
+            position: relative;
+        }
+        body.bp-theme .bp-hover-tooltip {
+            position: absolute;
+            top: 100%;
+            left: 12px;
+            margin-top: 4px;
+            background: var(--bp-ink);
+            color: var(--bp-surface);
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            padding: 4px 8px;
+            z-index: 10;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            border-radius: 0;
+            transition: none;
+        }
+        body.bp-theme #candidatesTable td.bp-col-name-cell:hover .bp-hover-tooltip {
+            opacity: 1;
+        }
+        /* Muted variant for "— no contact info" — same dark background,
+           --bp-hint text so the row still reads as "no contact" at a glance. */
+        body.bp-theme .bp-hover-tooltip-empty {
+            color: var(--bp-hint);
+        }
+
         body.bp-theme .bp-row {
             border-bottom: 0.5px solid var(--bp-divider);
             cursor: pointer;
@@ -4502,6 +4537,14 @@
             const nameCls = 'bp-cell-name-text' + (isZoomInfoD ? ' bp-cell-name-alert' : '');
             const name = c.Name || 'Unknown';
 
+            // Hover-tooltip content: work email preferred, personal email
+            // fallback, muted "— no contact info" if neither exists. Kept
+            // on every row (even the no-contact case) so the hover
+            // affordance is consistent.
+            const email = c['Work Email'] || c['Personal Email'] || '';
+            const tooltipText = email || '— no contact info';
+            const tooltipCls = 'bp-hover-tooltip' + (email ? '' : ' bp-hover-tooltip-empty');
+
             const hasCompany = !!c['Current Company'];
             const companyText = hasCompany ? c['Current Company'] : '—';
             const companyCls = 'bp-col-cand-company' + (hasCompany ? '' : ' bp-col-loc-empty');
@@ -4527,8 +4570,9 @@
             return `
                 <tr class="bp-row" onclick="openCandidate('${escapeHtml(c.id)}')">
                     <td class="bp-col-num">${rowNumStr}</td>
-                    <td>
+                    <td class="bp-col-name-cell">
                         <div class="${nameCls}">${escapeHtml(name)}</div>
+                        <span class="${tooltipCls}">${escapeHtml(tooltipText)}</span>
                     </td>
                     <td class="${companyCls}"${companyAttr}>${escapeHtml(companyText)}</td>
                     <td class="${titleCls}"${titleAttr}>${escapeHtml(titleText)}</td>
