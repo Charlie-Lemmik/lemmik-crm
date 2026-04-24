@@ -4565,6 +4565,15 @@
             return abbrev ? `${head}, ${abbrev}` : loc;
         }
 
+        // Strip a trailing " (anything)" to keep Candidates list cells on one
+        // line. Anchored to end-of-string; requires a space before the opening
+        // paren so we don't mangle legitimate "(prefix) trailing text" values.
+        // Render-only — never applied before Airtable writes.
+        function stripParenSuffix(s) {
+            if (!s || typeof s !== 'string') return s;
+            return s.replace(/\s*\([^)]*\)\s*$/, '').trim();
+        }
+
         // Build one <tr>. Row number is 1-based filtered-list position, not
         // record ID; zero-padded to 3 digits for the blueprint mono aesthetic.
         // Session 8: single-line rows — name only in NAME cell (email moves
@@ -4585,14 +4594,20 @@
             const tooltipText = email || '— no contact info';
             const tooltipCls = 'bp-hover-tooltip' + (email ? '' : ' bp-hover-tooltip-empty');
 
-            const hasCompany = !!c['Current Company'];
-            const companyText = hasCompany ? c['Current Company'] : '—';
+            const rawCompany = c['Current Company'];
+            const hasCompany = !!rawCompany;
+            // Display text strips trailing " (suffix)" so rows stay on one
+            // line; the tooltip below still surfaces the raw (parenthetical)
+            // value when it adds info the stripped cell hides.
+            const companyText = hasCompany ? stripParenSuffix(rawCompany) : '—';
             const companyCls = 'bp-col-cand-company' + (hasCompany ? '' : ' bp-col-loc-empty');
-            // Conditional native title tooltip: only when the value is long
-            // enough that CSS ellipsis truncation is likely. Spares the
-            // browser from showing a redundant tooltip on short strings.
-            const companyAttr = hasCompany && companyText.length >= 28
-                ? ` title="${escapeHtml(companyText)}"` : '';
+            // Native title tooltip uses the RAW value. Threshold checked
+            // against raw length so "Very Long Name (short suffix)" still
+            // gets a tooltip even when the stripped display is short. Only
+            // emit when raw differs from displayed — otherwise tooltip is
+            // redundant with the visible cell text.
+            const companyAttr = hasCompany && rawCompany.length >= 28 && rawCompany !== companyText
+                ? ` title="${escapeHtml(rawCompany)}"` : '';
 
             const hasTitle = !!c.Title;
             const titleText = hasTitle ? c.Title : '—';
@@ -4601,7 +4616,10 @@
                 ? ` title="${escapeHtml(titleText)}"` : '';
 
             const hasLoc = !!c.Location;
-            const loc = hasLoc ? escapeHtml(abbreviateLocation(c.Location)) : '—';
+            // abbreviateLocation first ("California" → "CA"), then strip any
+            // trailing " (headquarters)" / " (suburb)" / etc. Both are render-
+            // only; Airtable keeps the original string.
+            const loc = hasLoc ? escapeHtml(stripParenSuffix(abbreviateLocation(c.Location))) : '—';
             const locCls = hasLoc ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
 
             const status = c.Status || 'New';
