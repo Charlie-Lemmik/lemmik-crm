@@ -1731,6 +1731,38 @@
         body.bp-theme #candidatesTable th.bp-col-loc { width: 160px; }
         body.bp-theme #candidatesTable th.bp-col-status { width: 80px; }
 
+        /* Session 8 Task 2 — single-line Candidates rows. Tighter vertical
+           padding (5px vs the global 8px), all cells truncate with
+           ellipsis on overflow. NAME cell keeps overflow visible so
+           Task 3's absolutely-positioned hover tooltip can escape it. */
+        body.bp-theme #candidatesTable .bp-row td {
+            padding: 5px 12px;
+        }
+        body.bp-theme #candidatesTable .bp-cell-name-text {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            margin-bottom: 0;
+        }
+        body.bp-theme #candidatesTable td.bp-col-cand-company,
+        body.bp-theme #candidatesTable td.bp-col-cand-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.2;
+        }
+        body.bp-theme #candidatesTable td.bp-col-cand-company {
+            font-size: 13px;
+            color: var(--bp-ink);
+        }
+        body.bp-theme #candidatesTable td.bp-col-cand-title {
+            font-size: 12px;
+            color: var(--bp-ink-soft);
+        }
+
         body.bp-theme .bp-row {
             border-bottom: 0.5px solid var(--bp-divider);
             cursor: pointer;
@@ -4460,21 +4492,34 @@
 
         // Build one <tr>. Row number is 1-based filtered-list position, not
         // record ID; zero-padded to 3 digits for the blueprint mono aesthetic.
+        // Session 8: single-line rows — name only in NAME cell (email moves
+        // to a hover tooltip added by Task 3), COMPANY and TITLE split into
+        // their own columns with ellipsis truncation, LOCATION gets state-
+        // abbreviated by abbreviateLocation() (Task 4).
         function createCandidateTableRow(c, rowNumber) {
             const rowNumStr = String(rowNumber).padStart(3, '0');
             const isZoomInfoD = c.Source === 'ZoomInfoD';
             const nameCls = 'bp-cell-name-text' + (isZoomInfoD ? ' bp-cell-name-alert' : '');
+            const name = c.Name || 'Unknown';
 
-            const email = c['Work Email'] || c['Personal Email'] || '';
-            const contactLine = email
-                ? `<div class="bp-cell-email">${escapeHtml(email)}</div>`
-                : `<div class="bp-cell-nocontact">— no contact info</div>`;
+            const hasCompany = !!c['Current Company'];
+            const companyText = hasCompany ? c['Current Company'] : '—';
+            const companyCls = 'bp-col-cand-company' + (hasCompany ? '' : ' bp-col-loc-empty');
+            // Conditional native title tooltip: only when the value is long
+            // enough that CSS ellipsis truncation is likely. Spares the
+            // browser from showing a redundant tooltip on short strings.
+            const companyAttr = hasCompany && companyText.length >= 28
+                ? ` title="${escapeHtml(companyText)}"` : '';
 
-            const title = c.Title ? `<div class="bp-cell-title">${escapeHtml(c.Title)}</div>` : '';
-            const company = c['Current Company'] ? `<div class="bp-cell-company">${escapeHtml(c['Current Company'])}</div>` : '';
+            const hasTitle = !!c.Title;
+            const titleText = hasTitle ? c.Title : '—';
+            const titleCls = 'bp-col-cand-title' + (hasTitle ? '' : ' bp-col-loc-empty');
+            const titleAttr = hasTitle && titleText.length >= 30
+                ? ` title="${escapeHtml(titleText)}"` : '';
 
-            const locCls = c.Location ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
-            const loc = c.Location ? escapeHtml(c.Location) : '—';
+            const hasLoc = !!c.Location;
+            const loc = hasLoc ? escapeHtml(c.Location) : '—';
+            const locCls = hasLoc ? 'bp-col-loc' : 'bp-col-loc bp-col-loc-empty';
 
             const status = c.Status || 'New';
             const statusCls = 'bp-status bp-status-' + escapeHtml(status.toLowerCase());
@@ -4483,13 +4528,10 @@
                 <tr class="bp-row" onclick="openCandidate('${escapeHtml(c.id)}')">
                     <td class="bp-col-num">${rowNumStr}</td>
                     <td>
-                        <div class="${nameCls}">${escapeHtml(c.Name || 'Unknown')}</div>
-                        ${contactLine}
+                        <div class="${nameCls}">${escapeHtml(name)}</div>
                     </td>
-                    <td>
-                        ${title}
-                        ${company}
-                    </td>
+                    <td class="${companyCls}"${companyAttr}>${escapeHtml(companyText)}</td>
+                    <td class="${titleCls}"${titleAttr}>${escapeHtml(titleText)}</td>
                     <td class="${locCls}">${loc}</td>
                     <td class="bp-col-status"><span class="${statusCls}">${escapeHtml(status)}</span></td>
                 </tr>
