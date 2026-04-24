@@ -1763,6 +1763,18 @@
             color: var(--bp-ink-soft);
         }
 
+        /* Session 8 Task 6b — force LOCATION cell to single-line with
+           ellipsis. !important overrides the generic td defaults that were
+           letting values like "San Francisco Bay Area, CA" wrap to two
+           lines even after Task 4 abbreviation + Task 5 paren stripping.
+           Scoped to #candidatesTable so other tables' .bp-col-loc cells
+           aren't affected. */
+        body.bp-theme #candidatesTable td.bp-col-loc {
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+
         /* Session 8 Task 3 — pure-CSS email hover tooltip on NAME cell.
            The td establishes the positioning context; the tooltip is an
            absolutely-positioned child that fades in on td:hover. No JS,
