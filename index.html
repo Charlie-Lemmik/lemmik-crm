@@ -3671,52 +3671,54 @@
     </div>
 
     <!-- Pipeline Detail Page -->
-    <div id="pipeline-detail" class="page container">
-        <div class="detail-page">
-            <div class="detail-header">
-                <div class="container">
-                    <button class="back-btn" onclick="navigateTo('pipeline')">
-                        ← Back to Pipeline
-                    </button>
-                    <h1 class="detail-name" id="pipelineDetailName">Loading...</h1>
-                    <p class="detail-subtitle" id="pipelineDetailSubtitle">Loading...</p>
-                    <div class="detail-actions">
-                        <button class="btn" id="editPipelineBtn" onclick="toggleEditPipeline()">✏️ Edit</button>
-                        <button class="btn btn-create" id="savePipelineBtn" onclick="savePipeline()" style="display: none;">💾 Save</button>
-                        <button class="btn btn-cancel" id="cancelPipelineBtn" onclick="cancelEditPipeline()" style="display: none;">❌ Cancel</button>
-                        <button class="btn-archive" id="archivePipelineBtn" onclick="confirmArchive('pipeline')" style="display: none;">🗄 Archive</button>
-                    </div>
-                </div>
+    <div id="pipeline-detail" class="page container bp-page">
+        <div class="bp-detail-header">
+            <div class="bp-detail-header-left">
+                <div class="bp-section-label">SECTION 05.1 · DEAL</div>
+                <h1 class="bp-detail-name" id="pipelineDetailName">Loading...</h1>
+                <div class="bp-detail-subtitle" id="pipelineDetailSubtitle">Loading...</div>
             </div>
-            
-            <div class="success" id="pipelineSaveMessage" style="display: none;">✅ Pipeline updated successfully!</div>
-            <div class="error" id="pipelineSaveError" style="display: none;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span id="pipelineSaveErrorMessage"></span>
-            </div>
-            
-            <div class="detail-content">
-                <div class="detail-section">
-                    <h3>👤 Candidate & Job</h3>
-                    <div id="pipelineCandidateJob"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>📊 Pipeline Status</h3>
-                    <div id="pipelineStatus"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>📝 Actions & Notes</h3>
-                    <div id="pipelineActions"></div>
-                </div>
-                
-                <div class="detail-section">
-                    <h3>💰 Financial & Dates</h3>
-                    <div id="pipelineFinancial"></div>
+            <div class="bp-detail-header-right">
+                <span class="bp-back-link" onclick="navigateTo('pipeline')">← BACK TO PIPELINE</span>
+                <div class="bp-detail-actions">
+                    <button class="bp-btn bp-btn-primary" id="editPipelineBtn" onclick="toggleEditPipeline()">EDIT</button>
+                    <button class="bp-btn bp-btn-primary" id="savePipelineBtn" onclick="savePipeline()" style="display: none;">SAVE</button>
+                    <button class="bp-btn bp-btn-ghost" id="cancelPipelineBtn" onclick="cancelEditPipeline()" style="display: none;">CANCEL</button>
+                    <button class="bp-btn bp-btn-danger" id="archivePipelineBtn" onclick="confirmArchive('pipeline')" style="display: none;">ARCHIVE</button>
                 </div>
             </div>
         </div>
+
+        <div class="success" id="pipelineSaveMessage" style="display: none;"><span class="legacy-emoji">✅ </span>DEAL UPDATED</div>
+        <div class="error" id="pipelineSaveError" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="pipelineSaveErrorMessage"></span>
+        </div>
+
+        <div class="bp-detail-grid">
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">CANDIDATE & JOB</div>
+                    <div class="bp-card-body" id="pipelineCandidateJob"></div>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">ACTIONS & NOTES</div>
+                    <div class="bp-card-body" id="pipelineActions"></div>
+                </div>
+            </div>
+            <div class="bp-detail-col">
+                <div class="bp-card">
+                    <div class="bp-card-header">PIPELINE STATUS</div>
+                    <div class="bp-card-body" id="pipelineStatus"></div>
+                </div>
+                <div class="bp-card">
+                    <div class="bp-card-header">FINANCIAL & DATES</div>
+                    <div class="bp-card-body" id="pipelineFinancial"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bp-caution-stripe"></div>
     </div>
 
     <!-- Add to Pipeline Modal -->
