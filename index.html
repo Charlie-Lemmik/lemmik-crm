@@ -1720,6 +1720,17 @@
         body.bp-theme .bp-table th.bp-col-status { text-align: right; width: 96px; }
         body.bp-theme .bp-table th.bp-col-loc { width: 140px; }
 
+        /* Candidates-table-only column widths. table-layout:fixed so
+           percentage widths are honored and truncation (Task 2) works
+           predictably. Other list tables keep auto layout. */
+        body.bp-theme #candidatesTable { table-layout: fixed; }
+        body.bp-theme #candidatesTable th.bp-col-num { width: 48px; }
+        body.bp-theme #candidatesTable th.bp-col-name { width: 28%; }
+        body.bp-theme #candidatesTable th.bp-col-cand-company { width: 28%; }
+        body.bp-theme #candidatesTable th.bp-col-cand-title { width: 24%; }
+        body.bp-theme #candidatesTable th.bp-col-loc { width: 160px; }
+        body.bp-theme #candidatesTable th.bp-col-status { width: 80px; }
+
         body.bp-theme .bp-row {
             border-bottom: 0.5px solid var(--bp-divider);
             cursor: pointer;
@@ -3199,7 +3210,8 @@
                     <tr>
                         <th class="bp-col-num">#</th>
                         <th class="bp-col-name">NAME</th>
-                        <th class="bp-col-tc">TITLE / COMPANY</th>
+                        <th class="bp-col-cand-company">COMPANY</th>
+                        <th class="bp-col-cand-title">TITLE</th>
                         <th class="bp-col-loc">LOCATION</th>
                         <th class="bp-col-status">STATUS</th>
                     </tr>
